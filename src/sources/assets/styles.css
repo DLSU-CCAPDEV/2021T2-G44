@@ -3,7 +3,7 @@
 
 /* HOMEPAGE ATTRIBUTES */
 .homeHeader {
-  position: sticky;
+  position: relative;
   display: flex;
   width: 100%;
   height: 5em;
@@ -98,7 +98,7 @@
 
 /* MAIN CONTENT DIV */
 .mainContent {
-  position: absolute;
+  position: relative;
   
   height: 100%;
   width: 100%;

@@ -1,9 +1,8 @@
 import './assets/styles.css';
 import cover from './assets/cover.svg';
-import ButtonLink from './components/ButtonLink';
 
 // Component Imports
-import UnregisteredHeader from './components/UnregisteredHeader';
+import ButtonLink from './components/ButtonLink';
 
 const centerpieceStyles = {
   width: "90%",
@@ -51,8 +50,6 @@ export default function Homepage() {
 
   return (
     <div>
-      <UnregisteredHeader />
-
       <div className="mainContent">
         <div style={centerpieceStyles}>
           <div style={primerStyles}>
