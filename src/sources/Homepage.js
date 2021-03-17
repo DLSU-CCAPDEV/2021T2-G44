@@ -1,5 +1,6 @@
 import './assets/styles.css';
 import cover from './assets/cover.svg';
+import { useEffect } from "react";
 
 // Component Imports
 import ButtonLink from './components/ButtonLink';
@@ -25,6 +26,10 @@ const mainHeaderStyles = {
 }
 
 export default function Homepage() {
+
+  useEffect(() => {
+      document.title = "Home - Sched-It";
+  });
 
   // Processing to check if user is logged in or not.
   // If logged in, redirect to the dashboard.
