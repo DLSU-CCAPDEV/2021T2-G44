@@ -1,5 +1,10 @@
 import "../assets/styles.css";
 import logo from "../assets/logo.svg";
+import { useContext } from 'react';
+import { Link } from 'react-router-dom';
+
+// Context Controllers
+import { AuthContext } from '../AuthController';
 
 const brandingStyles = {
     flexGrow: "20",
@@ -11,7 +16,7 @@ const navStyles = {
     display: "flex",
     flexDirection: "row",
     flexWrap: "nowrap",
-    justifyContent: "space-around",
+    justifyContent: "center",
     alignContent: "center",
 
     marginRight: "2em",
@@ -22,9 +27,12 @@ const listMargins = {
 };
 
 export default function NavigationHeader(props) {
+
+    const user = useContext(AuthContext);
+
     const notLoggedIn = () => {
         return (
-            <header className="homeHeader">
+            <header id="homeHeader">
                 <a className="container" style={brandingStyles} href="index.html">
                     <img src={logo} className="logo" alt="Website Logo" />
                     <div className="logoLine" />
@@ -34,19 +42,17 @@ export default function NavigationHeader(props) {
                 <nav style={navStyles} className="horizontalList">
                     <ul>
                         <li className="navItem" style={listMargins}>
-                            <a href="register.html">Register</a>
+                            <Link to="/">Home</Link>
                         </li>
                         <li className="navItem" style={listMargins}>
-                            <a href="login.html">Login</a>
+                            <Link to="/about">About</Link>
                         </li>
-                    </ul>
-
-                    <ul>
+                    
                         <li className="navItem" style={listMargins}>
-                            <a href="index.html">Home</a>
+                            <Link to="/register">Register</Link>
                         </li>
                         <li className="navItem" style={listMargins}>
-                            <a href="about.html">About</a>
+                            <Link to="/login">Login</Link>
                         </li>
                     </ul>
                 </nav>
@@ -58,7 +64,7 @@ export default function NavigationHeader(props) {
         return <p></p>;
     };
 
-    if (props.userData !== null) {
+    if (user !== undefined) {
         return loggedIn();
     } else {
         return notLoggedIn();
