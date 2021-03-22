@@ -5,19 +5,6 @@ import { Link } from "react-router-dom";
 
 // Component Imports
 import { Fab, Typography } from "@material-ui/core";
-import { createMuiTheme } from "@material-ui/core/styles";
-import { ThemeProvider } from "@material-ui/styles";
-
-var theme = createMuiTheme({
-    palette: {
-        primary: {
-            main: "#7868E6",
-        },
-        secondary: {
-            main: "#B8B5FF",
-        },
-    },
-});
 
 const primerStyles = {
   "marginLeft": "6em",
@@ -62,9 +49,7 @@ export default function Homepage() {
                           component={Link}
                           to={"/about"}
                       >
-                          <ThemeProvider theme={theme}>
-                              <Typography variant="h6">Learn More</Typography>
-                          </ThemeProvider>
+                            <Typography variant="h6">Learn More</Typography>
                       </Fab>
                   </div>
 
