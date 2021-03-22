@@ -5,6 +5,8 @@
 body {
   padding: 0px;
   margin: 0px;
+
+  font-family: Roboto;
 }
 
 /* HOMEPAGE ATTRIBUTES */
@@ -17,11 +19,6 @@ body {
   height: 5em;
 
   background: linear-gradient(90deg, #B8B5FF 0%, #7868E6 100%);
-  
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  align-items: center;
 }
 
 #headerName {
@@ -83,72 +80,9 @@ body {
 }
 
 /* COMPONENTS */
-.button {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 14px 22px;
 
-  background: #7868E6;
-  border-radius: 25px;
-  text-decoration: none;
-
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 24px;
-  line-height: 28px;
-
-  color: #FFFFFF;
-}
 
 /* MAIN CONTENT DIV */
-.mainContent {
-  position: relative;
-  
-  top: 6em;
-  height: 100%;
-  width: 100%;
-  background-color: #FFFFFF;
-
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: center;
-  align-items: flex-start;
-
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-
-  color: #38302E;
-}
-
-.contentCenterPiece {
-  width: 90%;
-  height: 90%;
-
-  margin-top: 2em;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.colForm {
-  display: flex;
-  flex-direction: column;
-  
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.colForm h3 {
-  align-self: flex-start;
-  margin: 3% 0 3% 10%;
-}
 
 input {
   background: #FFFFFF;

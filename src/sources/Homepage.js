@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 // Component Imports
-import { Fab, Typography } from "@material-ui/core";
+import { Fab, Typography, Grid } from "@material-ui/core";
 
 const primerStyles = {
   "marginLeft": "6em",
