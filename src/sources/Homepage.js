@@ -26,26 +26,26 @@ export default function Homepage() {
   // If logged in, redirect to the dashboard.
 
   return (
-      <div>
-          <div className="mainContent">
-              <div className="contentCenterPiece">
-                  <div style={primerStyles}>
-                      <h1 style={mainHeaderStyles}>Sched-It</h1>
-                      <p style={{ fontSize: "24px" }}>A place to organize everything in time</p>
-                      <Fab
-                          variant="extended"
-                          size="medium"
-                          color="primary"
-                          component={Link}
-                          to={"/about"}
-                      >
-                            <Typography variant="h6">Learn More</Typography>
-                      </Fab>
-                  </div>
+        <Grid container direction="column" style={{position: "relative", top: "10em"}}>
+            <Grid item container direction="row" justify="center">
+                <Grid item style={{alignSelf: "center", position: "relative", bottom: "2em"}}>
+                    <h1 style={mainHeaderStyles}>Sched-It</h1>
+                    <p style={{ fontSize: "24px" }}>A place to organize everything in time</p>
+                    <Fab
+                        variant="extended"
+                        size="medium"
+                        color="primary"
+                        component={Link}
+                        to={"/about"}
+                    >
+                        <Typography variant="h6">Learn More</Typography>
+                    </Fab>
+                </Grid>
 
-                  <img src={cover} alt="Cover art" style={coverImageStyles} />
-              </div>
-          </div>
-      </div>
+                <Grid item>
+                  <img src={cover} alt="Cover" />
+                </Grid>
+            </Grid>
+        </Grid>
   );
 }
