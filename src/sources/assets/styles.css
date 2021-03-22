@@ -80,7 +80,24 @@ body {
 }
 
 /* COMPONENTS */
+#registerBox {
+  background-color: #7868E6;
+  border-radius: 50px;
+  min-width: 415px;
 
+  margin-left: auto;
+}
+
+.registerForm {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+
+  padding: 5px;
+  
+  position: relative;
+  left: 1em;
+}
 
 /* MAIN CONTENT DIV */
 

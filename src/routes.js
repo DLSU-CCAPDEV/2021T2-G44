@@ -34,15 +34,15 @@ theme = responsiveFontSizes(theme);
 
 export default function Routes(props) {
     return (
-            <ThemeProvider theme={theme}>
-                <Router>
-                    <NavHeader />
-                    
-                    <Switch>
-                        <Route exact path="/" component={Homepage} />
-                        <Route path="/register" component={Register} />
-                    </Switch>
-                </Router>
-            </ThemeProvider>
+        <ThemeProvider theme={theme}>
+            <Router>
+                <NavHeader />
+
+                <Switch>
+                    <Route exact path="/" component={Homepage} />
+                    <Route path="/register" component={Register} />
+                </Switch>
+            </Router>
+        </ThemeProvider>
     );
 }
