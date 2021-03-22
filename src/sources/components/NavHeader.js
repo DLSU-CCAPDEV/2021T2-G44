@@ -33,11 +33,11 @@ export default function NavigationHeader(props) {
     const notLoggedIn = () => {
         return (
             <header id="homeHeader">
-                <a className="container" style={brandingStyles} href="index.html">
+                <Link to="/" className="container" style={brandingStyles} href="index.html">
                     <img src={logo} className="logo" alt="Website Logo" />
                     <div className="logoLine" />
                     <h1 id="headerName">Sched-It</h1>
-                </a>
+                </Link>
 
                 <nav style={navStyles} className="horizontalList">
                     <ul>
