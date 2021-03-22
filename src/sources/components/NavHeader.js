@@ -23,7 +23,12 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
+
 import MailIcon from '@material-ui/icons/Mail';
+import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
+import SendIcon from '@material-ui/icons/Send';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import EventIcon from '@material-ui/icons/Event';
 
 //Images
 import calendar from '../assets/calendar.svg';
@@ -60,7 +65,7 @@ export default function NavigationHeader(props) {
             <AppBar position="sticky" style={barStyles}>
                 <Toolbar>
                     <Grid container direction="row" spacing={3} alignItems="center">
-                        <Grid item xs={8}>
+                        <Grid item lg={8}>
                             <Link
                                 to="/"
                                 className="container"
@@ -73,25 +78,25 @@ export default function NavigationHeader(props) {
                             </Link>
                         </Grid>
 
-                        <Grid item xs={1} container justify="center">
+                        <Grid item lg={1} container justify="center">
                             <Link to="/" className="navItem">
                                 Home
                             </Link>
                         </Grid>
 
-                        <Grid item xs={1} container justify="center">
+                        <Grid item lg={1} container justify="center">
                             <Link to="/about" className="navItem">
                                 About
                             </Link>
                         </Grid>
 
-                        <Grid item xs={1} container justify="center">
+                        <Grid item lg={1} container justify="center">
                             <Link to="/register" className="navItem">
                                 Register
                             </Link>
                         </Grid>
 
-                        <Grid item xs={1} container justify="center">
+                        <Grid item lg={1} container justify="center">
                             <Link to="/login" className="navItem">
                                 Login
                             </Link>
@@ -103,11 +108,11 @@ export default function NavigationHeader(props) {
     };
 
     const options = [
-        { text: 'My Calendar', image: calendar },
-        { text: 'Complete Events', image: star },
-        { text: 'My Invites', image: send },
-        { text: 'Inbox', image: inbox },
-        { text: 'Delete Event', image: deleteIcon },
+        { text: 'My Calendar', icon: EventIcon },
+        { text: 'Complete Events', icon: CheckBoxIcon },
+        { text: 'My Invites', icon: SendIcon },
+        { text: 'Inbox', icon: MailIcon },
+        { text: 'Delete Event', icon: DeleteSweepIcon },
     ];
 
     const drawerWidth = 300;
@@ -194,7 +199,7 @@ export default function NavigationHeader(props) {
                 >
                     <Toolbar>
                         <Grid container direction="row" spacing={3} alignItems="center">
-                            <Grid item xs={8}>
+                            <Grid item lg={8}>
                                 <Link
                                     to="/"
                                     className="container"
@@ -234,50 +239,14 @@ export default function NavigationHeader(props) {
                     </div>
                     <Divider />
                     <List>
-                        {/* {options.map((images) => (
+                        {options.map((images) => (
                             <ListItem button key={images.text}>
                                 <ListItemIcon>
-                                    <img src={images.image} />
+                                    <images.icon />
                                 </ListItemIcon>
-
                                 <ListItemText primary={images.text} />
                             </ListItem>
-                        ))} */}
-                        <ListItem button key="My Calendar">
-                            <ListItemIcon>
-                                <img src={calendar} />
-                            </ListItemIcon>
-
-                            <ListItemText primary="My Calendar" />
-                        </ListItem>
-                        <ListItem button key="Completed Events">
-                            <ListItemIcon>
-                                <img src={star} />
-                            </ListItemIcon>
-
-                            <ListItemText primary="Completed Events" />
-                        </ListItem>
-                        <ListItem button key="My Invites">
-                            <ListItemIcon>
-                                <img src={send} />
-                            </ListItemIcon>
-
-                            <ListItemText primary="My Invites" />
-                        </ListItem>
-                        <ListItem button key="Inbox">
-                            <ListItemIcon>
-                                <img src={inbox} />
-                            </ListItemIcon>
-
-                            <ListItemText primary="Inbox" />
-                        </ListItem>
-                        <ListItem button key="Delete Event">
-                            <ListItemIcon>
-                                <img src={deleteIcon} />
-                            </ListItemIcon>
-
-                            <ListItemText primary="Delete Event" />
-                        </ListItem>
+                        ))}
                     </List>
                 </Drawer>
             </div>
