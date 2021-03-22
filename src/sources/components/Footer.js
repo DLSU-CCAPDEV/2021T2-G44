@@ -1,18 +1,18 @@
-import { Grid, Box, Typography } from "@material-ui/core";
+import { Grid, Box } from "@material-ui/core";
 import logoBlack from "../assets/logoBlack.svg";
 import { Link } from "react-router-dom";
 
 const copyrightStyle = {
-  fontStyle: "normal",
-  fontWeight: "bold",
-  fontSize: "18px",
-  lineHeight: "21px",
+    fontStyle: "normal",
+    fontWeight: "bold",
+    fontSize: "18px",
+    lineHeight: "21px",
 
-  marginLeft: "1em",
-  marginTop: "-1em"
-}
+    marginLeft: "1em",
+    marginTop: "-1em",
+};
 
-export default function Footer(props){
+export default function Footer(props) {
     return (
         <Grid container>
             <Box
@@ -25,14 +25,12 @@ export default function Footer(props){
             ></Box>
 
             <Grid item container direction="column" justify="flex-start" alignItems="flex-start">
-                <Link to="/" style={ { margin: "1em" } }>
+                <Link to="/" style={{ margin: "1em" }}>
                     <img src={logoBlack} className="footerLogo" alt="Website Logo" />
                     <div className="logoLine" />
                     <h1 id="headerName">Sched-It</h1>
                 </Link>
-                <p style={copyrightStyle}>
-                  © AGLET 2021
-                </p>
+                <p style={copyrightStyle}>© AGLET 2021</p>
             </Grid>
         </Grid>
     );
