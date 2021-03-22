@@ -1,9 +1,23 @@
 import './assets/styles.css';
 import cover from './assets/cover.svg';
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 // Component Imports
-import ButtonLink from './components/ButtonLink';
+import { Fab, Typography } from "@material-ui/core";
+import { createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/styles";
+
+var theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#7868E6",
+        },
+        secondary: {
+            main: "#B8B5FF",
+        },
+    },
+});
 
 const primerStyles = {
   "marginLeft": "6em",
@@ -41,7 +55,17 @@ export default function Homepage() {
                   <div style={primerStyles}>
                       <h1 style={mainHeaderStyles}>Sched-It</h1>
                       <p style={{ fontSize: "24px" }}>A place to organize everything in time</p>
-                      <ButtonLink text="Learn More" href="about.html" style={{ width: "40%" }} />
+                      <Fab
+                          variant="extended"
+                          size="medium"
+                          color="primary"
+                          component={Link}
+                          to={"/about"}
+                      >
+                          <ThemeProvider theme={theme}>
+                              <Typography variant="h6">Learn More</Typography>
+                          </ThemeProvider>
+                      </Fab>
                   </div>
 
                   <img src={cover} alt="Cover art" style={coverImageStyles} />
