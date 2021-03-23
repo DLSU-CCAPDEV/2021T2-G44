@@ -1,5 +1,5 @@
 import "./assets/styles.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 
 // Material-UI
@@ -17,11 +17,13 @@ const textFieldTheme = {
     root: {
         background: "#FFFFFF",
         width: "70%",
-        margin: "1em"
+        margin: "1em",
+        borderRadius: "8px"
     },
     input: {
         color: "black",
-        fontSize: "24px"
+        fontSize: "24px",
+        borderRadius: "8px"
     },
 };
 
@@ -36,6 +38,24 @@ function Register(props) {
         document.title = "Register - Sched-It";
     });
 
+    // States
+    const [ email, setEmail ] = useState("");
+    const [ password, setPassword ] = useState("");
+    const [ passwordConfirm, setPasswordConfirm ] = useState("");
+
+    // Event Handlers
+    const onEmailChange = (e) => {
+        setEmail(e.target.value);
+    };
+
+    const onPasswordChange = (e) => {
+        setPassword(e.target.value);
+    };
+
+    const onPasswordConfirmChange = (e) => {
+        setPasswordConfirm(e.target.value);
+    };
+
     const { classes } = props;
 
     return (
@@ -43,45 +63,57 @@ function Register(props) {
             <Grid item container direction="row" justify="center" alignItems="center">
                 <Grid item>
                     <Box id="registerBox" style={{ position: "relative", right: "4em" }}>
-                        <Grid container direction="column" justify="center" alignItems="center">
-                            <TextField  
-                                label="Email" 
-                                variant="filled" 
-                                className={classes.root}
-                                type="email"
-                                InputProps={{
-                                    className: classes.input
-                                }}
-                                style={{marginTop: "3em"}}
-                            />
-                            <TextField 
-                                label="Password" 
-                                variant="filled" 
-                                className={classes.root}
-                                type="password"
-                                InputProps={{
-                                    className: classes.input
-                                }}
-                            />
-                            <TextField 
-                                label="Confirm Password" 
-                                variant="filled" 
-                                className={classes.root}
-                                type="password"
-                                InputProps={{
-                                    className: classes.input
-                                }}
-                            />
-                            <p style={{color: "white", margin: "0.5em"}}>
-                                Already have an accouont? <Link to="/login" style={{color: "white"}}>Login</Link>
-                            </p>
-                            <Fab
-                                variant="extended"
-                                size="medium"
-                                color="secondary"
-                                style={buttonStyles}
-                            >Create Account</Fab>
-                        </Grid>
+                        <form>
+                            <Grid container direction="column" justify="center" alignItems="center">
+                                <TextField
+                                    required
+                                    label="Email" 
+                                    variant="filled" 
+                                    className={classes.root}
+                                    type="email"
+                                    InputProps={{
+                                        className: classes.input,
+                                        disableUnderline: true
+                                    }}
+                                    style={{marginTop: "3em"}}
+                                    onChange={onEmailChange}
+                                />
+                                <TextField 
+                                    required
+                                    label="Password" 
+                                    variant="filled" 
+                                    className={classes.root}
+                                    type="password"
+                                    InputProps={{
+                                        className: classes.input,
+                                        disableUnderline: true
+                                    }}
+                                    onChange={onPasswordChange}
+                                />
+                                <TextField 
+                                    required
+                                    label="Confirm Password" 
+                                    variant="filled" 
+                                    className={classes.root}
+                                    type="password"
+                                    InputProps={{
+                                        className: classes.input,
+                                        disableUnderline: true
+                                    }}
+                                    onChange={onPasswordConfirmChange}
+                                />
+                                <p style={{color: "white", margin: "0.5em"}}>
+                                    Already have an account? <Link to="/login" style={{color: "white"}}>Login</Link>
+                                </p>
+                                <Fab
+                                    type="submit"
+                                    variant="extended"
+                                    size="medium"
+                                    color="secondary"
+                                    style={buttonStyles}
+                                >Create Account</Fab>
+                            </Grid>
+                        </form> 
                     </Box>
                 </Grid>
 
