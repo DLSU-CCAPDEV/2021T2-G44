@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 // Route Imports
 import NavHeader from "./sources/components/NavHeader";
+import Footer from "./sources/components/Footer";
 import Homepage from "./sources/Homepage";
 import Register from "./sources/Register";
 
@@ -34,15 +35,16 @@ theme = responsiveFontSizes(theme);
 
 export default function Routes(props) {
     return (
-            <ThemeProvider theme={theme}>
-                <Router>
-                    <NavHeader />
-                    
-                    <Switch>
-                        <Route exact path="/" component={Homepage} />
-                        <Route path="/register" component={Register} />
-                    </Switch>
-                </Router>
-            </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <NavHeader />
+
+          <Switch>
+            <Route exact path="/" component={Homepage} />
+            <Route path="/register" component={Register} />
+          </Switch>
+          <Footer />
+        </Router>
+      </ThemeProvider>
     );
 }

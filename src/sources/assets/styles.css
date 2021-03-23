@@ -47,6 +47,11 @@ body {
     top: 0.45em;
 }
 
+.footerLogo {
+  width: 299px;
+  height: 88px;
+}
+
 .logoLine {
     position: absolute;
     width: 40px;
