@@ -5,41 +5,31 @@ import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 // Material UI
-import { Grid, SvgIcon } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
+import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-
 import MailIcon from '@material-ui/icons/Mail';
 import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SendIcon from '@material-ui/icons/Send';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import EventIcon from '@material-ui/icons/Event';
-
-//Images
-import calendar from '../assets/calendar.svg';
-import star from '../assets/star.svg';
-import send from '../assets/send.svg';
-import inbox from '../assets/inbox.svg';
-import deleteIcon from '../assets/deleteIcon.svg';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
 // Context Controllers
 import { AuthContext } from '../AuthController';
-import { AutorenewOutlined } from '@material-ui/icons';
 
 const barStyles = {
     filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
@@ -47,14 +37,6 @@ const barStyles = {
 
 const brandingStyles = {
     flexGrow: '20',
-};
-
-const listStyles = {
-    listStyleType: 'none',
-    margin: '0',
-    padding: '0',
-    width: '0',
-    justify: 'center',
 };
 
 export default function NavigationHeader(props) {
@@ -172,6 +154,12 @@ export default function NavigationHeader(props) {
             }),
             marginRight: 0,
         },
+        footerButtons: {
+            position: 'fixed',
+            bottom: '0',
+            width: '100%',
+            height: '60',
+        },
     }));
 
     const classes = useStyles();
@@ -219,7 +207,7 @@ export default function NavigationHeader(props) {
                             onClick={handleDrawerOpen}
                             className={clsx(open && classes.hide)}
                         >
-                            <MenuIcon />
+                            <MenuIcon fontSize="large" />
                         </IconButton>
                     </Toolbar>
                 </AppBar>
@@ -238,22 +226,40 @@ export default function NavigationHeader(props) {
                         </IconButton>
                     </div>
                     <Divider />
+
                     <List>
                         {options.map((images) => (
-                            <ListItem button key={images.text}>
-                                <ListItemIcon>
-                                    <images.icon />
-                                </ListItemIcon>
-                                <ListItemText primary={images.text} />
-                            </ListItem>
+                            <Grid container>
+                                <ListItem button key={images.text}>
+                                    <ListItemIcon>
+                                        <images.icon fontSize="large" />
+                                    </ListItemIcon>
+                                    <ListItemText primary={images.text} />
+                                </ListItem>
+                            </Grid>
                         ))}
+                    </List>
+
+                    <List className={classes.footerButtons}>
+                        <ListItem button key="My Profile">
+                            <ListItemIcon>
+                                <AccountCircleIcon fontSize="large" />
+                            </ListItemIcon>
+                            <ListItemText primary="My Profile" />
+                        </ListItem>
+                        <ListItem button key="Log Out">
+                            <ListItemIcon>
+                                <PowerSettingsNewIcon fontSize="large" />
+                            </ListItemIcon>
+                            <ListItemText primary="Log Out" />
+                        </ListItem>
                     </List>
                 </Drawer>
             </div>
         );
     };
 
-    if (user === undefined) {
+    if (user !== undefined) {
         //CHANGE THIS FOR TESTING PURPOSES ONLY
         return loggedIn();
     } else {
