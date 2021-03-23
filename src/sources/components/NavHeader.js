@@ -48,12 +48,7 @@ export default function NavigationHeader(props) {
                 <Toolbar>
                     <Grid container direction="row" spacing={3} alignItems="center">
                         <Grid item lg={8}>
-                            <Link
-                                to="/"
-                                className="container"
-                                style={brandingStyles}
-                                href="index.html"
-                            >
+                            <Link to="/" className="container" style={brandingStyles}>
                                 <img src={logo} className="logo" alt="Website Logo" />
                                 <div className="logoLine" />
                                 <h1 id="headerName">Sched-It</h1>
