@@ -1,10 +1,12 @@
 import { Route } from "react-router-dom";
+import { useContext } from "react";
 
 import Unauthorized from "./Unauthorized";
+import { useGlobalStates } from "../../SessionContext";
 
 export default function ProtectedRoute({ component: Component, ...rest }) {
     // Check if logged in
-    const user = rest.sessionStates?.activeUser;
+    const user = useGlobalStates()?.activeUser;
 
     // Non-Protected
     if (!rest.protected && user == null) {

@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import StateMiddleMan from "./StateInjector";
+import Routes from "./routes";
 
 // Render Homepage
-ReactDOM.render(<StateMiddleMan />, document.getElementById("root"));
+ReactDOM.render(<Routes />, document.getElementById("root"));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

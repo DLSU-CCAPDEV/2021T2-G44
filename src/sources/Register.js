@@ -56,6 +56,17 @@ function Register(props) {
         setPasswordConfirm(e.target.value);
     };
 
+    // Create Account Button
+    const createAccount = () => {
+        // Check if passwords match
+        if(password !== passwordConfirm)
+        {
+            // Show alert to user
+            alert("Passwords do not match."); // change this HAHAHAHA
+            return;
+        }
+    };
+
     const { classes } = props;
 
     return (
@@ -111,6 +122,7 @@ function Register(props) {
                                     size="medium"
                                     color="secondary"
                                     style={buttonStyles}
+                                    onClick={createAccount}
                                 >Create Account</Fab>
                             </Grid>
                         </form> 
