@@ -28,9 +28,6 @@ import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
-// Context Controllers
-import { AuthContext } from '../AuthController';
-
 const barStyles = {
     filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
 };
@@ -40,20 +37,13 @@ const brandingStyles = {
 };
 
 export default function NavigationHeader(props) {
-    const user = useContext(AuthContext);
-
     const notLoggedIn = () => {
         return (
             <AppBar position="sticky" style={barStyles}>
                 <Toolbar>
                     <Grid container direction="row" spacing={3} alignItems="center">
                         <Grid item lg={8}>
-                            <Link
-                                to="/"
-                                className="container"
-                                style={brandingStyles}
-                                href="index.html"
-                            >
+                            <Link to="/" className="container" style={brandingStyles}>
                                 <img src={logo} className="logo" alt="Website Logo" />
                                 <div className="logoLine" />
                                 <h1 id="headerName">Sched-It</h1>
@@ -90,28 +80,28 @@ export default function NavigationHeader(props) {
     };
 
     const options = [
-        { text: 'My Calendar', icon: EventIcon },
-        { text: 'Complete Events', icon: CheckBoxIcon },
-        { text: 'My Invites', icon: SendIcon },
-        { text: 'Inbox', icon: MailIcon },
-        { text: 'Delete Event', icon: DeleteSweepIcon },
+        { text: "My Calendar", icon: EventIcon },
+        { text: "Complete Events", icon: CheckBoxIcon },
+        { text: "My Invites", icon: SendIcon },
+        { text: "Inbox", icon: MailIcon },
+        { text: "Delete Event", icon: DeleteSweepIcon },
     ];
 
     const drawerWidth = 300;
 
     const useStyles = makeStyles((theme) => ({
         root: {
-            display: 'flex',
+            display: "flex",
         },
         appBar: {
-            transition: theme.transitions.create(['margin', 'width'], {
+            transition: theme.transitions.create(["margin", "width"], {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.leavingScreen,
             }),
         },
         appBarShift: {
             width: `calc(100% - ${drawerWidth}px)`,
-            transition: theme.transitions.create(['margin', 'width'], {
+            transition: theme.transitions.create(["margin", "width"], {
                 easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen,
             }),
@@ -121,7 +111,7 @@ export default function NavigationHeader(props) {
             flexGrow: 1,
         },
         hide: {
-            display: 'none',
+            display: "none",
         },
         drawer: {
             width: drawerWidth,
@@ -131,34 +121,34 @@ export default function NavigationHeader(props) {
             width: drawerWidth,
         },
         drawerHeader: {
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             padding: theme.spacing(0, 1),
             // necessary for content to be below app bar
             ...theme.mixins.toolbar,
-            justifyContent: 'flex-start',
+            justifyContent: "flex-start",
         },
         content: {
             flexGrow: 1,
             padding: theme.spacing(3),
-            transition: theme.transitions.create('margin', {
+            transition: theme.transitions.create("margin", {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.leavingScreen,
             }),
             marginRight: -drawerWidth,
         },
         contentShift: {
-            transition: theme.transitions.create('margin', {
+            transition: theme.transitions.create("margin", {
                 easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen,
             }),
             marginRight: 0,
         },
         footerButtons: {
-            position: 'fixed',
-            bottom: '0',
-            width: '100%',
-            height: '60',
+            position: "fixed",
+            bottom: "0",
+            width: "100%",
+            height: "60",
         },
     }));
 
@@ -222,7 +212,7 @@ export default function NavigationHeader(props) {
                 >
                     <div className={classes.drawerHeader}>
                         <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                            {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                         </IconButton>
                     </div>
                     <Divider />
@@ -259,7 +249,7 @@ export default function NavigationHeader(props) {
         );
     };
 
-    if (user !== undefined) {
+    if (false) {
         //CHANGE THIS FOR TESTING PURPOSES ONLY
         return loggedIn();
     } else {

@@ -7,8 +7,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 // Component Imports
-import { Fab, Typography, Grid } from "@material-ui/core";
-
+import { Fab, Typography, Grid } from "@material-ui/core"; 
 
 const mainHeaderStyles = {
   "fontFamily": "Roboto",
