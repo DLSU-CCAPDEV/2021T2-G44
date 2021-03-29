@@ -1,11 +1,17 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import ProtectedRoute from './sources/components/ProtectedRoute';
 
 // Route Imports
 import NavHeader from "./sources/components/NavHeader";
 import Footer from "./sources/components/Footer";
 import Homepage from "./sources/Homepage";
 import Register from "./sources/Register";
+import PageNotFound from "./sources/components/PageNotFound";
+
+
+// Protected Route Imports
+import Dashboard from './sources/UserDashboard';
 
 // Material UI
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
@@ -37,12 +43,21 @@ export default function Routes(props) {
     return (
         <ThemeProvider theme={theme}>
             <Router>
-                <NavHeader />
+                <NavHeader {...props}  />
 
                 <Switch>
-                    <Route exact path="/" component={Homepage} />
-                    <Route path="/register" component={Register} />
+                    {/* PUBLIC ROUTES */}
+                    <ProtectedRoute exact path="/" component={Homepage} protected={false}/>
+                    <ProtectedRoute path="/register" component={Register} protected={false}/>
+
+                    {/* PROTECTED ROUTES */}
+                    <ProtectedRoute path="/dashboard" component={Dashboard} {...props} protected={true} />
+
+                    {/* 404 */}
+                    <Route component={PageNotFound} />
                 </Switch>
+
+                <Footer />
             </Router>
         </ThemeProvider>
     );
