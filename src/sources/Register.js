@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 
 // Material-UI
-import { Grid, Box, Typography, TextField, withStyles, Fab } from "@material-ui/core";
+import { Grid, Box, Typography, TextField, withStyles, Fab, FormControl } from "@material-ui/core";
 
 // Component Imports
 import registerCoverImage from "./assets/registerCover.svg";
@@ -62,7 +62,7 @@ function Register(props) {
         if(password !== passwordConfirm)
         {
             // Show alert to user
-            alert("Passwords do not match."); // change this HAHAHAHA
+            alert("Passwords do not match.");
             return;
         }
     };
@@ -74,7 +74,7 @@ function Register(props) {
             <Grid item container direction="row" justify="center" alignItems="center">
                 <Grid item>
                     <Box id="registerBox" style={{ position: "relative", right: "4em" }}>
-                        <form>
+                        <form onSubmit={createAccount}>
                             <Grid container direction="column" justify="center" alignItems="center">
                                 <TextField
                                     required
@@ -122,7 +122,6 @@ function Register(props) {
                                     size="medium"
                                     color="secondary"
                                     style={buttonStyles}
-                                    onClick={createAccount}
                                 >Create Account</Fab>
                             </Grid>
                         </form> 

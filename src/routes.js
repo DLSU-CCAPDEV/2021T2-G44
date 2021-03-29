@@ -44,15 +44,20 @@ export default function Routes(props) {
         <ThemeProvider theme={theme}>
             <SessionContext>
                 <Router>
-                    <NavHeader {...props}  />
+                    <NavHeader {...props} />
 
                     <Switch>
                         {/* PUBLIC ROUTES */}
-                        <ProtectedRoute exact path="/" component={Homepage} protected={false}/>
-                        <ProtectedRoute path="/register" component={Register} protected={false}/>
+                        <ProtectedRoute exact path="/" component={Homepage} protected={false} />
+                        <ProtectedRoute path="/register" component={Register} protected={false} />
 
                         {/* PROTECTED ROUTES */}
-                        <ProtectedRoute path="/dashboard" component={Dashboard} {...props} protected={true} />
+                        <ProtectedRoute
+                            path="/dashboard"
+                            component={Dashboard}
+                            {...props}
+                            protected={true}
+                        />
 
                         {/* 404 */}
                         <Route component={PageNotFound} />
