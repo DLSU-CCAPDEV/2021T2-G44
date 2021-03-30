@@ -11,8 +11,8 @@ import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
+import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -37,6 +37,16 @@ const barStyles = {
 
 const brandingStyles = {
     flexGrow: '20',
+};
+
+const linkStyles = {
+    'fontFamily': 'Roboto',
+    'fontStyle': 'normal',
+    'fontWeight': 'bold',
+    'fontSize': '36px',
+    'lineHeight': '42px',
+    'color': '#212121',
+    'textDecoration': 'none',
 };
 
 export default function NavigationHeader(props) {
@@ -90,7 +100,7 @@ export default function NavigationHeader(props) {
     };
 
     const options = [
-        { text: 'My Calendar', icon: EventIcon },
+        { text: 'My Calendar', icon: EventIcon, link: '/my-calendar' },
         { text: 'Complete Events', icon: CheckBoxIcon },
         { text: 'My Invites', icon: SendIcon },
         { text: 'Inbox', icon: MailIcon },
@@ -229,14 +239,14 @@ export default function NavigationHeader(props) {
 
                     <List>
                         {options.map((images) => (
-                            <Grid container>
+                            <Link to={images.link} style={linkStyles}>
                                 <ListItem button key={images.text}>
                                     <ListItemIcon>
                                         <images.icon fontSize="large" />
                                     </ListItemIcon>
                                     <ListItemText primary={images.text} />
                                 </ListItem>
-                            </Grid>
+                            </Link>
                         ))}
                     </List>
 
@@ -259,7 +269,7 @@ export default function NavigationHeader(props) {
         );
     };
 
-    if (user !== undefined) {
+    if (user === undefined) {
         //CHANGE THIS FOR TESTING PURPOSES ONLY
         return loggedIn();
     } else {
