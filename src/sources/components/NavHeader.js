@@ -28,6 +28,9 @@ import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
+// Global State Context
+import { useGlobalStates } from '../../SessionContext';
+
 const barStyles = {
     filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
 };
@@ -47,6 +50,8 @@ const linkStyles = {
 };
 
 export default function NavigationHeader(props) {
+    const user = useGlobalStates()?.activeUser;
+
     const notLoggedIn = () => {
         return (
             <AppBar position="sticky" style={barStyles}>
@@ -259,7 +264,7 @@ export default function NavigationHeader(props) {
         );
     };
 
-    if (user === undefined) {
+    if (user == null) {
         //CHANGE THIS FOR TESTING PURPOSES ONLY
         return loggedIn();
     } else {

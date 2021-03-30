@@ -9,10 +9,10 @@ import Footer from './sources/components/Footer';
 import Homepage from './sources/Homepage';
 import Register from './sources/Register';
 import PageNotFound from './sources/components/PageNotFound';
-import MyCalendar from './sources/MyCalendar';
 
 // Protected Route Imports
 import Dashboard from './sources/UserDashboard';
+import MyCalendar from './sources/MyCalendar';
 
 // Material UI
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
@@ -62,7 +62,7 @@ export default function Routes(props) {
                         <ProtectedRoute
                             path="/my-calendar"
                             component={MyCalendar}
-                            protected={true}
+                            protected={false}
                         />
                         {/* 404 */}
                         <Route component={PageNotFound} />
