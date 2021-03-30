@@ -1,11 +1,18 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import ProtectedRoute from './sources/components/ProtectedRoute';
+import SessionContext from './SessionContext';
 
 // Route Imports
 import NavHeader from './sources/components/NavHeader';
+import Footer from './sources/components/Footer';
 import Homepage from './sources/Homepage';
 import Register from './sources/Register';
+import PageNotFound from './sources/components/PageNotFound';
 import MyCalendar from './sources/MyCalendar';
+
+// Protected Route Imports
+import Dashboard from './sources/UserDashboard';
 
 // Material UI
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
@@ -36,15 +43,34 @@ theme = responsiveFontSizes(theme);
 export default function Routes(props) {
     return (
         <ThemeProvider theme={theme}>
-            <Router>
-                <NavHeader />
+            <SessionContext>
+                <Router>
+                    <NavHeader {...props} />
 
-                <Switch>
-                    <Route exact path="/" component={Homepage} />
-                    <Route path="/register" component={Register} />
-                    <Route path="/my-calendar" component={MyCalendar} />
-                </Switch>
-            </Router>
+                    <Switch>
+                        {/* PUBLIC ROUTES */}
+                        <ProtectedRoute exact path="/" component={Homepage} protected={false} />
+                        <ProtectedRoute path="/register" component={Register} protected={false} />
+
+                        {/* PROTECTED ROUTES */}
+                        <ProtectedRoute
+                            path="/dashboard"
+                            component={Dashboard}
+                            {...props}
+                            protected={true}
+                        />
+                        <ProtectedRoute
+                            path="/my-calendar"
+                            component={MyCalendar}
+                            protected={true}
+                        />
+                        {/* 404 */}
+                        <Route component={PageNotFound} />
+                    </Switch>
+
+                    <Footer />
+                </Router>
+            </SessionContext>
         </ThemeProvider>
     );
 }

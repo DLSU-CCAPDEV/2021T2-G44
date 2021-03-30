@@ -28,9 +28,6 @@ import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
-// Context Controllers
-import { AuthContext } from '../AuthController';
-
 const barStyles = {
     filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
 };
@@ -50,20 +47,13 @@ const linkStyles = {
 };
 
 export default function NavigationHeader(props) {
-    const user = useContext(AuthContext);
-
     const notLoggedIn = () => {
         return (
             <AppBar position="sticky" style={barStyles}>
                 <Toolbar>
                     <Grid container direction="row" spacing={3} alignItems="center">
                         <Grid item lg={8}>
-                            <Link
-                                to="/"
-                                className="container"
-                                style={brandingStyles}
-                                href="index.html"
-                            >
+                            <Link to="/" className="container" style={brandingStyles}>
                                 <img src={logo} className="logo" alt="Website Logo" />
                                 <div className="logoLine" />
                                 <h1 id="headerName">Sched-It</h1>
