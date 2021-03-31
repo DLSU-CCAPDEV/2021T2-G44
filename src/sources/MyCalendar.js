@@ -3,9 +3,18 @@ import logo from './assets/logo.svg';
 import { useEffect } from 'react';
 import { Typography, Grid, Paper } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import ToDoComponent from './components/ToDoList';
 
 // React Scheduler Material UI
-import { Scheduler, MonthView, Appointments } from '@devexpress/dx-react-scheduler-material-ui';
+import {
+    Scheduler,
+    MonthView,
+    WeekView,
+    DateNavigator,
+    Appointments,
+    TodayButton,
+    Toolbar,
+} from '@devexpress/dx-react-scheduler-material-ui';
 import { ViewState } from '@devexpress/dx-react-scheduler';
 
 // Material UI
@@ -17,6 +26,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import { sizing } from '@material-ui/system';
 
 // Art
 import calendarArt from './assets/calendarArt.svg';
@@ -27,17 +37,9 @@ const useStyles = makeStyles((theme) => ({
         position: 'relative',
         marginTop: '4em',
     },
-    toDoList: {
-        backgroundColor: theme.palette.accent.main,
-        flexGrow: 1,
-    },
-    toDoListTitle: {
-        textAlign: 'center',
-        fontWeight: 'bold',
-        marginTop: '1em',
-    },
     calendarArt: {
         marginLeft: '3em',
+        marginBottom: '1em',
     },
     calendarTitle: {
         fontWeight: 'bold',
@@ -92,6 +94,15 @@ const useStyles = makeStyles((theme) => ({
             },
         },
     },
+    toDoList: {
+        backgroundColor: theme.palette.accent.main,
+        flexGrow: 1,
+    },
+    toDoListTitle: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginTop: '1em',
+    },
 }));
 
 export default function MyCalendar() {
@@ -107,26 +118,50 @@ export default function MyCalendar() {
         setCalendarView(event.target.value);
     };
 
+    const Root = React.useCallback((props) => {
+        return <Toolbar.Root {...props} style={{ paddingLeft: '0px' }} />;
+    });
+
     return (
-        <Grid container direction="row" className={classes.root} xs={12} spacing={6}>
+        <Grid container direction="row" className={classes.root} xs={12} spacing={3}>
             {/** LEFT SIDE of the Page */}
             <Grid item container direction="column" xs={9}>
                 {/** Title and controls */}
                 <Grid item container direction="row" justify="flex-start" alignItems="center">
                     {/** Calendar Art */}
-                    <Grid item xs={4}>
+                    <Grid item container xs={3}>
                         <img src={calendarArt} className={classes.calendarArt} />
                     </Grid>
 
-                    {/** Calendar Title */}
-                    <Grid item xs={4}>
-                        <Typography variant="h2" className={classes.calendarTitle}>
+                    {/** Calendar Title and Date navigation */}
+                    <Grid
+                        item
+                        container
+                        direction="column"
+                        xs={4}
+                        alignItems="flex-start"
+                        style={{ marginLeft: '3em', flexShrink: 3 }}
+                    >
+                        <Typography variant="h2" color="primary" className={classes.calendarTitle}>
                             My Calendar
                         </Typography>
+                        <Scheduler>
+                            <ViewState currentViewName={calendarView} />
+                            <Toolbar rootComponent={Root} />
+                            <DateNavigator />
+                            <TodayButton />
+                        </Scheduler>
                     </Grid>
 
                     {/* Input and Buttons */}
-                    <Grid item container direction="column" alignItems="flex-end" xs={4}>
+                    <Grid
+                        item
+                        container
+                        direction="column"
+                        alignItems="flex-end"
+                        xs={4}
+                        style={{ marginLeft: '4.18em' }}
+                    >
                         <FormControl component="fieldset">
                             <FormLabel component="legend" className={classes.radioLabel} style={{ right: '0' }}>
                                 Calendar View
@@ -166,20 +201,21 @@ export default function MyCalendar() {
 
                 {/** Calendar */}
                 <Grid item container>
-                    <Scheduler>
+                    <Scheduler height={500}>
+                        <ViewState currentViewName={calendarView} />
                         <MonthView />
+                        <WeekView name="Week" />
                     </Scheduler>
                 </Grid>
             </Grid>
 
             {/** RIGHT SIDE of the Page */}
             <Grid item container xs={3}>
-                <Paper elevation={3} className={classes.toDoList}>
-                    <Grid item container direction="row" justify="center">
-                        <Typography variant="h4" className={classes.toDoListTitle}>
-                            To-Do List
-                        </Typography>
-                    </Grid>
+                <Paper elevation={5} className={classes.toDoList}>
+                    <Typography variant="h4" className={classes.toDoListTitle}>
+                        To-Do List
+                    </Typography>
+                    <ToDoComponent />
                 </Paper>
             </Grid>
         </Grid>
