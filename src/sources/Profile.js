@@ -7,9 +7,24 @@ import { Paper } from "@material-ui/core";
 import { Avatar } from "@material-ui/core";
 
 // Component Imports
-import { Fab, Typography, Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { CenterFocusStrong } from "@material-ui/icons";
+import { Fab, Typography, Grid, TextField } from "@material-ui/core";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
+import { Button } from "@material-ui/core";
+import { Divider } from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { pink } from "@material-ui/core/colors";
+import CreateIcon from "@material-ui/icons/Create";
+
+// colored Delete Button
+const ColorButton = withStyles((theme) => ({
+    root: {
+        color: theme.palette.getContrastText(pink["A400"]),
+        backgroundColor: pink["A400"],
+        "&:hover": {
+            backgroundColor: pink[700],
+        },
+    },
+}))(Button);
 
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -21,9 +36,15 @@ const useStyle = makeStyles((theme) => ({
         backgroundColor: theme.palette.accent.main,
         marginLeft: "2em",
         marginTop: "1em",
+        marginRight: "1em",
+
+        display: "flex",
     },
     settingsGrid: {
         backgroundColor: theme.palette.accent.main,
+        marginLeft: "1em",
+        marginTop: "1em",
+        marginRight: "2em",
     },
     profileShowcase: {
         height: "15em",
@@ -31,6 +52,18 @@ const useStyle = makeStyles((theme) => ({
 
         // display: flex,
         // alignSelf: Center,
+    },
+    emailField: {
+        marginLeft: theme.spacing(4),
+        marginRight: theme.spacing(2),
+        width: "24em",
+    },
+    profileField: {
+        marginLeft: theme.spacing(4),
+        marginRight: theme.spacing(2),
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+        width: "16em",
     },
 }));
 
@@ -45,34 +78,88 @@ export default function Profile() {
 
     return (
         // entire main content page
-        <Grid container direction="row">
-            {/* The LeftHand side */}
-            {/* 
+        <Grid container direction="column" alignItems="center">
+            <Grid container direction="row">
+                {/* The LeftHand side */}
+                {/* 
                 Todo: 
                 Profile Pic
                 Name
                 Bio
                 Change Bio Button 
             */}
-            <Grid item direction="column">
-                <Paper
-                    className={classes.profileGrid}
-                    variant="elevation"
-                    elevation={5}
-                >
-                    <Grid>
-                        <Avatar
-                            alt="profilePicture"
-                            src={profilePic}
-                            className={classes.profileShowcase}
-                        />
-                        <Typography variant="h5">Johnny AppleSmith</Typography>
-                    </Grid>
-                </Paper>
-            </Grid>
+                <Grid item direction="column" item lg={4}>
+                    <Paper
+                        variant="elevation"
+                        elevation={5}
+                        className={classes.profileGrid}
+                    >
+                        {/* Grid Inside Paper */}
+                        <Grid container direction="column">
+                            {/* Picture Grid */}
+                            <Grid
+                                item
+                                container
+                                direction="column"
+                                alignItems="center"
+                                style={{
+                                    marginTop: "1em",
+                                }}
+                            >
+                                <Avatar
+                                    alt="profilePicture"
+                                    src={profilePic}
+                                    className={classes.profileShowcase}
+                                />
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    style={{
+                                        marginTop: "1em",
+                                    }}
+                                >
+                                    Change Profile Picture
+                                </Button>
+                            </Grid>
 
-            {/* The RightHand side */}
-            {/* 
+                            {/* Name Grid */}
+                            <Grid
+                                item
+                                container
+                                direction="column"
+                                alignItems="center"
+                            >
+                                <Typography variant="h5" align="center">
+                                    Johnny AppleSmith
+                                </Typography>
+                                <TextField
+                                    id="firstNameTextBox"
+                                    label="Description"
+                                    multiline
+                                    defaultValue="Hello my name is Johnny Johnny Yes Papa eating sugar no papa"
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                    size="small"
+                                    variant="outlined"
+                                />
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    style={{
+                                        marginTop: "1em",
+                                    }}
+                                    startIcon={<CreateIcon />}
+                                >
+                                    Change Description
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+
+                {/* The RightHand side */}
+                {/* 
                 Todo: 
                 Profile Details
                     FirstName TextBox / Change Button
@@ -87,8 +174,99 @@ export default function Profile() {
                 Delete Account
                     Delete Account Button
             */}
-            <Grid item direction="column">
-                <Paper>SETTINGS PAPER</Paper>
+                <Grid item direction="column" lg={8}>
+                    <Paper
+                        className={classes.settingsGrid}
+                        variant="elevation"
+                        elevation={5}
+                    >
+                        <Typography variant="h4">Profile Settings</Typography>
+                        <Grid
+                            item
+                            container
+                            direction="row"
+                            alignItems="center"
+                        >
+                            <TextField
+                                id="firstNameTextBox"
+                                label="First Name"
+                                defaultValue="Johnny"
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                                className={classes.profileField}
+                                size="small"
+                                variant="filled"
+                            />
+                            <Button variant="contained" color="primary">
+                                Change
+                            </Button>
+                        </Grid>
+
+                        <Grid
+                            item
+                            container
+                            direction="row"
+                            alignItems="center"
+                        >
+                            <TextField
+                                id="lastNameTextBox"
+                                label="Last Name"
+                                defaultValue="AppleSmith"
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                                className={classes.profileField}
+                                size="small"
+                                variant="filled"
+                            />
+                            <Button variant="contained" color="primary">
+                                Change
+                            </Button>
+                        </Grid>
+                        <Divider></Divider>
+                        {/* EMAIL ADDRESS SECTION */}
+                        <Typography variant="h4">Email</Typography>
+                        <Grid
+                            item
+                            container
+                            direction="row"
+                            alignItems="center"
+                        >
+                            <TextField
+                                id="emailTextBox"
+                                label="Address"
+                                defaultValue="johnnyapplesmith@gmail.com"
+                                className={classes.emailField}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                                size="small"
+                                variant="filled"
+                            />
+                            <Button variant="contained" color="primary">
+                                Change
+                            </Button>
+                        </Grid>
+
+                        <Divider></Divider>
+
+                        <Typography variant="h4">Password</Typography>
+                        <Button variant="contained" color="primary">
+                            Change Password
+                        </Button>
+                        <Divider></Divider>
+                        <Typography variant="h4">Delete Account</Typography>
+                        <ColorButton
+                            variant="contained"
+                            color="primary"
+                            className={classes.margin}
+                            startIcon={<DeleteIcon />}
+                        >
+                            Delete
+                        </ColorButton>
+                    </Paper>
+                </Grid>
             </Grid>
         </Grid>
     );
