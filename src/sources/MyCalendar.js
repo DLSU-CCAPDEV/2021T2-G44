@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Typography, Grid, Paper } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import ToDoComponent from './components/ToDoList';
+import AddEventButton from './components/AddEvent';
 
 // React Scheduler Material UI
 import {
@@ -14,8 +15,12 @@ import {
     Appointments,
     TodayButton,
     Toolbar,
+    AppointmentForm,
+    AppointmentTooltip,
+    ConfirmationDialog,
 } from '@devexpress/dx-react-scheduler-material-ui';
-import { ViewState } from '@devexpress/dx-react-scheduler';
+import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
+import { appointments } from './appointments';
 
 // Material UI
 import { fade, withStyles, makeStyles } from '@material-ui/core/styles';
@@ -26,7 +31,8 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-import { sizing } from '@material-ui/system';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 
 // Art
 import calendarArt from './assets/calendarArt.svg';
@@ -37,18 +43,11 @@ const useStyles = makeStyles((theme) => ({
         position: 'relative',
         marginTop: '4em',
     },
-    calendarArt: {
-        marginLeft: '3em',
-        marginBottom: '1em',
-    },
     calendarTitle: {
         fontWeight: 'bold',
         align: 'right',
     },
     radioLabel: {
-        position: 'absolute',
-        right: '1em',
-        bottom: '3em',
         fontWeight: 'bold',
     },
     radioButtons: {
@@ -62,10 +61,9 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
             backgroundColor: fade(theme.palette.primary.main, 0.5),
         },
-        marginLeft: 0,
         width: '100%',
         [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(1),
+            marginLeft: 0,
             width: 'auto',
         },
     },
@@ -80,6 +78,7 @@ const useStyles = makeStyles((theme) => ({
     },
     inputRoot: {
         color: 'inherit',
+        marginRight: '1em',
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
@@ -87,12 +86,6 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create('width'),
         width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            width: '12ch',
-            '&:focus': {
-                width: '20ch',
-            },
-        },
     },
     toDoList: {
         backgroundColor: theme.palette.accent.main,
@@ -103,7 +96,30 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 'bold',
         marginTop: '1em',
     },
+    addButton: {
+        marginLeft: '5em',
+        marginBottom: 'em',
+    },
 }));
+
+function commitChanges({ added, changed, deleted }) {
+    const setState = (state) => {
+        let { data } = state;
+        if (added) {
+            const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+            data = [...data, { id: startingAddedId, ...added }];
+        }
+        if (changed) {
+            data = data.map((appointment) =>
+                changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment
+            );
+        }
+        if (deleted !== undefined) {
+            data = data.filter((appointment) => appointment.id !== deleted);
+        }
+        return { data };
+    };
+}
 
 export default function MyCalendar() {
     const classes = useStyles();
@@ -118,39 +134,32 @@ export default function MyCalendar() {
         setCalendarView(event.target.value);
     };
 
-    const Root = React.useCallback((props) => {
-        return <Toolbar.Root {...props} style={{ paddingLeft: '0px' }} />;
-    });
+    // const Root = React.useCallback((props) => {
+    //     return <Toolbar.Root {...props} style={{ alignSelf: 'center', position: 'relative' }} />;
+    // });
 
     return (
         <Grid container direction="row" className={classes.root} xs={12} spacing={3}>
             {/** LEFT SIDE of the Page */}
+
             <Grid item container direction="column" xs={9}>
                 {/** Title and controls */}
-                <Grid item container direction="row" justify="flex-start" alignItems="center">
+                <Grid item container direction="row" justify="space-between">
                     {/** Calendar Art */}
-                    <Grid item container xs={3}>
+                    <Grid item container direction="row" xs={2} style={{ marginLeft: '2%' }}>
                         <img src={calendarArt} className={classes.calendarArt} />
                     </Grid>
 
-                    {/** Calendar Title and Date navigation */}
-                    <Grid
-                        item
-                        container
-                        direction="column"
-                        xs={4}
-                        alignItems="flex-start"
-                        style={{ marginLeft: '3em', flexShrink: 3 }}
-                    >
+                    {/** Calendar Title */}
+                    <Grid item container direction="column" justify="center" alignItems="center" xs={3}>
                         <Typography variant="h2" color="primary" className={classes.calendarTitle}>
                             My Calendar
                         </Typography>
-                        <Scheduler>
-                            <ViewState currentViewName={calendarView} />
-                            <Toolbar rootComponent={Root} />
-                            <DateNavigator />
-                            <TodayButton />
-                        </Scheduler>
+                    </Grid>
+
+                    {/* Add Event Button */}
+                    <Grid item container direction="column" xs={2} justify="flex-end" alignItems="stretch">
+                        <AddEventButton />
                     </Grid>
 
                     {/* Input and Buttons */}
@@ -159,11 +168,13 @@ export default function MyCalendar() {
                         container
                         direction="column"
                         alignItems="flex-end"
-                        xs={4}
-                        style={{ marginLeft: '4.18em' }}
+                        justify="flex-end"
+                        xs={2}
+                        style={{ marginLeft: '0.5em' }}
                     >
+                        {/* Calendar View Radio Buttons */}
                         <FormControl component="fieldset">
-                            <FormLabel component="legend" className={classes.radioLabel} style={{ right: '0' }}>
+                            <FormLabel component="legend" className={classes.radioLabel} style={{ textAlign: 'right' }}>
                                 Calendar View
                             </FormLabel>
                             <RadioGroup
@@ -175,14 +186,15 @@ export default function MyCalendar() {
                             >
                                 <FormControlLabel value="Month" control={<Radio color="primary" />} label="Month" />
                                 <FormControlLabel
-                                    style={{ marginRight: '0' }}
                                     value="Week"
                                     control={<Radio color="primary" />}
                                     label="Week"
+                                    style={{ marginRight: '0' }}
                                 />
                             </RadioGroup>
                         </FormControl>
 
+                        {/* Search Bar */}
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
                                 <SearchIcon />
@@ -201,10 +213,19 @@ export default function MyCalendar() {
 
                 {/** Calendar */}
                 <Grid item container>
-                    <Scheduler height={500}>
+                    <Scheduler height={700} data={appointments}>
                         <ViewState currentViewName={calendarView} />
+                        <EditingState onCommitChanges={commitChanges} />
+                        <IntegratedEditing />
                         <MonthView />
-                        <WeekView name="Week" />
+                        <WeekView />
+                        <ConfirmationDialog />
+                        <Appointments />
+                        <AppointmentTooltip showOpenButton showDeleteButton />
+                        <AppointmentForm />
+                        <Toolbar />
+                        <DateNavigator />
+                        <TodayButton />
                     </Scheduler>
                 </Grid>
             </Grid>

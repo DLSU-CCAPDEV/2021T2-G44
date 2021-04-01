@@ -22,6 +22,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        marginLeft: '1em',
     },
     main: {
         width: '100%',
@@ -32,7 +33,7 @@ const styles = {
         padding: '20px',
         margin: '20px 0',
         overflow: 'auto',
-        maxHeight: '450px',
+        maxHeight: '625px',
     },
     todo: {
         position: 'relative',
@@ -53,7 +54,7 @@ const styles = {
 
 class TodoComponent extends React.Component {
     state = {
-        tasks: ['ww', 'ww', 'ww', 'ww', 'ww', 'ww', 'ww', 'ww', 'ww', 'ww', 'ww', 'ww', 'ww', 'ww'],
+        tasks: [],
         newTask: '',
     };
 
