@@ -22,13 +22,19 @@ The front-end for this web-application was written with Facebook's **ReactJS UI 
 **OPTION 1**: Run the React Development Server
 
     
-    npm run react-server
+    npm start
     
 
 **OPTION 2**: Run the ExpressJS Server
 
-    
-    npm run development
+    npm run build
+    npm run start-express
+
+    OR
+
+    If you have nodemon installed:
+    npm run build
+    npm run start-express-dev
     
 
 ### Production
