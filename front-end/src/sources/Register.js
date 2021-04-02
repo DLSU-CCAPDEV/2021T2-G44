@@ -69,6 +69,14 @@ function Register(props) {
         setPasswordConfirm(e.target.value);
     };
 
+    const onFirstNameChange = (e) => {
+        setFirstName(e.target.value);
+    };
+
+    const onLastNameChange = (e) => {
+        setLastName(e.target.value);
+    };
+
     // Create Account Button
     const createAccount = async () => {
         // Check if passwords match
@@ -120,7 +128,7 @@ function Register(props) {
                                         className: classes.input,
                                         disableUnderline: true,
                                     }}
-                                    onChange={onPasswordChange}
+                                    onChange={onFirstNameChange}
                                 />
                                 <TextField
                                     required
@@ -132,7 +140,7 @@ function Register(props) {
                                         className: classes.input,
                                         disableUnderline: true,
                                     }}
-                                    onChange={onPasswordChange}
+                                    onChange={onLastNameChange}
                                 />
                                 <TextField
                                     required

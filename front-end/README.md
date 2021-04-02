@@ -12,7 +12,6 @@ The front-end for this web-application was written with Facebook's **ReactJS UI 
     ```
     PORT=
     REACT_APP_BACK-END-API=
-    REACT_APP_LOGGEDIN=
     ```
     The ```PORT``` variable will be the port that the React development server will be running on. If this is not set, the React Development server will run on port 3000 by default. The ```BACK-END-API``` variable will be the base host URL that the React application will query to send and receive data. This variable is required with the following form: ```http://domain.com:PORT```. This should be running with SSL for production. For a local development environment, this will only be http instead of https and will be pointing to localhost (127.0.0.1). *For CCAPDEV Phase 1, this variable will not be used in the code*.
 
