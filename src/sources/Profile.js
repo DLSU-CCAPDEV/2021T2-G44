@@ -78,6 +78,11 @@ const useStyle = makeStyles((theme) => ({
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
     },
+    textSpacer: {
+        marginLeft: theme.spacing(2),
+        marginTop: "0.3em",
+        marginBottom: "0.3em",
+    },
 }));
 
 export default function Profile() {
@@ -132,7 +137,7 @@ export default function Profile() {
                                 </Button>
                             </Grid>
 
-                            <Divider></Divider>
+                            <Divider variant="middle"></Divider>
 
                             {/* Name Grid */}
                             <Grid
@@ -154,9 +159,12 @@ export default function Profile() {
                                     multiline
                                     defaultValue="Hello my name is Johnny Johnny Yes Papa eating sugar no papa telling lies no papa open your mouth hahaha"
                                     className={classes.standardSpacer}
-                                    style={{ width: "90%" }}
+                                    variant="middle"
                                     InputProps={{
                                         readOnly: true,
+                                    }}
+                                    style={{
+                                        width: "90%",
                                     }}
                                     size="small"
                                     variant="outlined"
@@ -196,7 +204,11 @@ export default function Profile() {
                         variant="elevation"
                         elevation={8}
                     >
-                        <Typography variant="h4">Profile Settings</Typography>
+                        <Grid item container direction="row">
+                            <Typography variant="h4">
+                                Profile Settings
+                            </Typography>
+                        </Grid>
                         <Grid
                             item
                             container
@@ -241,10 +253,12 @@ export default function Profile() {
                             </Button>
                         </Grid>
 
-                        <Divider></Divider>
+                        <Divider variant="middle"></Divider>
 
                         {/* EMAIL ADDRESS SECTION */}
-                        <Typography variant="h4">Email</Typography>
+                        <Grid item classname={classes.textSpacer}>
+                            <Typography variant="h4">Email</Typography>
+                        </Grid>
                         <Grid
                             item
                             container
@@ -267,7 +281,7 @@ export default function Profile() {
                             </Button>
                         </Grid>
 
-                        <Divider></Divider>
+                        <Divider variant="middle"></Divider>
 
                         <Typography variant="h4">Password</Typography>
                         <Button
@@ -277,7 +291,7 @@ export default function Profile() {
                         >
                             Change Password
                         </Button>
-                        <Divider></Divider>
+                        <Divider variant="middle"></Divider>
                         <Typography variant="h4">Delete Account</Typography>
                         <ColorButton
                             variant="contained"
