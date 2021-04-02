@@ -13,7 +13,7 @@ Each directory of this repository has its own ```README.md``` that further expla
 - [readme-assets](./readme-assets) - This folder holds the images and other assets used in all the READMEs of this repository.
 
 ## Installation & Setup
-1. Install NodeJS and the version. This NodeJS project was build for NodeJS 14.x and higher. To check, open your command terminal and run:
+1. Install NodeJS and check the version. This NodeJS project was built for NodeJS 14.x and higher. To check, open a command terminal and run:
     ```
     node -v
     ```
@@ -33,7 +33,7 @@ Each directory of this repository has its own ```README.md``` that further expla
    ```
    npm install
    ```
-5. Refer ```front-end``` or ```back-end``` folder for further setup instructions (env, npm scripts).
+5. Refer to the ```front-end``` or ```back-end``` folder README for further setup instructions (env, npm scripts).
 
 ## Running the Appliation
 The front-end and back-end servers have different start-up procedures. Please refer to their respective README files in the respective folders.
@@ -63,6 +63,11 @@ This application's system design follows the two-server (or more) design where a
         <td><a target="_blank" href="https://github.com/gianissimo0829">GitHub</a></td>
     </tr>
 </table>
+
+## Note to the Reader
+If you find any bugs or issues with our design or implementation, please feel free to open a GitHub issue here on this repository. This will be greatly appreciated as it helps us grow into better developers. Please be constructive though!
+
+Thanks for reading and showing interest to our application!
 
 ## Acknowledgements
 

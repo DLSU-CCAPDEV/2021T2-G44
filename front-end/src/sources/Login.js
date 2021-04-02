@@ -79,58 +79,81 @@ function Login(props) {
         <Grid container direction="column" style={{ position: "relative", top: "4em" }}>
             <Grid item container direction="row" justify="center" alignItems="center">
                 <Grid item container direction="column" justify="center" alignItems="center" xs={6}>
-                    <Grid item><Typography variant="h2" style={{ fontWeight: "bold", position: "relative", left: "0.40em" }}>
-                        Great to Have You Back
-                    </Typography></Grid>
-                    <Grid item><Box className="registerBox">
-                        <form onSubmit={doLogin}>
-                            <Grid container direction="column" justify="center" alignItems="center">
-                                <Grid item><TextField
-                                    required
-                                    label="Email"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="email"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    style={{ marginTop: "3em" }}
-                                    onChange={onEmailChange}
-                                /></Grid>
-                                <Grid item><TextField
-                                    required
-                                    label="Password"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="password"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    style={{ marginTop: "3em" }}
-                                    onChange={onPasswordChange}
-                                /></Grid>
-                                <Grid item><Typography variant="body1" style={{ color: "white", margin: "0.5em" }}>
-                                    Don't have an account?{" "}
-                                    <Link to="/login" style={{ color: "white" }}>
-                                        Register
-                                    </Link>
-                                </Typography></Grid>
-                                <Grid item><Fab
-                                    type="submit"
-                                    variant="extended"
-                                    size="medium"
-                                    color="secondary"
-                                    style={buttonStyles}
+                    <Grid item>
+                        <Typography
+                            variant="h2"
+                            style={{ fontWeight: "bold", position: "relative", left: "0.40em" }}
+                        >
+                            Great to Have You Back
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <Box className="registerBox">
+                            <form onSubmit={doLogin}>
+                                <Grid
+                                    container
+                                    direction="column"
+                                    justify="center"
+                                    alignItems="center"
                                 >
-                                    Login
-                                </Fab></Grid>
-                            </Grid>
-                        </form>
-                    </Box></Grid>
+                                    <Grid item>
+                                        <TextField
+                                            required
+                                            label="Email"
+                                            variant="filled"
+                                            className={classes.root}
+                                            type="email"
+                                            InputProps={{
+                                                className: classes.input,
+                                                disableUnderline: true,
+                                            }}
+                                            style={{ marginTop: "3em" }}
+                                            onChange={onEmailChange}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            required
+                                            label="Password"
+                                            variant="filled"
+                                            className={classes.root}
+                                            type="password"
+                                            InputProps={{
+                                                className: classes.input,
+                                                disableUnderline: true,
+                                            }}
+                                            style={{ marginTop: "3em" }}
+                                            onChange={onPasswordChange}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography
+                                            variant="body1"
+                                            style={{ color: "white", margin: "0.5em" }}
+                                        >
+                                            Don't have an account?{" "}
+                                            <Link to="/register" style={{ color: "white" }}>
+                                                Register
+                                            </Link>
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <Fab
+                                            type="submit"
+                                            variant="extended"
+                                            size="medium"
+                                            color="secondary"
+                                            style={buttonStyles}
+                                        >
+                                            Login
+                                        </Fab>
+                                    </Grid>
+                                </Grid>
+                            </form>
+                        </Box>
+                    </Grid>
                 </Grid>
-                
+
                 <Grid item container justify="flex-end" alignItems="flex-end" xs={6}>
                     <img src={loginCover} alt="Login Cover Art" style={{ marginRight: "auto" }} />
                 </Grid>

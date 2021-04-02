@@ -45,7 +45,7 @@ function Register(props) {
         document.title = "Register - Sched-It";
     });
 
-    const [cookies, setCookie] = useCookies(["uid"]);
+    const [_, setCookie] = useCookies(["uid"]);
 
     const history = useHistory();
 
@@ -93,7 +93,7 @@ function Register(props) {
         setCookie("uid", uid, cookieOptions);
 
         // Redirect the user
-        history.push("/");
+        history.push("/dashboard");
     };
 
     const { classes } = props;
