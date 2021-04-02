@@ -70,6 +70,12 @@ const useStyle = makeStyles((theme) => ({
         marginTop: "1em",
         marginBottom: "1em",
     },
+    buttonSpacing: {
+        marginLeft: theme.spacing(4),
+        marginRight: theme.spacing(2),
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+    },
 }));
 
 export default function Profile() {
@@ -96,7 +102,7 @@ export default function Profile() {
                 <Grid item direction="column" lg={4}>
                     <Paper
                         variant="elevation"
-                        elevation={5}
+                        elevation={8}
                         className={classes.profileGrid}
                     >
                         {/* Grid Inside Paper */}
@@ -186,7 +192,7 @@ export default function Profile() {
                     <Paper
                         className={classes.settingsGrid}
                         variant="elevation"
-                        elevation={5}
+                        elevation={8}
                     >
                         <Typography variant="h4">Profile Settings</Typography>
                         <Grid
@@ -260,7 +266,11 @@ export default function Profile() {
                         <Divider></Divider>
 
                         <Typography variant="h4">Password</Typography>
-                        <Button variant="contained" color="primary">
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.buttonSpacing}
+                        >
                             Change Password
                         </Button>
                         <Divider></Divider>
@@ -269,6 +279,7 @@ export default function Profile() {
                             variant="contained"
                             color="primary"
                             className={classes.margin}
+                            className={classes.buttonSpacing}
                             startIcon={<DeleteIcon />}
                         >
                             Delete
