@@ -57,16 +57,16 @@ const useStyle = makeStyles((theme) => ({
     emailField: {
         marginLeft: theme.spacing(4),
         marginRight: theme.spacing(2),
-        marginTop: theme.spacing(2),
+
         marginBottom: theme.spacing(2),
         width: "24em",
     },
     profileField: {
         marginLeft: theme.spacing(4),
         marginRight: theme.spacing(2),
-        marginTop: theme.spacing(1),
+
         marginBottom: theme.spacing(1),
-        width: "16em",
+        width: "17em",
     },
     standardSpacer: {
         marginTop: "1em",
@@ -75,13 +75,15 @@ const useStyle = makeStyles((theme) => ({
     buttonSpacing: {
         marginLeft: theme.spacing(4),
         marginRight: theme.spacing(2),
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(1),
+        marginBottom: theme.spacing(2),
     },
     textSpacer: {
-        marginLeft: theme.spacing(2),
-        marginTop: "0.3em",
-        marginBottom: "0.3em",
+        marginLeft: "1em",
+        marginTop: "1em",
+        marginBottom: "1em",
+    },
+    stretcher: {
+        flexGrow: 1,
     },
 }));
 
@@ -96,8 +98,13 @@ export default function Profile() {
 
     return (
         // entire main content page
-        <Grid container direction="column" alignItems="center">
-            <Grid container direction="row">
+        <Grid container direction="row" justify="center" alignItems="stretch">
+            <Grid
+                container
+                direction="row"
+                justify="center"
+                alignItems="stretch"
+            >
                 {/* The LeftHand side */}
                 {/* 
                 Todo: 
@@ -106,7 +113,12 @@ export default function Profile() {
                 Bio
                 Change Bio Button 
             */}
-                <Grid item direction="column" lg={4}>
+                <Grid
+                    item
+                    direction="column"
+                    lg={4}
+                    className={classes.stretcher}
+                >
                     <Paper
                         variant="elevation"
                         elevation={8}
@@ -198,13 +210,25 @@ export default function Profile() {
                 Delete Account
                     Delete Account Button
             */}
-                <Grid item direction="column" lg={8}>
+                <Grid
+                    item
+                    container
+                    direction="column"
+                    lg={8}
+                    justify="center"
+                    alignItems="stretch"
+                >
                     <Paper
                         className={classes.settingsGrid}
                         variant="elevation"
                         elevation={8}
                     >
-                        <Grid item container direction="row">
+                        <Grid
+                            item
+                            container
+                            direction="row"
+                            className={classes.textSpacer}
+                        >
                             <Typography variant="h4">
                                 Profile Settings
                             </Typography>
@@ -256,7 +280,12 @@ export default function Profile() {
                         <Divider variant="middle"></Divider>
 
                         {/* EMAIL ADDRESS SECTION */}
-                        <Grid item classname={classes.textSpacer}>
+                        <Grid
+                            item
+                            container
+                            direction="row"
+                            className={classes.textSpacer}
+                        >
                             <Typography variant="h4">Email</Typography>
                         </Grid>
                         <Grid
@@ -283,7 +312,14 @@ export default function Profile() {
 
                         <Divider variant="middle"></Divider>
 
-                        <Typography variant="h4">Password</Typography>
+                        <Grid
+                            item
+                            container
+                            direction="row"
+                            className={classes.textSpacer}
+                        >
+                            <Typography variant="h4">Password</Typography>
+                        </Grid>
                         <Button
                             variant="contained"
                             color="primary"
@@ -292,7 +328,14 @@ export default function Profile() {
                             Change Password
                         </Button>
                         <Divider variant="middle"></Divider>
-                        <Typography variant="h4">Delete Account</Typography>
+                        <Grid
+                            item
+                            container
+                            direction="row"
+                            className={classes.textSpacer}
+                        >
+                            <Typography variant="h4">Delete Account</Typography>
+                        </Grid>
                         <ColorButton
                             variant="contained"
                             color="primary"
