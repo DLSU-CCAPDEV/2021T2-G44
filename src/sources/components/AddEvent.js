@@ -12,19 +12,58 @@ import AddIcon from '@material-ui/icons/Add';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
 
-export default function AddEvent() {
-    const [open, setOpen] = React.useState(false);
-    const [selectedDate, setSelectedDate] = React.useState(new Date());
-    const [state, setState] = React.useState({
-        checkedA: true,
-        checkedB: true,
-    });
+/* ANCHOR Time Picker Component */
+const TimeFrameEvent = () => {
+    const [selectedStartDate, setSelectedStartDate] = React.useState(new Date());
+    const handleStartDateChange = (date) => {
+        setSelectedStartDate(date);
+    };
 
+    const [selectedEndDate, setSelectedEndDate] = React.useState(new Date());
+    const handleEndDateChange = (date) => {
+        setSelectedEndDate(date);
+    };
+    return (
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Grid container justify="space-between">
+                <KeyboardTimePicker
+                    margin="normal"
+                    id="start-time-picker"
+                    label="Start Time"
+                    value={selectedStartDate}
+                    onChange={handleStartDateChange}
+                    KeyboardButtonProps={{
+                        'aria-label': 'change time',
+                    }}
+                />
+
+                <KeyboardTimePicker
+                    margin="normal"
+                    id="end-time-picker"
+                    label="End Time"
+                    value={selectedEndDate}
+                    onChange={handleEndDateChange}
+                    KeyboardButtonProps={{
+                        'aria-label': 'change time',
+                    }}
+                />
+            </Grid>
+            <DialogContentText>Specify the start and end time of your event</DialogContentText>
+        </MuiPickersUtilsProvider>
+    );
+};
+
+export default function AddEvent() {
+    {
+        /* ANCHOR React Hooks and States */
+    }
+    const [open, setOpen] = React.useState(false);
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -33,12 +72,24 @@ export default function AddEvent() {
         setOpen(false);
     };
 
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
+    const [selectedStartDate, setSelectedStartDate] = React.useState(new Date());
+    const handleStartDateChange = (date) => {
+        setSelectedStartDate(date);
     };
 
-    const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
+    const [selectedEndDate, setSelectedEndDate] = React.useState(new Date());
+    const handleEndDateChange = (date) => {
+        setSelectedEndDate(date);
+    };
+
+    const [privateEvent, setPrivateEvent] = React.useState({ isPrivate: false });
+    const handlePrivateEvent = (event) => {
+        setPrivateEvent({ ...privateEvent, [event.target.name]: event.target.checked });
+    };
+
+    const [allDay, setAllDay] = React.useState({ isAllDay: false });
+    const handleAllDayEvent = (event) => {
+        setAllDay({ ...allDay, [event.target.name]: event.target.checked });
     };
 
     return (
@@ -55,6 +106,7 @@ export default function AddEvent() {
                 </Button>
             </Grid>
 
+            {/* ANCHOR Appointment Form */}
             <Dialog open={open} onClose={handleClose} aria-labelledby="add-event-dialog" maxWidth="sm" fullWidth={true}>
                 <DialogTitle id="add-event-dialog-title">Add an Event</DialogTitle>
 
@@ -68,23 +120,24 @@ export default function AddEvent() {
                                 variant="inline"
                                 format="MM/dd/yyyy"
                                 margin="normal"
-                                id="date-picker-inline"
+                                id="start-date-picker"
                                 label="Start Date"
-                                value={selectedDate}
-                                onChange={handleDateChange}
+                                value={selectedStartDate}
+                                onChange={handleStartDateChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
                                 }}
                             />
+
                             <KeyboardDatePicker
                                 disableToolbar
                                 variant="inline"
                                 format="MM/dd/yyyy"
                                 margin="normal"
-                                id="date-picker-inline"
+                                id="end-date-picker"
                                 label="End Date"
-                                value={selectedDate}
-                                onChange={handleDateChange}
+                                value={selectedEndDate}
+                                onChange={handleEndDateChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
                                 }}
@@ -92,35 +145,27 @@ export default function AddEvent() {
                         </Grid>
                         <DialogContentText>Specify the start and end date of your event</DialogContentText>
                     </MuiPickersUtilsProvider>
+                    <FormGroup>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={allDay.isAllDay}
+                                    onChange={handleAllDayEvent}
+                                    name="isAllDay"
+                                    color="primary"
+                                />
+                            }
+                            label="Whole Day Event"
+                        />
+                    </FormGroup>
 
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <Grid container justify="space-between">
-                            <KeyboardTimePicker
-                                margin="normal"
-                                id="time-picker"
-                                label="Start Time"
-                                value={selectedDate}
-                                onChange={handleDateChange}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change time',
-                                }}
-                            />
-                            <KeyboardTimePicker
-                                margin="normal"
-                                id="time-picker"
-                                label="End Time"
-                                value={selectedDate}
-                                onChange={handleDateChange}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change time',
-                                }}
-                            />
-                        </Grid>
-                        <DialogContentText>Specify the start and end time of your event</DialogContentText>
-                    </MuiPickersUtilsProvider>
+                    {allDay.isAllDay == true ? <TimeFrameEvent /> : null}
+
                     <FormControlLabel
-                        control={<Switch checked={state.checkedA} onChange={handleChange} name="checkedA" />}
-                        label="Set as private event"
+                        control={
+                            <Switch checked={privateEvent.isPrivate} onChange={handlePrivateEvent} name="isPrivate" />
+                        }
+                        label="Set as Private Event"
                     />
                 </DialogContent>
 

@@ -37,6 +37,9 @@ import AddIcon from '@material-ui/icons/Add';
 // Art
 import calendarArt from './assets/calendarArt.svg';
 
+{
+    /* ANCHOR Styles */
+}
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -100,6 +103,9 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: '5em',
         marginBottom: 'em',
     },
+    cells: {
+        color: theme.palette.accent.main,
+    },
 }));
 
 function commitChanges({ added, changed, deleted }) {
@@ -134,10 +140,20 @@ export default function MyCalendar() {
         setCalendarView(event.target.value);
     };
 
-    // const Root = React.useCallback((props) => {
-    //     return <Toolbar.Root {...props} style={{ alignSelf: 'center', position: 'relative' }} />;
-    // });
+    {
+        /* ANCHOR Customized components */
+    }
+    const disableAddWeekView = React.useCallback((props) => {
+        return <WeekView.TimeTableCell {...props} onDoubleClick={(e) => undefined} />;
+    });
 
+    const disableAddMonthView = React.useCallback((props) => {
+        return <MonthView.TimeTableCell {...props} onDoubleClick={(e) => undefined} />;
+    });
+
+    {
+        /* ANCHOR Rendered View */
+    }
     return (
         <Grid container direction="row" className={classes.root} xs={12} spacing={3}>
             {/** LEFT SIDE of the Page */}
@@ -217,8 +233,8 @@ export default function MyCalendar() {
                         <ViewState currentViewName={calendarView} />
                         <EditingState onCommitChanges={commitChanges} />
                         <IntegratedEditing />
-                        <MonthView />
-                        <WeekView />
+                        <MonthView timeTableCellComponent={disableAddMonthView} />
+                        <WeekView timeTableCellComponent={disableAddWeekView} />
                         <ConfirmationDialog />
                         <Appointments />
                         <AppointmentTooltip showOpenButton showDeleteButton />
