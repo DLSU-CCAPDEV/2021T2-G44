@@ -42,6 +42,7 @@ The front-end and back-end servers have different start-up procedures. Please re
 This application's system design follows the two-server (or more) design where a server is dedicated to serve front-end static pages and JavaScript, while the other server is dedicated to be the back-end DataAPI. This allows for horizontal flexibility, ready to scale when needed. This system design is common (?) in the enterprise setting, especially with the emergence of containerized applications with Docker and services like Kubernetes.
 
 **The System Design is as follows:**
+
 <img src="./readme-assets/system-design.png" height="500px" />
 
 ## Authors: The Lasallian Youth Orchestra Development Team
