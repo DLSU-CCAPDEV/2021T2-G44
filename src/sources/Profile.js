@@ -57,6 +57,8 @@ const useStyle = makeStyles((theme) => ({
     emailField: {
         marginLeft: theme.spacing(4),
         marginRight: theme.spacing(2),
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
         width: "24em",
     },
     profileField: {
@@ -238,7 +240,9 @@ export default function Profile() {
                                 Change
                             </Button>
                         </Grid>
+
                         <Divider></Divider>
+
                         {/* EMAIL ADDRESS SECTION */}
                         <Typography variant="h4">Email</Typography>
                         <Grid
