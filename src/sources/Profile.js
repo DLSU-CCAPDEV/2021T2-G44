@@ -14,6 +14,7 @@ import { Divider } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { pink } from "@material-ui/core/colors";
 import CreateIcon from "@material-ui/icons/Create";
+import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 
 // colored Delete Button
 const ColorButton = withStyles((theme) => ({
@@ -65,6 +66,10 @@ const useStyle = makeStyles((theme) => ({
         marginBottom: theme.spacing(1),
         width: "16em",
     },
+    standardSpacer: {
+        marginTop: "1em",
+        marginBottom: "1em",
+    },
 }));
 
 export default function Profile() {
@@ -88,7 +93,7 @@ export default function Profile() {
                 Bio
                 Change Bio Button 
             */}
-                <Grid item direction="column" item lg={4}>
+                <Grid item direction="column" lg={4}>
                     <Paper
                         variant="elevation"
                         elevation={5}
@@ -102,9 +107,7 @@ export default function Profile() {
                                 container
                                 direction="column"
                                 alignItems="center"
-                                style={{
-                                    marginTop: "1em",
-                                }}
+                                className={classes.standardSpacer}
                             >
                                 <Avatar
                                     alt="profilePicture"
@@ -114,13 +117,14 @@ export default function Profile() {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    style={{
-                                        marginTop: "1em",
-                                    }}
+                                    className={classes.standardSpacer}
+                                    startIcon={<PhotoCameraIcon />}
                                 >
                                     Change Profile Picture
                                 </Button>
                             </Grid>
+
+                            <Divider></Divider>
 
                             {/* Name Grid */}
                             <Grid
@@ -129,14 +133,20 @@ export default function Profile() {
                                 direction="column"
                                 alignItems="center"
                             >
-                                <Typography variant="h5" align="center">
+                                <Typography
+                                    variant="h5"
+                                    align="left"
+                                    className={classes.standardSpacer}
+                                >
                                     Johnny AppleSmith
                                 </Typography>
                                 <TextField
                                     id="firstNameTextBox"
-                                    label="Description"
+                                    label="Bio"
                                     multiline
-                                    defaultValue="Hello my name is Johnny Johnny Yes Papa eating sugar no papa"
+                                    defaultValue="Hello my name is Johnny Johnny Yes Papa eating sugar no papa telling lies no papa open your mouth hahaha"
+                                    className={classes.standardSpacer}
+                                    style={{ width: "90%" }}
                                     InputProps={{
                                         readOnly: true,
                                     }}
@@ -146,12 +156,10 @@ export default function Profile() {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    style={{
-                                        marginTop: "1em",
-                                    }}
+                                    className={classes.standardSpacer}
                                     startIcon={<CreateIcon />}
                                 >
-                                    Change Description
+                                    Change Bio
                                 </Button>
                             </Grid>
                         </Grid>
