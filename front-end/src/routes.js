@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ProtectedRoute from './sources/components/ProtectedRoute';
-import SessionContext from "./SessionContext";
 
 // Route Imports
 import NavHeader from "./sources/components/NavHeader";
@@ -42,9 +41,8 @@ theme = responsiveFontSizes(theme);
 export default function Routes(props) {
     return (
         <ThemeProvider theme={theme}>
-            <SessionContext>
                 <Router>
-                    <NavHeader {...props} />
+                    <NavHeader />
 
                     <Switch>
                         {/* PUBLIC ROUTES */}
@@ -55,7 +53,6 @@ export default function Routes(props) {
                         <ProtectedRoute
                             path="/dashboard"
                             component={Dashboard}
-                            {...props}
                             protected={true}
                         />
 
@@ -65,7 +62,6 @@ export default function Routes(props) {
 
                     <Footer />
                 </Router>
-            </SessionContext>
         </ThemeProvider>
     );
 }

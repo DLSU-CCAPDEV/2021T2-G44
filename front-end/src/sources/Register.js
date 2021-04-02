@@ -1,9 +1,14 @@
 import "./assets/styles.css";
 import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from "react-router-dom";
+import { useCookies } from "react-cookie";
+
+// Model & Controller Imports
+import { cookieOptions } from '../models/Cookie';
+import { userLogin } from '../controllers/AuthController';
 
 // Material-UI
-import { Grid, Box, Typography, TextField, withStyles, Fab, FormControl } from "@material-ui/core";
+import { Grid, Box, Typography, TextField, withStyles, Fab } from "@material-ui/core";
 
 // Component Imports
 import registerCoverImage from "./assets/registerCover.svg";
@@ -38,6 +43,9 @@ function Register(props) {
         document.title = "Register - Sched-It";
     });
 
+    const history = useHistory();
+    const [cookie, setCookie] = useCookies(["uid"]);
+
     // States
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
@@ -57,14 +65,24 @@ function Register(props) {
     };
 
     // Create Account Button
-    const createAccount = () => {
+    const createAccount = async () => {
         // Check if passwords match
-        if(password !== passwordConfirm)
-        {
+        if (password !== passwordConfirm) {
             // Show alert to user
             alert("Passwords do not match.");
             return;
         }
+        
+        // DO ACCOUNT CREATION LOGIC HERE
+
+        // For phase 1, log in as user 1.
+        const uid = await userLogin("adriel_amoguis@dlsu.edu.ph", "password1");
+
+        // For now, login with UID instead of SID.
+        setCookie("uid", uid, cookieOptions);
+
+        // Redirect the user
+        history.push("/dashboard");
     };
 
     const { classes } = props;
@@ -74,7 +92,7 @@ function Register(props) {
             <Grid item container direction="row" justify="center" alignItems="center">
                 <Grid item>
                     <Box id="registerBox" style={{ position: "relative", right: "4em" }}>
-                        <form onSubmit={createAccount}>
+                        <form>
                             <Grid container direction="column" justify="center" alignItems="center">
                                 <TextField
                                     required
@@ -122,6 +140,7 @@ function Register(props) {
                                     size="medium"
                                     color="secondary"
                                     style={buttonStyles}
+                                    onClick={createAccount}
                                 >Create Account</Fab>
                             </Grid>
                         </form> 

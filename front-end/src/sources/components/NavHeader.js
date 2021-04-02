@@ -1,8 +1,7 @@
 import React from 'react';
 import '../assets/styles.css';
-import logo from '../assets/logo.svg';
-import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import logo from "../assets/logo.svg";
+import { Link, useHistory } from "react-router-dom";
 
 // Material UI
 import { Grid } from '@material-ui/core';
@@ -28,15 +27,25 @@ import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
+// Model & Controller Imports
+import { useCookies } from 'react-cookie';
+
 const barStyles = {
     filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
 };
 
-const brandingStyles = {
+const brandingStyles = { 
     flexGrow: '20',
 };
 
 export default function NavigationHeader(props) {
+    // Extract the Context
+    const history = useHistory();
+
+    // Check if the uid cookie exists
+    const [cookies, _, removeCookie] = useCookies(["uid"]);
+    const uid = cookies.uid;
+
     const notLoggedIn = () => {
         return (
             <AppBar position="sticky" style={barStyles}>
@@ -164,13 +173,17 @@ export default function NavigationHeader(props) {
         setOpen(false);
     };
 
+    const handleLogout = () => {
+        removeCookie("uid");
+        history.push("/login");
+    };
+
     const loggedIn = () => {
         return (
             <div className={classes.root}>
                 <AppBar
-                    position="sticky"
-                    style={barStyles}
                     position="fixed"
+                    style={barStyles}
                     className={clsx(classes.appBar, {
                         [classes.appBarShift]: open,
                     })}
@@ -237,7 +250,7 @@ export default function NavigationHeader(props) {
                             </ListItemIcon>
                             <ListItemText primary="My Profile" />
                         </ListItem>
-                        <ListItem button key="Log Out">
+                        <ListItem button onClick={handleLogout} key="Log Out">
                             <ListItemIcon>
                                 <PowerSettingsNewIcon fontSize="large" />
                             </ListItemIcon>
@@ -249,7 +262,7 @@ export default function NavigationHeader(props) {
         );
     };
 
-    if (false) {
+    if (!(typeof uid === "undefined" || uid == null)) {
         //CHANGE THIS FOR TESTING PURPOSES ONLY
         return loggedIn();
     } else {
