@@ -87,6 +87,10 @@ body {
   min-width: 415px;
 
   margin-left: auto;
+
+  position: relative;
+  right: 5em;
+  top: 2em;
 }
 
 .registerForm {

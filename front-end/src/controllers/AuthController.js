@@ -3,6 +3,7 @@
 */
 // Import Mock Data
 import Users from "../placeholderData/users.json";
+require("dotenv").config();
 
 export async function userLogin(emailAddress, password) {
     /*
@@ -18,5 +19,6 @@ export async function userLogin(emailAddress, password) {
     if (typeof userData === "undefined") return null;
 
     // Return the user's accessToken
+
     return userData.id;
 }

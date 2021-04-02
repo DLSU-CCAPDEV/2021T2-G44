@@ -7,6 +7,7 @@ import NavHeader from "./sources/components/NavHeader";
 import Footer from "./sources/components/Footer";
 import Homepage from "./sources/Homepage";
 import Register from "./sources/Register";
+import Login from "./sources/Login";
 import PageNotFound from "./sources/components/PageNotFound";
 
 // Protected Route Imports
@@ -41,27 +42,24 @@ theme = responsiveFontSizes(theme);
 export default function Routes(props) {
     return (
         <ThemeProvider theme={theme}>
-                <Router>
-                    <NavHeader />
+            <Router>
+                <NavHeader />
 
-                    <Switch>
-                        {/* PUBLIC ROUTES */}
-                        <ProtectedRoute exact path="/" component={Homepage} protected={false} />
-                        <ProtectedRoute path="/register" component={Register} protected={false} />
+                <Switch>
+                    {/* PUBLIC ROUTES */}
+                    <ProtectedRoute exact path="/" component={Homepage} protected={false} />
+                    <ProtectedRoute path="/register" component={Register} protected={false} />
+                    <ProtectedRoute path="/login" component={Login} protected={false} />
 
-                        {/* PROTECTED ROUTES */}
-                        <ProtectedRoute
-                            path="/dashboard"
-                            component={Dashboard}
-                            protected={true}
-                        />
+                    {/* PROTECTED ROUTES */}
+                    <ProtectedRoute path="/dashboard" component={Dashboard} protected={true} />
 
-                        {/* 404 */}
-                        <Route component={PageNotFound} />
-                    </Switch>
+                    {/* 404 */}
+                    <Route component={PageNotFound} />
+                </Switch>
 
-                    <Footer />
-                </Router>
+                <Footer />
+            </Router>
         </ThemeProvider>
     );
 }
