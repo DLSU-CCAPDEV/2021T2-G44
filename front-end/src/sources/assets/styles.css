@@ -81,7 +81,7 @@ body {
 }
 
 /* COMPONENTS */
-#registerBox {
+.registerBox {
   background-color: #7868E6;
   border-radius: 50px;
   min-width: 415px;

@@ -102,8 +102,8 @@ function Register(props) {
         <Grid container direction="column" style={{ position: "relative", top: "2em" }}>
             <Grid item container direction="row" justify="center" alignItems="center">
                 <Grid item>
-                    <Box id="registerBox">
-                        <form>
+                    <Box className="registerBox">
+                        <form onSubmit={createAccount}>
                             <Grid container direction="column" justify="center" alignItems="center">
                                 <TextField
                                     required
@@ -178,7 +178,6 @@ function Register(props) {
                                     size="medium"
                                     color="secondary"
                                     style={buttonStyles}
-                                    onClick={createAccount}
                                 >
                                     Create Account
                                 </Fab>
