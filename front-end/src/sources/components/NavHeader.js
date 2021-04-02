@@ -27,9 +27,6 @@ import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
-// Model & Controller Imports
-import { useCookies } from 'react-cookie';
-
 const barStyles = {
     filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
 };
@@ -43,8 +40,7 @@ export default function NavigationHeader(props) {
     const history = useHistory();
 
     // Check if the uid cookie exists
-    const [cookies, _, removeCookie] = useCookies(["uid"]);
-    const uid = cookies.uid;
+    const uid = 0;
 
     const notLoggedIn = () => {
         return (
@@ -174,7 +170,6 @@ export default function NavigationHeader(props) {
     };
 
     const handleLogout = () => {
-        removeCookie("uid");
         history.push("/login");
     };
 

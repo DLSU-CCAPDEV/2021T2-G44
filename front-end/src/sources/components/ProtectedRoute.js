@@ -1,14 +1,11 @@
 import { Route, useHistory } from "react-router-dom";
-import { useCookies } from "react-cookie";
 
 import Unauthorized from "./Unauthorized";
 
 export default function ProtectedRoute({ component: Component, ...rest }) {
     // Check if logged in
     const history = useHistory();
-
-    const [cookies] = useCookies(["uid"]);
-    const uid = cookies.uid;
+    const uid = 0;
     console.log(uid);
 
     // Protected

@@ -1,10 +1,8 @@
 import "./assets/styles.css";
 import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { useCookies } from "react-cookie";
 
 // Model & Controller Imports
-import { cookieOptions } from '../models/Cookie';
 import { userLogin } from '../controllers/AuthController';
 
 // Material-UI
@@ -44,7 +42,6 @@ function Register(props) {
     });
 
     const history = useHistory();
-    const [cookie, setCookie] = useCookies(["uid"]);
 
     // States
     const [ email, setEmail ] = useState("");
@@ -72,17 +69,14 @@ function Register(props) {
             alert("Passwords do not match.");
             return;
         }
-        
+
         // DO ACCOUNT CREATION LOGIC HERE
 
         // For phase 1, log in as user 1.
         const uid = await userLogin("adriel_amoguis@dlsu.edu.ph", "password1");
 
-        // For now, login with UID instead of SID.
-        setCookie("uid", uid, cookieOptions);
-
         // Redirect the user
-        history.push("/dashboard");
+        history.push("/");
     };
 
     const { classes } = props;
