@@ -1,44 +1,41 @@
-import React, { useState, useEffect } from "react";
-import "../assets/styles.css";
-import logo from "../assets/logo.svg";
-import { Link, useHistory } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import '../assets/styles.css';
+import logo from '../assets/logo.svg';
+import { Link, useHistory } from 'react-router-dom';
 
 // Material UI
-import { Grid } from "@material-ui/core";
-import AppBar from "@material-ui/core/AppBar";
-import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import MenuIcon from "@material-ui/icons/Menu";
-import IconButton from "@material-ui/core/IconButton";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import MailIcon from "@material-ui/icons/Mail";
-import DeleteSweepIcon from "@material-ui/icons/DeleteSweep";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import SendIcon from "@material-ui/icons/Send";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
-import EventIcon from "@material-ui/icons/Event";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
+import { Grid } from '@material-ui/core';
+import AppBar from '@material-ui/core/AppBar';
+import clsx from 'clsx';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import Toolbar from '@material-ui/core/Toolbar';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import MenuIcon from '@material-ui/icons/Menu';
+import IconButton from '@material-ui/core/IconButton';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import MailIcon from '@material-ui/icons/Mail';
+import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import SendIcon from '@material-ui/icons/Send';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import EventIcon from '@material-ui/icons/Event';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
 // Cookies
 import { useCookies } from 'react-cookie';
 
-// Global State Context
-import { useGlobalStates } from '../../SessionContext';
-
 const barStyles = {
-    filter: "drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))",
+    filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
 };
 
 const brandingStyles = {
-    flexGrow: "20",
+    flexGrow: '20',
 };
 
 const linkStyles = {
@@ -57,8 +54,7 @@ export default function NavigationHeader(props) {
     const [cookies, _, removeCookie] = useCookies(['uid']);
     useEffect(() => {
         // Check if the uid cookie exists
-        if(typeof cookies.uid !== "undefined" && cookies.uid != null)
-            setIsAuthenticated(true);
+        if (typeof cookies.uid !== 'undefined' && cookies.uid != null) setIsAuthenticated(true);
         else setIsAuthenticated(false);
     }, [cookies.uid]);
 
@@ -196,7 +192,7 @@ export default function NavigationHeader(props) {
         // Clear cookie
         removeCookie('uid');
         setOpen(false);
-        history.push("/login");
+        history.push('/login');
     };
 
     const loggedIn = () => {
@@ -212,12 +208,7 @@ export default function NavigationHeader(props) {
                     <Toolbar>
                         <Grid container direction="row" spacing={3} alignItems="center">
                             <Grid item lg={8}>
-                                <Link
-                                    to="/"
-                                    className="container"
-                                    style={brandingStyles}
-                                    href="index.html"
-                                >
+                                <Link to="/" className="container" style={brandingStyles} href="index.html">
                                     <img src={logo} className="logo" alt="Website Logo" />
                                     <div className="logoLine" />
                                     <h1 id="headerName">Sched-It</h1>
@@ -283,6 +274,6 @@ export default function NavigationHeader(props) {
         );
     };
 
-    if(isAuthenticated) return loggedIn();
+    if (isAuthenticated) return loggedIn();
     else return notLoggedIn();
 }
