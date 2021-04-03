@@ -5,6 +5,7 @@ import { Typography, Grid, Paper } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import ToDoComponent from './components/ToDoList';
 import AddEventButton from './components/AddEvent';
+import DeleteEventButton from './components/DeleteEvent';
 
 // React Scheduler Material UI
 import {
@@ -140,6 +141,10 @@ export default function MyCalendar() {
         setCalendarView(event.target.value);
     };
 
+    const openDeleteDialog = () => {
+        <DeleteEventButton />;
+    };
+
     {
         /* ANCHOR Customized components */
     }
@@ -149,6 +154,17 @@ export default function MyCalendar() {
 
     const disableAddMonthView = React.useCallback((props) => {
         return <MonthView.TimeTableCell {...props} onDoubleClick={(e) => undefined} />;
+    });
+
+    const deleteEvent = React.useCallback((props) => {
+        return (
+            <AppointmentTooltip.Layout
+                {...props}
+                showOpenButton
+                showDeleteButton
+                onDeleteButtonClick={(e) => openDeleteDialog()}
+            />
+        );
     });
 
     {
@@ -237,7 +253,7 @@ export default function MyCalendar() {
                         <WeekView timeTableCellComponent={disableAddWeekView} />
                         <ConfirmationDialog />
                         <Appointments />
-                        <AppointmentTooltip showOpenButton showDeleteButton />
+                        <AppointmentTooltip layoutComponent={deleteEvent} />
                         <AppointmentForm />
                         <Toolbar />
                         <DateNavigator />

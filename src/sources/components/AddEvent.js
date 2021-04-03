@@ -13,7 +13,6 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Checkbox from '@material-ui/core/Checkbox';
-
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
@@ -87,7 +86,7 @@ export default function AddEvent() {
         setPrivateEvent({ ...privateEvent, [event.target.name]: event.target.checked });
     };
 
-    const [allDay, setAllDay] = React.useState({ isAllDay: false });
+    const [allDay, setAllDay] = React.useState({ isAllDay: true });
     const handleAllDayEvent = (event) => {
         setAllDay({ ...allDay, [event.target.name]: event.target.checked });
     };
@@ -159,7 +158,7 @@ export default function AddEvent() {
                         />
                     </FormGroup>
 
-                    {allDay.isAllDay == true ? <TimeFrameEvent /> : null}
+                    {allDay.isAllDay == false ? <TimeFrameEvent /> : null}
 
                     <FormControlLabel
                         control={
