@@ -1,29 +1,24 @@
 import { Route } from "react-router-dom";
-import { useContext } from "react";
 
 import Unauthorized from "./Unauthorized";
-import { useGlobalStates } from "../../SessionContext";
+
+// Cookie
+import { useCookies } from "react-cookie";
 
 export default function ProtectedRoute({ component: Component, ...rest }) {
     // Check if logged in
-    const user = useGlobalStates()?.activeUser;
-
-    // Non-Protected
-    if (!rest.protected && user == null) {
-        return (
-            <Route {...rest}>
-                <Component {...rest} />
-            </Route>
-        );
-    }
+    const [cookies] = useCookies(["uid"]);
+    const uid = cookies.uid;
 
     // Protected
-    if (user !== null && rest.protected) {
+    if (!(uid == null || typeof uid === "undefined") && rest.protected) {
         return (
             <Route {...rest}>
                 <Component {...rest} />
             </Route>
         );
+    } else if (!rest.protected) {
+        return <Component {...rest} />;
     } else {
         return <Unauthorized />;
     }
