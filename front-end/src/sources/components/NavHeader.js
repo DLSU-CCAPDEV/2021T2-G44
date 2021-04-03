@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../assets/styles.css';
 import logo from '../assets/logo.svg';
-import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 // Material UI
 import { Grid } from '@material-ui/core';
@@ -28,8 +27,8 @@ import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
-// Context Controllers
-import { AuthContext } from '../AuthController';
+// Cookies
+import { useCookies } from 'react-cookie';
 
 const barStyles = {
     filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
@@ -39,8 +38,28 @@ const brandingStyles = {
     flexGrow: '20',
 };
 
+const linkStyles = {
+    'fontFamily': 'Roboto',
+    'fontStyle': 'normal',
+    'fontWeight': 'bold',
+    'fontSize': '36px',
+    'lineHeight': '42px',
+    'color': '#212121',
+    'textDecoration': 'none',
+};
+
 export default function NavigationHeader(props) {
-    const user = useContext(AuthContext);
+    // Check logged in
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [cookies, _, removeCookie] = useCookies(['uid']);
+    useEffect(() => {
+        // Check if the uid cookie exists
+        if (typeof cookies.uid !== 'undefined' && cookies.uid != null) setIsAuthenticated(true);
+        else setIsAuthenticated(false);
+    }, [cookies.uid]);
+
+    // Extract the Context
+    const history = useHistory();
 
     const notLoggedIn = () => {
         return (
@@ -48,12 +67,7 @@ export default function NavigationHeader(props) {
                 <Toolbar>
                     <Grid container direction="row" spacing={3} alignItems="center">
                         <Grid item lg={8}>
-                            <Link
-                                to="/"
-                                className="container"
-                                style={brandingStyles}
-                                href="index.html"
-                            >
+                            <Link to="/" className="container" style={brandingStyles}>
                                 <img src={logo} className="logo" alt="Website Logo" />
                                 <div className="logoLine" />
                                 <h1 id="headerName">Sched-It</h1>
@@ -90,7 +104,7 @@ export default function NavigationHeader(props) {
     };
 
     const options = [
-        { text: 'My Calendar', icon: EventIcon },
+        { text: 'My Calendar', icon: EventIcon, link: '/my-calendar' },
         { text: 'Complete Events', icon: CheckBoxIcon },
         { text: 'My Invites', icon: SendIcon },
         { text: 'Inbox', icon: MailIcon },
@@ -174,13 +188,19 @@ export default function NavigationHeader(props) {
         setOpen(false);
     };
 
+    const handleLogout = () => {
+        // Clear cookie
+        removeCookie('uid');
+        setOpen(false);
+        history.push('/login');
+    };
+
     const loggedIn = () => {
         return (
             <div className={classes.root}>
                 <AppBar
-                    position="sticky"
-                    style={barStyles}
                     position="fixed"
+                    style={barStyles}
                     className={clsx(classes.appBar, {
                         [classes.appBarShift]: open,
                     })}
@@ -188,12 +208,7 @@ export default function NavigationHeader(props) {
                     <Toolbar>
                         <Grid container direction="row" spacing={3} alignItems="center">
                             <Grid item lg={8}>
-                                <Link
-                                    to="/"
-                                    className="container"
-                                    style={brandingStyles}
-                                    href="index.html"
-                                >
+                                <Link to="/" className="container" style={brandingStyles} href="index.html">
                                     <img src={logo} className="logo" alt="Website Logo" />
                                     <div className="logoLine" />
                                     <h1 id="headerName">Sched-It</h1>
@@ -229,14 +244,14 @@ export default function NavigationHeader(props) {
 
                     <List>
                         {options.map((images) => (
-                            <Grid container>
+                            <Link to={images.link} style={linkStyles}>
                                 <ListItem button key={images.text}>
                                     <ListItemIcon>
                                         <images.icon fontSize="large" />
                                     </ListItemIcon>
                                     <ListItemText primary={images.text} />
                                 </ListItem>
-                            </Grid>
+                            </Link>
                         ))}
                     </List>
 
@@ -247,7 +262,7 @@ export default function NavigationHeader(props) {
                             </ListItemIcon>
                             <ListItemText primary="My Profile" />
                         </ListItem>
-                        <ListItem button key="Log Out">
+                        <ListItem button onClick={handleLogout} key="Log Out">
                             <ListItemIcon>
                                 <PowerSettingsNewIcon fontSize="large" />
                             </ListItemIcon>
@@ -259,10 +274,6 @@ export default function NavigationHeader(props) {
         );
     };
 
-    if (user !== undefined) {
-        //CHANGE THIS FOR TESTING PURPOSES ONLY
-        return loggedIn();
-    } else {
-        return notLoggedIn();
-    }
+    if (isAuthenticated) return loggedIn();
+    else return notLoggedIn();
 }
