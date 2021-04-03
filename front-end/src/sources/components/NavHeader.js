@@ -1,42 +1,57 @@
-import React from 'react';
-import '../assets/styles.css';
-import logo from '../assets/logo.svg';
-import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import "../assets/styles.css";
+import logo from "../assets/logo.svg";
+import { Link, useHistory } from "react-router-dom";
 
 // Material UI
-import { Grid } from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
-import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuIcon from '@material-ui/icons/Menu';
-import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import MailIcon from '@material-ui/icons/Mail';
-import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import SendIcon from '@material-ui/icons/Send';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import EventIcon from '@material-ui/icons/Event';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import { Grid } from "@material-ui/core";
+import AppBar from "@material-ui/core/AppBar";
+import clsx from "clsx";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Drawer from "@material-ui/core/Drawer";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import Divider from "@material-ui/core/Divider";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import MenuIcon from "@material-ui/icons/Menu";
+import IconButton from "@material-ui/core/IconButton";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import MailIcon from "@material-ui/icons/Mail";
+import DeleteSweepIcon from "@material-ui/icons/DeleteSweep";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import SendIcon from "@material-ui/icons/Send";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import EventIcon from "@material-ui/icons/Event";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
+
+// Cookies
+import { useCookies } from 'react-cookie';
 
 const barStyles = {
-    filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
+    filter: "drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))",
 };
 
 const brandingStyles = {
-    flexGrow: '20',
+    flexGrow: "20",
 };
 
 export default function NavigationHeader(props) {
+    // Check logged in
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [cookies, _, removeCookie] = useCookies(['uid']);
+    useEffect(() => {
+        // Check if the uid cookie exists
+        if(typeof cookies.uid !== "undefined" && cookies.uid != null)
+            setIsAuthenticated(true);
+        else setIsAuthenticated(false);
+    }, [cookies.uid]);
+
+    // Extract the Context
+    const history = useHistory();
+
     const notLoggedIn = () => {
         return (
             <AppBar position="sticky" style={barStyles}>
@@ -164,13 +179,19 @@ export default function NavigationHeader(props) {
         setOpen(false);
     };
 
+    const handleLogout = () => {
+        // Clear cookie
+        removeCookie('uid');
+        setOpen(false);
+        history.push("/login");
+    };
+
     const loggedIn = () => {
         return (
             <div className={classes.root}>
                 <AppBar
-                    position="sticky"
-                    style={barStyles}
                     position="fixed"
+                    style={barStyles}
                     className={clsx(classes.appBar, {
                         [classes.appBarShift]: open,
                     })}
@@ -237,7 +258,7 @@ export default function NavigationHeader(props) {
                             </ListItemIcon>
                             <ListItemText primary="My Profile" />
                         </ListItem>
-                        <ListItem button key="Log Out">
+                        <ListItem button onClick={handleLogout} key="Log Out">
                             <ListItemIcon>
                                 <PowerSettingsNewIcon fontSize="large" />
                             </ListItemIcon>
@@ -249,10 +270,6 @@ export default function NavigationHeader(props) {
         );
     };
 
-    if (false) {
-        //CHANGE THIS FOR TESTING PURPOSES ONLY
-        return loggedIn();
-    } else {
-        return notLoggedIn();
-    }
+    if(isAuthenticated) return loggedIn();
+    else return notLoggedIn();
 }
