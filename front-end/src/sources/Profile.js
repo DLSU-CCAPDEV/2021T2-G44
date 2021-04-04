@@ -1,12 +1,11 @@
 import "./assets/styles.css";
-import profilePic from "./assets/heheAna.png";
 
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Paper } from "@material-ui/core";
-import { Avatar } from "@material-ui/core";
 
 // Component Imports
+import { Paper } from "@material-ui/core";
+import { Avatar } from "@material-ui/core";
 import { Fab, Typography, Grid, TextField } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
@@ -16,6 +15,7 @@ import { pink } from "@material-ui/core/colors";
 import CreateIcon from "@material-ui/icons/Create";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 
+import profilePic from "./assets/heheAna.png";
 // colored Delete Button
 const ColorButton = withStyles((theme) => ({
     root: {
@@ -98,7 +98,11 @@ export default function Profile() {
 
     return (
         // entire main content page
-        <Grid container direction="column">
+        <Grid
+            container
+            direction="column"
+            style={{ position: "relative", top: "4em" }}
+        >
             <Grid
                 item
                 container

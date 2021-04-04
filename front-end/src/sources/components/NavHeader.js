@@ -39,13 +39,13 @@ const brandingStyles = {
 };
 
 const linkStyles = {
-    'fontFamily': 'Roboto',
-    'fontStyle': 'normal',
-    'fontWeight': 'bold',
-    'fontSize': '36px',
-    'lineHeight': '42px',
-    'color': '#212121',
-    'textDecoration': 'none',
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: 'bold',
+    fontSize: '36px',
+    lineHeight: '42px',
+    color: '#212121',
+    textDecoration: 'none',
 };
 
 export default function NavigationHeader(props) {
@@ -193,6 +193,10 @@ export default function NavigationHeader(props) {
         removeCookie('uid');
         setOpen(false);
         history.push('/login');
+    };
+
+    const handleProfile = () => {
+        history.push('/profile');
     };
 
     const loggedIn = () => {
