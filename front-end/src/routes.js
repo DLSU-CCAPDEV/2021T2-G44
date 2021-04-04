@@ -8,7 +8,7 @@ import Footer from "./sources/components/Footer";
 import Homepage from "./sources/Homepage";
 import Register from "./sources/Register";
 import Login from "./sources/Login";
-import PageNotFound from "./sources/components/PageNotFound";
+import ErrorPage from "./sources/components/ErrorPage";
 
 // Protected Route Imports
 import Dashboard from "./sources/UserDashboard";
@@ -82,8 +82,12 @@ export default function Routes(props) {
                         component={Profile}
                         protected={true}
                     />
-                    {/* 404 */}
-                    <Route component={PageNotFound} />
+                    {/* Error */}
+                    <Route
+                        render={(props) => (
+                            <ErrorPage {...props} errorType={404} />
+                        )}
+                    />
                 </Switch>
 
                 <Footer />

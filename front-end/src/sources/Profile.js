@@ -98,7 +98,11 @@ export default function Profile() {
 
     return (
         // entire main content page
-        <Grid container direction="column">
+        <Grid
+            container
+            direction="column"
+            style={{ position: "relative", top: "4em" }}
+        >
             <Grid
                 item
                 container

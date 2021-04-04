@@ -1,60 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import '../assets/styles.css';
-import logo from '../assets/logo.svg';
-import { Link, useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import "../assets/styles.css";
+import logo from "../assets/logo.svg";
+import { Link, useHistory } from "react-router-dom";
 
 // Material UI
-import { Grid } from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
-import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuIcon from '@material-ui/icons/Menu';
-import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import MailIcon from '@material-ui/icons/Mail';
-import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import SendIcon from '@material-ui/icons/Send';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import EventIcon from '@material-ui/icons/Event';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import { Grid } from "@material-ui/core";
+import AppBar from "@material-ui/core/AppBar";
+import clsx from "clsx";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Drawer from "@material-ui/core/Drawer";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import Divider from "@material-ui/core/Divider";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import MenuIcon from "@material-ui/icons/Menu";
+import IconButton from "@material-ui/core/IconButton";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import MailIcon from "@material-ui/icons/Mail";
+import DeleteSweepIcon from "@material-ui/icons/DeleteSweep";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import SendIcon from "@material-ui/icons/Send";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import EventIcon from "@material-ui/icons/Event";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 
 // Cookies
-import { useCookies } from 'react-cookie';
+import { useCookies } from "react-cookie";
 
 const barStyles = {
-    filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
+    filter: "drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))",
 };
 
 const brandingStyles = {
-    flexGrow: '20',
+    flexGrow: "20",
 };
 
 const linkStyles = {
-    'fontFamily': 'Roboto',
-    'fontStyle': 'normal',
-    'fontWeight': 'bold',
-    'fontSize': '36px',
-    'lineHeight': '42px',
-    'color': '#212121',
-    'textDecoration': 'none',
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: "bold",
+    fontSize: "36px",
+    lineHeight: "42px",
+    color: "#212121",
+    textDecoration: "none",
 };
 
 export default function NavigationHeader(props) {
     // Check logged in
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [cookies, _, removeCookie] = useCookies(['uid']);
+    const [cookies, _, removeCookie] = useCookies(["uid"]);
     useEffect(() => {
         // Check if the uid cookie exists
-        if (typeof cookies.uid !== 'undefined' && cookies.uid != null) setIsAuthenticated(true);
+        if (typeof cookies.uid !== "undefined" && cookies.uid != null)
+            setIsAuthenticated(true);
         else setIsAuthenticated(false);
     }, [cookies.uid]);
 
@@ -65,10 +66,23 @@ export default function NavigationHeader(props) {
         return (
             <AppBar position="sticky" style={barStyles}>
                 <Toolbar>
-                    <Grid container direction="row" spacing={3} alignItems="center">
+                    <Grid
+                        container
+                        direction="row"
+                        spacing={3}
+                        alignItems="center"
+                    >
                         <Grid item lg={8}>
-                            <Link to="/" className="container" style={brandingStyles}>
-                                <img src={logo} className="logo" alt="Website Logo" />
+                            <Link
+                                to="/"
+                                className="container"
+                                style={brandingStyles}
+                            >
+                                <img
+                                    src={logo}
+                                    className="logo"
+                                    alt="Website Logo"
+                                />
                                 <div className="logoLine" />
                                 <h1 id="headerName">Sched-It</h1>
                             </Link>
@@ -104,28 +118,28 @@ export default function NavigationHeader(props) {
     };
 
     const options = [
-        { text: 'My Calendar', icon: EventIcon, link: '/my-calendar' },
-        { text: 'Complete Events', icon: CheckBoxIcon },
-        { text: 'My Invites', icon: SendIcon },
-        { text: 'Inbox', icon: MailIcon },
-        { text: 'Delete Event', icon: DeleteSweepIcon },
+        { text: "My Calendar", icon: EventIcon, link: "/my-calendar" },
+        { text: "Complete Events", icon: CheckBoxIcon },
+        { text: "My Invites", icon: SendIcon },
+        { text: "Inbox", icon: MailIcon },
+        { text: "Delete Event", icon: DeleteSweepIcon },
     ];
 
     const drawerWidth = 300;
 
     const useStyles = makeStyles((theme) => ({
         root: {
-            display: 'flex',
+            display: "flex",
         },
         appBar: {
-            transition: theme.transitions.create(['margin', 'width'], {
+            transition: theme.transitions.create(["margin", "width"], {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.leavingScreen,
             }),
         },
         appBarShift: {
             width: `calc(100% - ${drawerWidth}px)`,
-            transition: theme.transitions.create(['margin', 'width'], {
+            transition: theme.transitions.create(["margin", "width"], {
                 easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen,
             }),
@@ -135,7 +149,7 @@ export default function NavigationHeader(props) {
             flexGrow: 1,
         },
         hide: {
-            display: 'none',
+            display: "none",
         },
         drawer: {
             width: drawerWidth,
@@ -145,34 +159,34 @@ export default function NavigationHeader(props) {
             width: drawerWidth,
         },
         drawerHeader: {
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             padding: theme.spacing(0, 1),
             // necessary for content to be below app bar
             ...theme.mixins.toolbar,
-            justifyContent: 'flex-start',
+            justifyContent: "flex-start",
         },
         content: {
             flexGrow: 1,
             padding: theme.spacing(3),
-            transition: theme.transitions.create('margin', {
+            transition: theme.transitions.create("margin", {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.leavingScreen,
             }),
             marginRight: -drawerWidth,
         },
         contentShift: {
-            transition: theme.transitions.create('margin', {
+            transition: theme.transitions.create("margin", {
                 easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen,
             }),
             marginRight: 0,
         },
         footerButtons: {
-            position: 'fixed',
-            bottom: '0',
-            width: '100%',
-            height: '60',
+            position: "fixed",
+            bottom: "0",
+            width: "100%",
+            height: "60",
         },
     }));
 
@@ -190,9 +204,13 @@ export default function NavigationHeader(props) {
 
     const handleLogout = () => {
         // Clear cookie
-        removeCookie('uid');
+        removeCookie("uid");
         setOpen(false);
-        history.push('/login');
+        history.push("/login");
+    };
+
+    const handleProfile = () => {
+        history.push("/profile");
     };
 
     const loggedIn = () => {
@@ -206,10 +224,24 @@ export default function NavigationHeader(props) {
                     })}
                 >
                     <Toolbar>
-                        <Grid container direction="row" spacing={3} alignItems="center">
+                        <Grid
+                            container
+                            direction="row"
+                            spacing={3}
+                            alignItems="center"
+                        >
                             <Grid item lg={8}>
-                                <Link to="/" className="container" style={brandingStyles} href="index.html">
-                                    <img src={logo} className="logo" alt="Website Logo" />
+                                <Link
+                                    to="/"
+                                    className="container"
+                                    style={brandingStyles}
+                                    href="index.html"
+                                >
+                                    <img
+                                        src={logo}
+                                        className="logo"
+                                        alt="Website Logo"
+                                    />
                                     <div className="logoLine" />
                                     <h1 id="headerName">Sched-It</h1>
                                 </Link>
@@ -237,7 +269,11 @@ export default function NavigationHeader(props) {
                 >
                     <div className={classes.drawerHeader}>
                         <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                            {theme.direction === "rtl" ? (
+                                <ChevronLeftIcon />
+                            ) : (
+                                <ChevronRightIcon />
+                            )}
                         </IconButton>
                     </div>
                     <Divider />
@@ -256,7 +292,11 @@ export default function NavigationHeader(props) {
                     </List>
 
                     <List className={classes.footerButtons}>
-                        <ListItem button key="My Profile">
+                        <ListItem
+                            button
+                            onClick={handleProfile}
+                            key="My Profile"
+                        >
                             <ListItemIcon>
                                 <AccountCircleIcon fontSize="large" />
                             </ListItemIcon>
