@@ -105,7 +105,7 @@ export default function NavigationHeader(props) {
 
     const options = [
         { text: 'My Calendar', icon: EventIcon, link: '/my-calendar' },
-        { text: 'Complete Events', icon: CheckBoxIcon },
+        { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments' },
         { text: 'My Invites', icon: SendIcon },
         { text: 'Inbox', icon: MailIcon },
         { text: 'Delete Event', icon: DeleteSweepIcon },
@@ -256,12 +256,15 @@ export default function NavigationHeader(props) {
                     </List>
 
                     <List className={classes.footerButtons}>
-                        <ListItem button key="My Profile">
-                            <ListItemIcon>
-                                <AccountCircleIcon fontSize="large" />
-                            </ListItemIcon>
-                            <ListItemText primary="My Profile" />
-                        </ListItem>
+                        <Link to="/profile" style={linkStyles}>
+                            <ListItem button key="My Profile">
+                                <ListItemIcon>
+                                    <AccountCircleIcon fontSize="large" />
+                                </ListItemIcon>
+                                <ListItemText primary="My Profile" />
+                            </ListItem>
+                        </Link>
+
                         <ListItem button onClick={handleLogout} key="Log Out">
                             <ListItemIcon>
                                 <PowerSettingsNewIcon fontSize="large" />
