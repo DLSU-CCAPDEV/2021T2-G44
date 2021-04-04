@@ -1,6 +1,6 @@
 import { Route } from "react-router-dom";
 
-import Unauthorized from "./Unauthorized";
+import ErrorPage from "./ErrorPage";
 
 // Cookie
 import { useCookies } from "react-cookie";
@@ -20,6 +20,6 @@ export default function ProtectedRoute({ component: Component, ...rest }) {
     } else if (!rest.protected) {
         return <Component {...rest} />;
     } else {
-        return <Unauthorized />;
+        return <ErrorPage errorType={401} />;
     }
 }
