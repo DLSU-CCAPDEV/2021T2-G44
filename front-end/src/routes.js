@@ -9,6 +9,7 @@ import Homepage from "./sources/Homepage";
 import Register from "./sources/Register";
 import Login from "./sources/Login";
 import ErrorPage from "./sources/components/ErrorPage";
+import About from "./sources/about";
 
 // Protected Route Imports
 import Dashboard from "./sources/UserDashboard";
@@ -53,6 +54,12 @@ export default function Routes(props) {
                         exact
                         path="/"
                         component={Homepage}
+                        protected={false}
+                    />
+                    <ProtectedRoute
+                        exact
+                        path="/about"
+                        component={About}
                         protected={false}
                     />
                     <ProtectedRoute
