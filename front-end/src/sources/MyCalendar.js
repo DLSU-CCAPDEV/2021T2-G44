@@ -192,6 +192,7 @@ export default function MyCalendar() {
             container
             direction="row"
             className={classes.root}
+            style={{ padding: "0 0 4em 0" }}
             xs={12}
             spacing={3}
         >
@@ -201,17 +202,8 @@ export default function MyCalendar() {
                 {/** Title and controls */}
                 <Grid item container direction="row" justify="space-between">
                     {/** Calendar Art */}
-                    <Grid
-                        item
-                        container
-                        direction="row"
-                        xs={2}
-                        style={{ marginLeft: "2%" }}
-                    >
-                        <img
-                            src={calendarArt}
-                            className={classes.calendarArt}
-                        />
+                    <Grid item container direction="row" xs={2} style={{ marginLeft: "2%" }}>
+                        <img src={calendarArt} className={classes.calendarArt} />
                     </Grid>
 
                     {/** Calendar Title */}
@@ -223,11 +215,7 @@ export default function MyCalendar() {
                         alignItems="center"
                         xs={3}
                     >
-                        <Typography
-                            variant="h2"
-                            color="primary"
-                            className={classes.calendarTitle}
-                        >
+                        <Typography variant="h2" color="primary" className={classes.calendarTitle}>
                             My Calendar
                         </Typography>
                     </Grid>
@@ -307,9 +295,7 @@ export default function MyCalendar() {
                         <ViewState currentViewName={calendarView} />
                         <EditingState onCommitChanges={commitChanges} />
                         <IntegratedEditing />
-                        <MonthView
-                            timeTableCellComponent={disableAddMonthView}
-                        />
+                        <MonthView timeTableCellComponent={disableAddMonthView} />
                         <WeekView timeTableCellComponent={disableAddWeekView} />
                         <ConfirmationDialog />
                         <Appointments />

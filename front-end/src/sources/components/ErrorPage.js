@@ -22,23 +22,17 @@ export default function ErrorPage(props) {
                 direction="row"
                 justify="center"
                 alignItems="center"
-                style={{ position: "relative", top: "4em" }}
+                style={{ padding: "10em 0 8em 0" }}
             >
                 <Grid item xs={5}>
-                    <img
-                        src={error400}
-                        alt="error400"
-                        style={{ maxWidth: "90%" }}
-                    />
+                    <img src={error400} alt="error400" style={{ maxWidth: "90%" }} />
                 </Grid>
 
                 <Grid item xs={5}>
                     <Typography variant="h2" style={{ fontWeight: "bold" }}>
                         Whoops something went wrong <br />
                     </Typography>
-                    <Typography variant="h3">
-                        Can you try doing that again?
-                    </Typography>
+                    <Typography variant="h3">Can you try doing that again?</Typography>
                     <Typography variant="h4">
                         Error 400: <br />
                         Bad Request
@@ -54,14 +48,10 @@ export default function ErrorPage(props) {
                 direction="row"
                 justify="center"
                 alignItems="center"
-                style={{ position: "relative", top: "4em" }}
+                style={{ padding: "10em 0 8em 0" }}
             >
                 <Grid item xs={6}>
-                    <img
-                        src={error401}
-                        alt="error401"
-                        style={{ maxWidth: "90%" }}
-                    />
+                    <img src={error401} alt="error401" style={{ maxWidth: "90%" }} />
                 </Grid>
 
                 <Grid item xs={4}>
@@ -83,14 +73,10 @@ export default function ErrorPage(props) {
                 direction="row"
                 justify="center"
                 alignItems="center"
-                style={{ position: "relative", top: "4em" }}
+                style={{ padding: "10em 0 8em 0" }}
             >
                 <Grid item xs={6}>
-                    <img
-                        src={error403}
-                        alt="error403"
-                        style={{ maxWidth: "90%" }}
-                    />
+                    <img src={error403} alt="error403" style={{ maxWidth: "90%" }} />
                 </Grid>
 
                 <Grid item xs={4}>
@@ -111,14 +97,10 @@ export default function ErrorPage(props) {
                 direction="row"
                 justify="center"
                 alignItems="center"
-                style={{ position: "relative", top: "4em" }}
+                style={{ padding: "10em 0 8em 0" }}
             >
                 <Grid item xs={6}>
-                    <img
-                        src={error404}
-                        alt="error404"
-                        style={{ maxWidth: "90%" }}
-                    />
+                    <img src={error404} alt="error404" style={{ maxWidth: "90%" }} />
                 </Grid>
 
                 <Grid item xs={4}>
@@ -139,14 +121,10 @@ export default function ErrorPage(props) {
                 direction="row"
                 justify="center"
                 alignItems="center"
-                style={{ position: "relative", top: "4em" }}
+                style={{ padding: "10em 0 8em 0" }}
             >
                 <Grid item xs={6}>
-                    <img
-                        src={error500}
-                        alt="error500"
-                        style={{ maxWidth: "90%" }}
-                    />
+                    <img src={error500} alt="error500" style={{ maxWidth: "90%" }} />
                 </Grid>
 
                 <Grid item xs={4}>

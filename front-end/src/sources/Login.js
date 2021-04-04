@@ -76,7 +76,7 @@ function Login(props) {
     };
     
     return (
-        <Grid container direction="column" style={{ position: "relative", top: "4em" }}>
+        <Grid container direction="column" style={{ padding: "5em 0 8em 0" }}>
             <Grid item container direction="row" justify="center" alignItems="center">
                 <Grid item container direction="column" justify="center" alignItems="center" xs={6}>
                     <Grid item>
