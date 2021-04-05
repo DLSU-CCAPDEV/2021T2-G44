@@ -93,7 +93,7 @@ function Register(props) {
         setCookie("uid", uid, cookieOptions);
 
         // Redirect the user
-        history.push("/dashboard");
+        history.push("/my-calendar");
     };
 
     const { classes } = props;

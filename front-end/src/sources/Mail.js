@@ -9,7 +9,6 @@ import ViewMessage from "./components/ViewMessage";
 import {
     Grid,
     Typography,
-    Box,
     Table,
     TableBody,
     TableCell,
@@ -17,6 +16,7 @@ import {
     TableHead,
     TableRow,
     Paper,
+    Radio,
 } from "@material-ui/core";
 
 // Temporary
@@ -57,31 +57,61 @@ const styles = {
     },
 };
 
-export default function Inbox(props) {
+export default function Mail(props) {
     // Temp
     const [cookies] = useCookies(["uid"]);
 
     const [mail, setMail] = useState(null);
+
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState(null);
+    const [mailbox, setMailbox] = useState(0);
 
     useEffect(() => {
         document.title = "Inbox - Sched-It";
         getInbox(cookies.uid).then((inbox) => setMail(inbox));
     }, []);
 
-    const handleClick = (messageID) => {
+    const handleClick = (message) => {
         // Render dialog box here
-        console.log("Clicked! " + messageID);
-        <ViewMessage />;
+        setDialogMessage(message);
+        setDialogOpen(true);
+    };
+
+    const handleMailBoxChange = (e) => {
+        if (e.target.value === "Inbox") setMailbox(0);
+        else setMailbox(1);
     };
 
     return (
         <Grid container direction="column" style={{ padding: "5em 0 8em 0" }}>
+            <ViewMessage
+                dialogOpen={dialogOpen}
+                setDialogOpen={setDialogOpen}
+                message={dialogMessage}
+            />
             <Grid item container direction="row" justify="center">
                 <Grid item container direction="column" alignItems="center">
-                    <Grid item alignSelf="flex-start">
+                    <Grid item align="left">
                         <Typography variant="h3" style={{ fontWeight: "bold" }}>
                             Inbox
                         </Typography>
+                        <Radio
+                            checked={mailbox === 0}
+                            onChange={handleMailBoxChange}
+                            value="Inbox"
+                            name="Inbox-Radio-Button"
+                            color="primary"
+                        />
+                        Inbox
+                        <Radio
+                            checked={mailbox === 1}
+                            onChange={handleMailBoxChange}
+                            value="Sent"
+                            name="Inbox-Radio-Button"
+                            color="primary"
+                        />
+                        Sent
                     </Grid>
 
                     <Grid item>
@@ -110,8 +140,9 @@ export default function Inbox(props) {
                                     {mail &&
                                         mail.map((m, i) => (
                                             <TableRow
+                                                className="pointerHover"
                                                 key={m.id}
-                                                onClick={() => handleClick(m.id)}
+                                                onClick={() => handleClick(m)}
                                                 style={
                                                     i % 2 == 0
                                                         ? styles.tableData.odd

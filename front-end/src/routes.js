@@ -12,10 +12,9 @@ import ErrorPage from "./sources/components/ErrorPage";
 import About from "./sources/About";
 
 // Protected Route Imports
-import Dashboard from "./sources/UserDashboard";
 import MyCalendar from "./sources/MyCalendar";
 import Profile from "./sources/Profile";
-import Inbox from "./sources/Inbox";
+import Mail from "./sources/Mail";
 
 // Material UI
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
@@ -57,11 +56,10 @@ export default function Routes(props) {
                     <ProtectedRoute path="/login" component={Login} protected={false} />
 
                     {/* PROTECTED ROUTES */}
-                    <ProtectedRoute path="/dashboard" component={Dashboard} protected={true} />
                     <ProtectedRoute path="/my-calendar" component={MyCalendar} protected={true} />
                     <ProtectedRoute path="/profile" component={Profile} protected={true} />
-                    <ProtectedRoute path="/inbox" component={Inbox} protected={true} />
-                    
+                    <ProtectedRoute path="/mail" component={Mail} protected={true} />
+
                     {/* Error */}
                     <Route render={(props) => <ErrorPage {...props} errorType={404} />} />
                 </Switch>

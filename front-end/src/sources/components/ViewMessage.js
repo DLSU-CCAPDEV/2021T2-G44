@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 
+import '../assets/styles.css';
+
 import {
+    Typography,
     Button,
     Dialog,
     DialogActions,
@@ -15,19 +18,40 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function ViewMessage(props) {
-    // Set the dialog state
-    const [open, setOpen] = useState(true);
-    const [message, setMessage] = useState(null);
-
-    const handleClick = () => {
-        setOpen(!open);
+    
+    const handleOpen = () => {
+        props.setDialogOpen(true);
     };
 
-    return (
-        <div>
-            <Dialog open={open} TransitionComponent={Transition}>
-                <DialogTitle id="alert-dialog=slide=title"></DialogTitle>
-            </Dialog>
-        </div>
-    );
+    const handleClose = () => {
+        props.setDialogOpen(false);
+    };
+
+    if(props.message != null)
+        return (
+            <div>
+                <Dialog 
+                    open={props.dialogOpen} 
+                    keepMounted 
+                    TransitionComponent={Transition} 
+                    onClose={handleClose}
+                >
+                    <DialogTitle id="alert-dialog=slide=title">{props.message.subject}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            <Typography variant="h6">Sender: {`${props.message.sender.firstName} ${props.message.sender.lastName}`}</Typography>
+                            <Typography variant="body1">Sent: {`${props.message.sendTime}`}</Typography>
+                            <br />
+                            <Typography style={{color: "black"}} variant="body1">{props.message.content}</Typography>
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button>Reply</Button>
+                        <Button onClick={handleClose}>Close</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        );
+    else
+        return <div></div>;
 }

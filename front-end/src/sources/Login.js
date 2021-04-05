@@ -72,7 +72,7 @@ function Login(props) {
         setCookie('uid', uid, cookieOptions);
 
         // Redirect user to dashboard
-        history.push("/dashboard");
+        history.push("/my-calendar");
     };
     
     return (

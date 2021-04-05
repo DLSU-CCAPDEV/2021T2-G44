@@ -26,11 +26,13 @@ export const getInbox = async (uid, start = 0, end = 50) => {
             date.getFullYear() === now.getFullYear()
         ) {
             // Parse as time
-            mail.sendTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+            mail.sendTime = `Today ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
         }
         // Parse as datetime
         else mail.sendTime = date.toDateString();
     });
+
+    // Sort by date
 
     return selected;
 };
