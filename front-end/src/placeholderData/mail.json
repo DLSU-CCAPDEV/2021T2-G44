@@ -1,0 +1,29 @@
+[
+    {
+        "id": 0,
+        "senderID": 0,
+        "recepientID": 1,
+        "sendTime": "2021-04-04T22:58:03.464Z",
+        "subject": "Welcome to AGLET!",
+        "content": "Nothing much here, just wanted to say hi.",
+        "attachments": []
+    },
+    {
+        "id": 2,
+        "senderID": 2,
+        "recepientID": 1,
+        "sendTime": "2021-04-04T15:46:50.724Z",
+        "subject": "Tito Badang!",
+        "content": "Dalawang beses na yan!",
+        "attachments": []
+    },
+    {
+        "id": 3,
+        "senderID": 3,
+        "recepientID": 1,
+        "sendTime": "2021-05-04T19:46:50.724Z",
+        "subject": "Welcome to AGLET!",
+        "content": "Nothing much here, just wanted to say hi.",
+        "attachments": []
+    }
+]

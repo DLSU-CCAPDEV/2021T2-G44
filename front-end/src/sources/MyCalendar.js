@@ -25,7 +25,7 @@ import {
     EditingState,
     IntegratedEditing,
 } from "@devexpress/dx-react-scheduler";
-import { appointments } from "./appointments";
+import { appointments } from "./Appointments";
 
 // Material UI
 import { fade, withStyles, makeStyles } from "@material-ui/core/styles";
