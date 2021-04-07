@@ -69,9 +69,20 @@ export default function Mail(props) {
     const [mailbox, setMailbox] = useState(0);
 
     useEffect(() => {
-        document.title = "Inbox - Sched-It";
+        switch (mailbox) {
+            case 0:
+                document.title = "Inbox - Sched-It";
+                break;
+            case 1:
+                document.title = "Sent Mail - Sched-It";
+        }
+    });
+
+    useEffect(() => {
         getInbox(cookies.uid).then((inbox) => setMail(inbox));
-        getSent(cookies.uid).then((sentMail) => setSent(sentMail)).then(() => console.log(sent));
+        getSent(cookies.uid)
+            .then((sentMail) => setSent(sentMail))
+            .then(() => console.log(sent));
     }, []);
 
     const handleClick = (message) => {
