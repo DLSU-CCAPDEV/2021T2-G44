@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getInbox } from "../controllers/MailController";
+import { getInbox, getSent } from "../controllers/MailController";
 
 import "./assets/styles.css";
 
@@ -62,6 +62,7 @@ export default function Mail(props) {
     const [cookies] = useCookies(["uid"]);
 
     const [mail, setMail] = useState(null);
+    const [sent, setSent] = useState(null);
 
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogMessage, setDialogMessage] = useState(null);
@@ -70,6 +71,7 @@ export default function Mail(props) {
     useEffect(() => {
         document.title = "Inbox - Sched-It";
         getInbox(cookies.uid).then((inbox) => setMail(inbox));
+        getSent(cookies.uid).then((sentMail) => setSent(sentMail)).then(() => console.log(sent));
     }, []);
 
     const handleClick = (message) => {
@@ -81,20 +83,23 @@ export default function Mail(props) {
     const handleMailBoxChange = (e) => {
         if (e.target.value === "Inbox") setMailbox(0);
         else setMailbox(1);
+
+        setDialogMessage(null);
     };
 
     return (
-        <Grid container direction="column" style={{ padding: "5em 0 8em 0" }}>
+        <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
             <ViewMessage
                 dialogOpen={dialogOpen}
                 setDialogOpen={setDialogOpen}
                 message={dialogMessage}
+                mailbox={mailbox}
             />
             <Grid item container direction="row" justify="center">
                 <Grid item container direction="column" alignItems="center">
-                    <Grid item align="left">
+                    <Grid item style={{ marginRight: "60em" }}>
                         <Typography variant="h3" style={{ fontWeight: "bold" }}>
-                            Inbox
+                            { mailbox === 0 ? "Inbox" : "Sent Mail"}
                         </Typography>
                         <Radio
                             checked={mailbox === 0}
@@ -123,7 +128,7 @@ export default function Mail(props) {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell style={styles.tableHeaders.from} align="center">
-                                            From
+                                            {mailbox === 0 ? "From" : "To"}
                                         </TableCell>
                                         <TableCell
                                             style={styles.tableHeaders.subject}
@@ -137,7 +142,7 @@ export default function Mail(props) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {mail &&
+                                    {mail && mailbox === 0 &&
                                         mail.map((m, i) => (
                                             <TableRow
                                                 className="pointerHover"
@@ -151,7 +156,40 @@ export default function Mail(props) {
                                             >
                                                 <TableCell style={styles.tableData.td}>
                                                     <Typography align="center" variant="subtitle1">
-                                                        {`${m.sender.firstName} ${m.sender.lastName}`}
+                                                        {
+                                                            `${m.sender.firstName} ${m.sender.lastName}`
+                                                        }
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell style={styles.tableData.td}>
+                                                    <Typography align="center" variant="subtitle1">
+                                                        {m.subject}
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell style={styles.tableData.td}>
+                                                    <Typography align="center" variant="subtitle1">
+                                                        {m.sendTime}
+                                                    </Typography>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                        {sent && mailbox === 1 &&
+                                        sent.map((m, i) => (
+                                            <TableRow
+                                                className="pointerHover"
+                                                key={m.id}
+                                                onClick={() => handleClick(m)}
+                                                style={
+                                                    i % 2 == 0
+                                                        ? styles.tableData.odd
+                                                        : styles.tableData.even
+                                                }
+                                            >
+                                                <TableCell style={styles.tableData.td}>
+                                                    <Typography align="center" variant="subtitle1">
+                                                    {
+                                                            `${m.recepient.firstName} ${m.recepient.lastName}`
+                                                        }
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell style={styles.tableData.td}>

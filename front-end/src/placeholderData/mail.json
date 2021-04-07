@@ -25,5 +25,23 @@
         "subject": "Welcome to AGLET!",
         "content": "Nothing much here, just wanted to say hi.",
         "attachments": []
+    },
+    {
+        "id": 4,
+        "senderID": 2,
+        "recepientID": 0,
+        "sendTime": "2021-05-04T12:46:50.724Z",
+        "subject": "Welcome to AGLET!",
+        "content": "Nothing much here, just wanted to say hi.",
+        "attachments": []
+    },
+    {
+        "id": 5,
+        "senderID": 1,
+        "recepientID": 0,
+        "sendTime": "2021-05-04T12:46:50.724Z",
+        "subject": "Welcome to AGLET!",
+        "content": "Nothing much here, just wanted to say hi.",
+        "attachments": []
     }
 ]

@@ -18,7 +18,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function ViewMessage(props) {
-    
+
+    console.log(props.mailbox);
+
     const handleOpen = () => {
         props.setDialogOpen(true);
     };
@@ -30,19 +32,34 @@ export default function ViewMessage(props) {
     if(props.message != null)
         return (
             <div>
-                <Dialog 
-                    open={props.dialogOpen} 
-                    keepMounted 
-                    TransitionComponent={Transition} 
+                <Dialog
+                    open={props.dialogOpen}
+                    keepMounted
+                    TransitionComponent={Transition}
                     onClose={handleClose}
                 >
                     <DialogTitle id="alert-dialog=slide=title">{props.message.subject}</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            <Typography variant="h6">Sender: {`${props.message.sender.firstName} ${props.message.sender.lastName}`}</Typography>
-                            <Typography variant="body1">Sent: {`${props.message.sendTime}`}</Typography>
+                            {props.mailbox === 0 && (
+                                <Typography variant="h6">
+                                    Sender:{" "}
+                                    {`${props.message.sender.firstName} ${props.message.sender.lastName}`}
+                                </Typography>
+                            )}
+                            {props.mailbox === 1 && (
+                                <Typography variant="h6">
+                                    Recepient:{" "}
+                                    {`${props.message.recepient.firstName} ${props.message.recepient.lastName}`}
+                                </Typography>
+                            )}
+                            <Typography variant="body1">
+                                Sent: {`${props.message.sendTime}`}
+                            </Typography>
                             <br />
-                            <Typography style={{color: "black"}} variant="body1">{props.message.content}</Typography>
+                            <Typography style={{ color: "black" }} variant="body1">
+                                {props.message.content}
+                            </Typography>
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
