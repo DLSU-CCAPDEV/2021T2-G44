@@ -49,13 +49,14 @@ const linkStyles = {
 };
 
 export default function NavigationHeader(props) {
+
     // Check logged in
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [cookies, _, removeCookie] = useCookies(["uid"]);
+
     useEffect(() => {
         // Check if the uid cookie exists
-        if (typeof cookies.uid !== "undefined" && cookies.uid != null)
-            setIsAuthenticated(true);
+        if (typeof cookies.uid !== "undefined" && cookies.uid != null) setIsAuthenticated(true);
         else setIsAuthenticated(false);
     }, [cookies.uid]);
 
@@ -66,23 +67,10 @@ export default function NavigationHeader(props) {
         return (
             <AppBar position="sticky" style={barStyles}>
                 <Toolbar>
-                    <Grid
-                        container
-                        direction="row"
-                        spacing={3}
-                        alignItems="center"
-                    >
+                    <Grid container direction="row" spacing={3} alignItems="center">
                         <Grid item lg={8}>
-                            <Link
-                                to="/"
-                                className="container"
-                                style={brandingStyles}
-                            >
-                                <img
-                                    src={logo}
-                                    className="logo"
-                                    alt="Website Logo"
-                                />
+                            <Link to="/" className="container" style={brandingStyles}>
+                                <img src={logo} className="logo" alt="Website Logo" />
                                 <div className="logoLine" />
                                 <h1 id="headerName">Sched-It</h1>
                             </Link>
@@ -204,8 +192,8 @@ export default function NavigationHeader(props) {
 
     const handleLogout = () => {
         // Clear cookie
-        removeCookie("uid");
         setOpen(false);
+        removeCookie("uid");
         history.push("/login");
     };
 
@@ -224,12 +212,7 @@ export default function NavigationHeader(props) {
                     })}
                 >
                     <Toolbar>
-                        <Grid
-                            container
-                            direction="row"
-                            spacing={3}
-                            alignItems="center"
-                        >
+                        <Grid container direction="row" spacing={3} alignItems="center">
                             <Grid item lg={8}>
                                 <Link
                                     to="/"
@@ -237,11 +220,7 @@ export default function NavigationHeader(props) {
                                     style={brandingStyles}
                                     href="index.html"
                                 >
-                                    <img
-                                        src={logo}
-                                        className="logo"
-                                        alt="Website Logo"
-                                    />
+                                    <img src={logo} className="logo" alt="Website Logo" />
                                     <div className="logoLine" />
                                     <h1 id="headerName">Sched-It</h1>
                                 </Link>
@@ -269,11 +248,7 @@ export default function NavigationHeader(props) {
                 >
                     <div className={classes.drawerHeader}>
                         <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === "rtl" ? (
-                                <ChevronLeftIcon />
-                            ) : (
-                                <ChevronRightIcon />
-                            )}
+                            {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                         </IconButton>
                     </div>
                     <Divider />
@@ -292,11 +267,7 @@ export default function NavigationHeader(props) {
                     </List>
 
                     <List className={classes.footerButtons}>
-                        <ListItem
-                            button
-                            onClick={handleProfile}
-                            key="My Profile"
-                        >
+                        <ListItem button onClick={handleProfile} key="My Profile">
                             <ListItemIcon>
                                 <AccountCircleIcon fontSize="large" />
                             </ListItemIcon>
