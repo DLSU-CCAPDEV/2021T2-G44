@@ -70,3 +70,8 @@ export const getSent = async (uid, start = 0, end = 50) => {
 
     return selected;
 };
+
+export const sendMessage = (userEmail, messageContent) => {
+    // Normally, this would be an API call to the backend.
+    // For phase 1, this function does nothing.
+};

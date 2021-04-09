@@ -18,18 +18,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function ViewMessage(props) {
-
-    console.log(props.mailbox);
-
-    const handleOpen = () => {
-        props.setDialogOpen(true);
-    };
-
     const handleClose = () => {
         props.setDialogOpen(false);
     };
 
-    if(props.message != null)
+    if (props.message != null)
         return (
             <div>
                 <Dialog
@@ -63,12 +56,11 @@ export default function ViewMessage(props) {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button>Reply</Button>
+                        {props.message.sender && <Button>Reply</Button>}
                         <Button onClick={handleClose}>Close</Button>
                     </DialogActions>
                 </Dialog>
             </div>
         );
-    else
-        return <div></div>;
+    else return <div></div>;
 }

@@ -4,10 +4,12 @@ import { getInbox, getSent } from "../controllers/MailController";
 import "./assets/styles.css";
 
 import ViewMessage from "./components/ViewMessage";
+import SendMessage from "./components/SendMessage";
 
 // Material-UI
 import {
     Grid,
+    Fab,
     Typography,
     Table,
     TableBody,
@@ -18,6 +20,7 @@ import {
     Paper,
     Radio,
 } from "@material-ui/core";
+import NavigationIcon from '@material-ui/icons/Navigation';
 
 // Temporary
 import { useCookies } from "react-cookie";
@@ -64,7 +67,8 @@ export default function Mail(props) {
     const [mail, setMail] = useState(null);
     const [sent, setSent] = useState(null);
 
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const [viewDialogOpen, setViewDialogOpen] = useState(false);
+    const [newMessageDialogOpen, setNewMessageDialogOpen] = useState(false);
     const [dialogMessage, setDialogMessage] = useState(null);
     const [mailbox, setMailbox] = useState(0);
 
@@ -88,7 +92,7 @@ export default function Mail(props) {
     const handleClick = (message) => {
         // Render dialog box here
         setDialogMessage(message);
-        setDialogOpen(true);
+        setViewDialogOpen(true);
     };
 
     const handleMailBoxChange = (e) => {
@@ -98,37 +102,61 @@ export default function Mail(props) {
         setDialogMessage(null);
     };
 
+    const handleNewMessage = (e) => {
+        setNewMessageDialogOpen(true);
+    };
+
     return (
         <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
             <ViewMessage
-                dialogOpen={dialogOpen}
-                setDialogOpen={setDialogOpen}
+                dialogOpen={viewDialogOpen}
+                setDialogOpen={setViewDialogOpen}
                 message={dialogMessage}
                 mailbox={mailbox}
             />
+            <SendMessage
+                dialogOpen={newMessageDialogOpen}
+                setDialogOpen={setNewMessageDialogOpen}
+            />
             <Grid item container direction="row" justify="center">
                 <Grid item container direction="column" alignItems="center">
-                    <Grid item style={{ marginRight: "60em" }}>
-                        <Typography variant="h3" style={{ fontWeight: "bold" }}>
-                            { mailbox === 0 ? "Inbox" : "Sent Mail"}
-                        </Typography>
-                        <Radio
-                            checked={mailbox === 0}
-                            onChange={handleMailBoxChange}
-                            value="Inbox"
-                            name="Inbox-Radio-Button"
+                    <Grid item container direction="row" justify="space-evenly" alignItems="center">
+                        <Grid item>
+                            <Typography variant="h3" style={{ fontWeight: "bold" }}>
+                                { mailbox === 0 ? "Inbox" : "Sent Mail"}
+                            </Typography>
+                            <Radio
+                                checked={mailbox === 0}
+                                onChange={handleMailBoxChange}
+                                value="Inbox"
+                                name="Inbox-Radio-Button"
+                                color="primary"
+                            />
+                            Inbox
+                            <Radio
+                                checked={mailbox === 1}
+                                onChange={handleMailBoxChange}
+                                value="Sent"
+                                name="Inbox-Radio-Button"
+                                color="primary"
+                            />
+                            Sent
+                        </Grid>
+
+                        <Grid item>
+                        <Fab
+                            variant="extended"
+                            size="medium"
                             color="primary"
-                        />
-                        Inbox
-                        <Radio
-                            checked={mailbox === 1}
-                            onChange={handleMailBoxChange}
-                            value="Sent"
-                            name="Inbox-Radio-Button"
-                            color="primary"
-                        />
-                        Sent
+                            aria-label="add"
+                            onClick={handleNewMessage}
+                        >
+                            <NavigationIcon style={{marginRight: "10px"}}/>
+                            New Message
+                        </Fab>
+                        </Grid>
                     </Grid>
+                    
 
                     <Grid item>
                         <TableContainer
