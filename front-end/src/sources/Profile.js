@@ -6,7 +6,7 @@ import { useEffect } from "react";
 // Component Imports
 import { Paper } from "@material-ui/core";
 import { Avatar } from "@material-ui/core";
-import { Fab, Typography, Grid, TextField } from "@material-ui/core";
+import { Typography, Grid, TextField } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import { Divider } from "@material-ui/core";
@@ -153,7 +153,6 @@ export default function Profile() {
                                         multiline
                                         defaultValue="Hello my name is Johnny Johnny Yes Papa eating sugar no papa telling lies no papa open your mouth hahaha"
                                         className={classes.standardSpacer}
-                                        variant="middle"
                                         InputProps={{
                                             readOnly: true,
                                         }}
@@ -281,7 +280,7 @@ export default function Profile() {
                                 variant="contained"
                                 color="primary"
                                 className={classes.margin}
-                                className={classes.buttonSpacing}
+                                //className={classes.buttonSpacing}
                                 startIcon={<DeleteIcon />}
                             >
                                 Delete

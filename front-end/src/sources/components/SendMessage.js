@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 
 import "../assets/styles.css";
 
 import {
     Grid,
-    Typography,
     TextField,
     Button,
     Dialog,

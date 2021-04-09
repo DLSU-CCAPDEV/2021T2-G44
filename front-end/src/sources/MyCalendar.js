@@ -1,8 +1,8 @@
 import React from "react";
-import logo from "./assets/logo.svg";
+// import logo from "./assets/logo.svg";
 import { useEffect } from "react";
 import { Typography, Grid, Paper } from "@material-ui/core";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import ToDoComponent from "./components/ToDoList";
 import AddEventButton from "./components/AddEvent";
 import DeleteEventButton from "./components/DeleteEvent";
@@ -28,7 +28,7 @@ import {
 import { appointments } from "./Appointments";
 
 // Material UI
-import { fade, withStyles, makeStyles } from "@material-ui/core/styles";
+import { fade, /*withStyles,*/ makeStyles } from "@material-ui/core/styles";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -36,15 +36,13 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
-import Button from "@material-ui/core/Button";
-import AddIcon from "@material-ui/icons/Add";
+// import Button from "@material-ui/core/Button";
+// import AddIcon from "@material-ui/icons/Add";
 
 // Art
 import calendarArt from "./assets/calendarArt.svg";
 
-{
-    /* ANCHOR Styles */
-}
+/* ANCHOR Styles */
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -114,25 +112,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function commitChanges({ added, changed, deleted }) {
-    const setState = (state) => {
-        let { data } = state;
-        if (added) {
-            const startingAddedId =
-                data.length > 0 ? data[data.length - 1].id + 1 : 0;
-            data = [...data, { id: startingAddedId, ...added }];
-        }
-        if (changed) {
-            data = data.map((appointment) =>
-                changed[appointment.id]
-                    ? { ...appointment, ...changed[appointment.id] }
-                    : appointment
-            );
-        }
-        if (deleted !== undefined) {
-            data = data.filter((appointment) => appointment.id !== deleted);
-        }
-        return { data };
-    };
+    // const setState = (state) => {
+    //     let { data } = state;
+    //     if (added) {
+    //         const startingAddedId =
+    //             data.length > 0 ? data[data.length - 1].id + 1 : 0;
+    //         data = [...data, { id: startingAddedId, ...added }];
+    //     }
+    //     if (changed) {
+    //         data = data.map((appointment) =>
+    //             changed[appointment.id]
+    //                 ? { ...appointment, ...changed[appointment.id] }
+    //                 : appointment
+    //         );
+    //     }
+    //     if (deleted !== undefined) {
+    //         data = data.filter((appointment) => appointment.id !== deleted);
+    //     }
+    //     return { data };
+    // };
 }
 
 export default function MyCalendar() {
@@ -152,9 +150,7 @@ export default function MyCalendar() {
         <DeleteEventButton />;
     };
 
-    {
-        /* ANCHOR Customized components */
-    }
+    /* ANCHOR Customized components */
     const disableAddWeekView = React.useCallback((props) => {
         return (
             <WeekView.TimeTableCell
@@ -162,7 +158,7 @@ export default function MyCalendar() {
                 onDoubleClick={(e) => undefined}
             />
         );
-    });
+    }, []);
 
     const disableAddMonthView = React.useCallback((props) => {
         return (
@@ -171,7 +167,7 @@ export default function MyCalendar() {
                 onDoubleClick={(e) => undefined}
             />
         );
-    });
+    }, []);
 
     const deleteEvent = React.useCallback((props) => {
         return (
@@ -182,11 +178,9 @@ export default function MyCalendar() {
                 onDeleteButtonClick={(e) => openDeleteDialog()}
             />
         );
-    });
+    }, []);
 
-    {
-        /* ANCHOR Rendered View */
-    }
+    /* ANCHOR Rendered View */
     return (
         <Grid
             container
@@ -203,7 +197,7 @@ export default function MyCalendar() {
                 <Grid item container direction="row" justify="space-between">
                     {/** Calendar Art */}
                     <Grid item container direction="row" xs={2} style={{ marginLeft: "2%" }}>
-                        <img src={calendarArt} className={classes.calendarArt} />
+                        <img src={calendarArt} alt="Calendar Art" className={classes.calendarArt} />
                     </Grid>
 
                     {/** Calendar Title */}

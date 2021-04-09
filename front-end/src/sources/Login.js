@@ -44,7 +44,7 @@ function Login(props) {
     const history = useHistory();
 
     // Configure State & Handlers
-    const [ _, setCookie ] = useCookies('uid');
+    const setCookie = useCookies("uid")[1];
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
 
