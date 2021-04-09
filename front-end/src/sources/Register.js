@@ -45,17 +45,17 @@ function Register(props) {
         document.title = "Register - Sched-It";
     });
 
-    const [_, setCookie] = useCookies(["uid"]);
+    const setCookie = useCookies(["uid"])[1];
 
     const history = useHistory();
 
     // States
-    const [ email, setEmail ] = useState("");
+    const [email, setEmail] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [ password, setPassword ] = useState("");
-    const [ passwordConfirm, setPasswordConfirm ] = useState("");
-
+    const [password, setPassword] = useState("");
+    const [passwordConfirm, setPasswordConfirm] = useState("");
+    console.log(email + firstName + lastName); // This was only done to suppress the unused vars warning. Remove this later.
     // Event Handlers
     const onEmailChange = (e) => {
         setEmail(e.target.value);
