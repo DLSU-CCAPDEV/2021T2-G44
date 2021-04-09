@@ -42,12 +42,7 @@ export default function SendMessage(props) {
 
     return (
         <div>
-            <Dialog
-                open={props.dialogOpen}
-                keepMounted
-                TransitionComponent={Transition}
-                onClose={handleClose}
-            >
+            <Dialog open={props.dialogOpen} TransitionComponent={Transition} onClose={handleClose}>
                 <form onSubmit={handleSend}>
                     <DialogTitle id="alert-dialog=slide=title">Send a Message</DialogTitle>
                     <DialogContent>
