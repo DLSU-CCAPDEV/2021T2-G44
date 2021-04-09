@@ -31,6 +31,13 @@ export default function SendMessage(props) {
 
     const handleSend = () => {
         // Call to mail handler
+
+        // Data Validation
+
+        // Call controller
+
+        alert("Message sent!");
+        props.setDialogOpen(false);
     };
 
     return (
@@ -41,39 +48,44 @@ export default function SendMessage(props) {
                 TransitionComponent={Transition}
                 onClose={handleClose}
             >
-                <DialogTitle id="alert-dialog=slide=title">Send a Message</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        <Grid container direction="column" alignItems="stretch" spacing={2}>
-                            <TextField
-                                id="messageRecepient"
-                                label="Recepient Email Address"
-                                required
-                                style={textFieldStyles}
-                            />
-                            <TextField
-                                id="messageSubject"
-                                label="Message Subject"
-                                required
-                                style={textFieldStyles}
-                            />
-                            <TextField
-                                id="messageContent"
-                                label="Message Content"
-                                multiline
-                                rows={10}
-                                variant="filled"
-                                value={props.thread || ""}
-                                required
-                                style={textFieldStyles}
-                            />
-                        </Grid>
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleSend}>Send</Button>
-                    <Button onClick={handleClose}>Close</Button>
-                </DialogActions>
+                <form onSubmit={handleSend}>
+                    <DialogTitle id="alert-dialog=slide=title">Send a Message</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            <Grid container direction="column" alignItems="stretch" spacing={2}>
+                                <TextField
+                                    id="messageRecepient"
+                                    label="Recepient Email Address"
+                                    type="email"
+                                    required
+                                    style={textFieldStyles}
+                                    defaultValue={props.replyAddress || ""}
+                                />
+                                <TextField
+                                    id="messageSubject"
+                                    label="Message Subject"
+                                    required
+                                    style={textFieldStyles}
+                                    defaultValue={props.threadSubject || ""}
+                                />
+                                <TextField
+                                    id="messageContent"
+                                    label="Message Content"
+                                    multiline
+                                    rows={10}
+                                    variant="filled"
+                                    defaultValue={props.thread || ""}
+                                    required
+                                    style={textFieldStyles}
+                                />
+                            </Grid>
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button type="submit">Send</Button>
+                        <Button onClick={handleClose}>Close</Button>
+                    </DialogActions>
+                </form>
             </Dialog>
         </div>
     );

@@ -13,13 +13,23 @@ import {
     Slide,
 } from "@material-ui/core";
 
+import SendMessage from "./SendMessage";
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function ViewMessage(props) {
+    
+    const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+
     const handleClose = () => {
         props.setDialogOpen(false);
+    };
+
+    const handleReply = () => {
+        // Open the send message dialog
+        setReplyDialogOpen(true);
     };
 
     if (props.message != null)
@@ -56,10 +66,26 @@ export default function ViewMessage(props) {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        {props.message.sender && <Button>Reply</Button>}
+                        {props.message.sender && <Button onClick={handleReply}>Reply</Button>}
                         <Button onClick={handleClose}>Close</Button>
                     </DialogActions>
                 </Dialog>
+                
+                {
+                    props.message.sender &&
+                    <SendMessage
+                        dialogOpen={replyDialogOpen}
+                        setDialogOpen={setReplyDialogOpen}
+                        replyAddress={props.message.sender.email || ""}
+                        threadSubject={props.message.subject || ""}
+                        thread={
+                            "\n\n---------------------------------------------------------\n" +
+                            `From: ${props.message.sender.firstName} ${props.message.sender.lastName}\n\n` +
+                            props.message.content +
+                            "\n---------------------------------------------------------\n"
+                        }
+                    />
+                }
             </div>
         );
     else return <div></div>;
