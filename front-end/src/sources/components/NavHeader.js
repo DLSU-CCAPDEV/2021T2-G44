@@ -121,7 +121,7 @@ export default function NavigationHeader(props) {
         { text: "My Calendar", icon: EventIcon, link: "/my-calendar" },
         { text: "Complete Events", icon: CheckBoxIcon },
         { text: "My Invites", icon: SendIcon },
-        { text: "Inbox", icon: MailIcon },
+        { text: "Inbox", icon: MailIcon, link: "/mail" },
         { text: "Delete Event", icon: DeleteSweepIcon },
     ];
 

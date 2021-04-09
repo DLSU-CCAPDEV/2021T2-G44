@@ -93,13 +93,13 @@ function Register(props) {
         setCookie("uid", uid, cookieOptions);
 
         // Redirect the user
-        history.push("/dashboard");
+        history.push("/my-calendar");
     };
 
     const { classes } = props;
 
     return (
-        <Grid container direction="column" style={{ position: "relative", top: "2em" }}>
+        <Grid container direction="column" style={{ padding: "2em 0 8em 0" }}>
             <Grid item container direction="row" justify="center" alignItems="center">
                 <Grid item>
                     <Box className="registerBox">

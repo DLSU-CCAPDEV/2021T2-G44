@@ -35,15 +35,9 @@ export default function Homepage() {
         <Grid
             container
             direction="column"
-            style={{ position: "relative", top: "10em" }}
+            style={{ padding: "10em 0 5em 0" }}
         >
-            <Grid
-                item
-                container
-                direction="row"
-                justify="center"
-                style={{ paddingBottom: "10em" }}
-            >
+            <Grid item container direction="row" justify="center" style={{ paddingBottom: "10em" }}>
                 <Grid
                     item
                     style={{
@@ -53,9 +47,7 @@ export default function Homepage() {
                     }}
                 >
                     <h1 style={mainHeaderStyles}>Sched-It</h1>
-                    <p style={{ fontSize: "24px" }}>
-                        A place to organize everything in time
-                    </p>
+                    <p style={{ fontSize: "24px" }}>A place to organize everything in time</p>
                     <Fab
                         variant="extended"
                         size="large"
@@ -86,11 +78,7 @@ export default function Homepage() {
                 }}
             >
                 <Grid item lg={4}>
-                    <img
-                        style={imageStyles}
-                        src={home_calendar}
-                        alt="home_calendar"
-                    />
+                    <img style={imageStyles} src={home_calendar} alt="home_calendar" />
                 </Grid>
                 <Grid
                     item
@@ -103,8 +91,7 @@ export default function Homepage() {
                 >
                     <h1 style={mainHeaderStyles}>Easily Organize</h1>
                     <p style={{ fontSize: "24px", maxWidth: "25em" }}>
-                        Clean, Clear, and simple to navigate interface when
-                        organizing your events
+                        Clean, Clear, and simple to navigate interface when organizing your events
                     </p>
                 </Grid>
             </Grid>
@@ -116,24 +103,15 @@ export default function Homepage() {
                 justify="center"
                 style={{ paddingBottom: "10em", paddingTop: "10em" }}
             >
-                <Grid
-                    item
-                    lg={5}
-                    style={{ alignSelf: "center", position: "relative" }}
-                >
+                <Grid item lg={5} style={{ alignSelf: "center", position: "relative" }}>
                     <h1 style={mainHeaderStyles}>Easily keep track</h1>
                     <p style={{ fontSize: "24px", maxWidth: "20em" }}>
-                        Your tasks easy to view, easy to create, easy to
-                        collaborate
+                        Your tasks easy to view, easy to create, easy to collaborate
                     </p>
                 </Grid>
 
                 <Grid item lg={4}>
-                    <img
-                        style={imageStyles}
-                        src={home_phone}
-                        alt="home_phone"
-                    />
+                    <img style={imageStyles} src={home_phone} alt="home_phone" />
                 </Grid>
             </Grid>
         </Grid>
