@@ -7,9 +7,9 @@ import userDB from "../placeholderData/users";
 
 export const getUserData = async (userID) => {
     // Normally, API call here
-
+    
     // Get the user data, except the password and access token
-    const user = userDB.find((user) => user.id === userID);
+    const user = userDB.find((user) => user.id === Number(userID));
     delete user.password;
 
     return user;

@@ -84,9 +84,7 @@ export default function Mail(props) {
 
     useEffect(() => {
         getInbox(cookies.uid).then((inbox) => setMail(inbox));
-        getSent(cookies.uid)
-            .then((sentMail) => setSent(sentMail))
-            .then(() => console.log(sent));
+        getSent(cookies.uid).then((sentMail) => setSent(sentMail));
     }, []);
 
     const handleClick = (message) => {

@@ -1,6 +1,8 @@
 import "./assets/styles.css";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useCookies } from 'react-cookie';
+
 // import { Link } from "react-router-dom";
 
 // Component Imports
@@ -16,6 +18,9 @@ import CreateIcon from "@material-ui/icons/Create";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 
 import profilePic from "./assets/heheAna.png";
+
+import { getUserData } from "../controllers/UserController";
+
 // colored Delete Button
 const ColorButton = withStyles((theme) => ({
     root: {
@@ -89,207 +94,231 @@ const useStyle = makeStyles((theme) => ({
 
 export default function Profile() {
     const classes = useStyle();
+
+    // PHASE 1 ONLY: Get user cookie
+    const [ cookies ] = useCookies(['uid']);
+
+    // State for User
+    const [userData, setUserData] = useState(null);
+
     useEffect(() => {
         document.title = "Profile - Sched-It";
-    });
 
-    // Processing to check if user is logged in or not.
-    // If logged in, redirect to the dashboard.
+        // Get user data
+        getUserData(cookies.uid)
+            .then(data => setUserData(data))
+            .catch(err => console.error(err));
 
-    return (
-        // entire main content page
-        <Grid container direction="column" style={{ padding: "4em 0 5em 0" }}>
-            <Grid item container direction="row" justify="center" alignItems="stretch">
-                <Grid container direction="row" justify="center" alignItems="stretch">
-                    {/* The LeftHand side */}
-                    {/* 
-                Todo: 
-                Profile Pic
-                Name
-                Bio
-                Change Bio Button 
-            */}
-                    <Grid item direction="column" lg={4} className={classes.stretcher}>
-                        <Paper variant="elevation" elevation={8} className={classes.profileGrid}>
-                            {/* Grid Inside Paper */}
-                            <Grid container direction="column">
-                                {/* Picture Grid */}
-                                <Grid
-                                    item
-                                    container
-                                    direction="column"
-                                    alignItems="center"
-                                    className={classes.standardSpacer}
-                                >
-                                    <Avatar
-                                        alt="profilePicture"
-                                        src={profilePic}
-                                        className={classes.profileShowcase}
-                                    />
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
+    }, [cookies.uid]);
+
+    if(userData)
+    {
+        console.log(userData);
+    }
+    
+    if(userData)
+    {
+        return (
+            // entire main content page
+            <Grid container direction="column" style={{ padding: "4em 0 5em 0" }}>
+                <Grid item container direction="row" justify="center" alignItems="stretch">
+                    <Grid container direction="row" justify="center" alignItems="stretch">
+                        {/* The LeftHand side */}
+                        {/* 
+                    Todo: 
+                    Profile Pic
+                    Name
+                    Bio
+                    Change Bio Button 
+                */}
+                        <Grid item direction="column" lg={4} className={classes.stretcher}>
+                            <Paper variant="elevation" elevation={8} className={classes.profileGrid}>
+                                {/* Grid Inside Paper */}
+                                <Grid container direction="column">
+                                    {/* Picture Grid */}
+                                    <Grid
+                                        item
+                                        container
+                                        direction="column"
+                                        alignItems="center"
                                         className={classes.standardSpacer}
-                                        startIcon={<PhotoCameraIcon />}
                                     >
-                                        Change Profile Picture
-                                    </Button>
+                                        <Avatar
+                                            alt="profilePicture"
+                                            src={userData.avatar || profilePic}
+                                            className={classes.profileShowcase}
+                                        />
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            className={classes.standardSpacer}
+                                            startIcon={<PhotoCameraIcon />}
+                                        >
+                                            Change Profile Picture
+                                        </Button>
+                                    </Grid>
+    
+                                    <Divider variant="middle"></Divider>
+    
+                                    {/* Name Grid */}
+                                    <Grid item container direction="column" alignItems="center">
+                                        <Typography
+                                            variant="h5"
+                                            align="left"
+                                            className={classes.standardSpacer}
+                                        >
+                                            {`${userData.firstName} ${userData.lastName}`}
+                                        </Typography>
+                                        <TextField
+                                            id="firstNameTextBox"
+                                            label="Bio"
+                                            multiline
+                                            value={userData.bio}
+                                            className={classes.standardSpacer}
+                                            variant="middle"
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
+                                            style={{
+                                                width: "90%",
+                                            }}
+                                            size="small"
+                                            variant="outlined"
+                                        />
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            className={classes.standardSpacer}
+                                            startIcon={<CreateIcon />}
+                                        >
+                                            Change Bio
+                                        </Button>
+                                    </Grid>
                                 </Grid>
-
-                                <Divider variant="middle"></Divider>
-
-                                {/* Name Grid */}
-                                <Grid item container direction="column" alignItems="center">
-                                    <Typography
-                                        variant="h5"
-                                        align="left"
-                                        className={classes.standardSpacer}
-                                    >
-                                        Johnny AppleSmith
-                                    </Typography>
+                            </Paper>
+                        </Grid>
+    
+                        {/* The RightHand side */}
+                        {/* 
+                    Todo: 
+                    Profile Details
+                        FirstName TextBox / Change Button
+                        Last Name TextBox / Change Button
+                    DIVIDING LINE_____________________________
+                    Email Address
+                        Current Email TextBox / Change Button
+                    DIVIDING LINE_____________________________
+                    Password
+                        Change Password Button
+                    DIVIDING LINE_____________________________
+                    Delete Account
+                        Delete Account Button
+                */}
+                        <Grid
+                            item
+                            container
+                            direction="column"
+                            lg={8}
+                            justify="center"
+                            alignItems="stretch"
+                        >
+                            <Paper className={classes.settingsGrid} variant="elevation" elevation={8}>
+                                <Grid item container direction="row" className={classes.textSpacer}>
+                                    <Typography variant="h4">Profile Settings</Typography>
+                                </Grid>
+                                <Grid item container direction="row" alignItems="center">
                                     <TextField
                                         id="firstNameTextBox"
-                                        label="Bio"
-                                        multiline
-                                        defaultValue="Hello my name is Johnny Johnny Yes Papa eating sugar no papa telling lies no papa open your mouth hahaha"
-                                        className={classes.standardSpacer}
-                                        variant="middle"
+                                        label="First Name"
+                                        value={userData.firstName}
                                         InputProps={{
                                             readOnly: true,
                                         }}
-                                        style={{
-                                            width: "90%",
-                                        }}
+                                        className={classes.profileField}
                                         size="small"
-                                        variant="outlined"
+                                        variant="filled"
                                     />
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        className={classes.standardSpacer}
-                                        startIcon={<CreateIcon />}
-                                    >
-                                        Change Bio
+                                    <Button variant="contained" color="primary">
+                                        Change
                                     </Button>
                                 </Grid>
-                            </Grid>
-                        </Paper>
-                    </Grid>
-
-                    {/* The RightHand side */}
-                    {/* 
-                Todo: 
-                Profile Details
-                    FirstName TextBox / Change Button
-                    Last Name TextBox / Change Button
-                DIVIDING LINE_____________________________
-                Email Address
-                    Current Email TextBox / Change Button
-                DIVIDING LINE_____________________________
-                Password
-                    Change Password Button
-                DIVIDING LINE_____________________________
-                Delete Account
-                    Delete Account Button
-            */}
-                    <Grid
-                        item
-                        container
-                        direction="column"
-                        lg={8}
-                        justify="center"
-                        alignItems="stretch"
-                    >
-                        <Paper className={classes.settingsGrid} variant="elevation" elevation={8}>
-                            <Grid item container direction="row" className={classes.textSpacer}>
-                                <Typography variant="h4">Profile Settings</Typography>
-                            </Grid>
-                            <Grid item container direction="row" alignItems="center">
-                                <TextField
-                                    id="firstNameTextBox"
-                                    label="First Name"
-                                    defaultValue="Johnny"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    className={classes.profileField}
-                                    size="small"
-                                    variant="filled"
-                                />
-                                <Button variant="contained" color="primary">
-                                    Change
+    
+                                <Grid item container direction="row" alignItems="center">
+                                    <TextField
+                                        id="lastNameTextBox"
+                                        label="Last Name"
+                                        value={userData.lastName}
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                        className={classes.profileField}
+                                        size="small"
+                                        variant="filled"
+                                    />
+                                    <Button variant="contained" color="primary">
+                                        Change
+                                    </Button>
+                                </Grid>
+    
+                                <Divider variant="middle"></Divider>
+    
+                                {/* EMAIL ADDRESS SECTION */}
+                                <Grid item container direction="row" className={classes.textSpacer}>
+                                    <Typography variant="h4">Email</Typography>
+                                </Grid>
+                                <Grid item container direction="row" alignItems="center">
+                                    <TextField
+                                        id="emailTextBox"
+                                        label="Address"
+                                        value={userData.email}
+                                        className={classes.emailField}
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                        size="small"
+                                        variant="filled"
+                                    />
+                                    <Button variant="contained" color="primary">
+                                        Change
+                                    </Button>
+                                </Grid>
+    
+                                <Divider variant="middle"></Divider>
+    
+                                <Grid item container direction="row" className={classes.textSpacer}>
+                                    <Typography variant="h4">Password</Typography>
+                                </Grid>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.buttonSpacing}
+                                >
+                                    Change Password
                                 </Button>
-                            </Grid>
-
-                            <Grid item container direction="row" alignItems="center">
-                                <TextField
-                                    id="lastNameTextBox"
-                                    label="Last Name"
-                                    defaultValue="AppleSmith"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    className={classes.profileField}
-                                    size="small"
-                                    variant="filled"
-                                />
-                                <Button variant="contained" color="primary">
-                                    Change
-                                </Button>
-                            </Grid>
-
-                            <Divider variant="middle"></Divider>
-
-                            {/* EMAIL ADDRESS SECTION */}
-                            <Grid item container direction="row" className={classes.textSpacer}>
-                                <Typography variant="h4">Email</Typography>
-                            </Grid>
-                            <Grid item container direction="row" alignItems="center">
-                                <TextField
-                                    id="emailTextBox"
-                                    label="Address"
-                                    defaultValue="johnnyapplesmith@gmail.com"
-                                    className={classes.emailField}
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    size="small"
-                                    variant="filled"
-                                />
-                                <Button variant="contained" color="primary">
-                                    Change
-                                </Button>
-                            </Grid>
-
-                            <Divider variant="middle"></Divider>
-
-                            <Grid item container direction="row" className={classes.textSpacer}>
-                                <Typography variant="h4">Password</Typography>
-                            </Grid>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                className={classes.buttonSpacing}
-                            >
-                                Change Password
-                            </Button>
-                            <Divider variant="middle"></Divider>
-                            <Grid item container direction="row" className={classes.textSpacer}>
-                                <Typography variant="h4">Delete Account</Typography>
-                            </Grid>
-                            <ColorButton
-                                variant="contained"
-                                color="primary"
-                                className={classes.margin}
-                                className={classes.buttonSpacing}
-                                startIcon={<DeleteIcon />}
-                            >
-                                Delete
-                            </ColorButton>
-                        </Paper>
+                                <Divider variant="middle"></Divider>
+                                <Grid item container direction="row" className={classes.textSpacer}>
+                                    <Typography variant="h4">Delete Account</Typography>
+                                </Grid>
+                                <ColorButton
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.margin}
+                                    className={classes.buttonSpacing}
+                                    startIcon={<DeleteIcon />}
+                                >
+                                    Delete
+                                </ColorButton>
+                            </Paper>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
-        </Grid>
-    );
+        );
+    }
+    else {
+        // Return loading screen here
+        return (
+            <h1>Loading...</h1>
+        );
+    }
 }
