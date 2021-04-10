@@ -9,7 +9,8 @@
     {
         "id": 1,
         "email": "renzo_querol@dlsu.edu.ph",
-        "name": "Lorenzo Querol",
+        "firstName": "Lorenzo",
+        "lastName": "Querol",
         "password": "password1"
     },
     {
