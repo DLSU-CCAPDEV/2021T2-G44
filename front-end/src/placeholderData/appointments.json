@@ -1,0 +1,16 @@
+[
+    {
+        "id": 0,
+        "participantID": 1,
+        "eventID": 0,
+        "startTime": "2021-04-01T10:15:00.000Z",
+        "endTime": "2021-04-01T11:00:00.000Z"
+    },
+    {
+        "id": 0,
+        "participantID": 0,
+        "eventID": 1,
+        "startTime": "2021-04-01T12:15:00.000Z",
+        "endTime": "2021-04-01T13:00:00.000Z"
+    }
+]

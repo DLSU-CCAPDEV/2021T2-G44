@@ -8,7 +8,7 @@ import { useCookies } from 'react-cookie';
 // Component Imports
 import { Paper } from "@material-ui/core";
 import { Avatar } from "@material-ui/core";
-import { Fab, Typography, Grid, TextField } from "@material-ui/core";
+import { Typography, Grid, TextField } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import { Divider } from "@material-ui/core";

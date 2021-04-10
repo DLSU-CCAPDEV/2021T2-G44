@@ -74,18 +74,18 @@ export default function Mail(props) {
 
     useEffect(() => {
         switch (mailbox) {
-            case 0:
-                document.title = "Inbox - Sched-It";
-                break;
             case 1:
                 document.title = "Sent Mail - Sched-It";
+                break;
+            default:
+                document.title = "Inbox - Sched-It";
         }
     });
 
     useEffect(() => {
         getInbox(cookies.uid).then((inbox) => setMail(inbox));
         getSent(cookies.uid).then((sentMail) => setSent(sentMail));
-    }, []);
+    }, [cookies.uid]);
 
     const handleClick = (message) => {
         // Render dialog box here
@@ -186,7 +186,7 @@ export default function Mail(props) {
                                                 key={m.id}
                                                 onClick={() => handleClick(m)}
                                                 style={
-                                                    i % 2 == 0
+                                                    i % 2 === 0
                                                         ? styles.tableData.odd
                                                         : styles.tableData.even
                                                 }
@@ -217,7 +217,7 @@ export default function Mail(props) {
                                                 key={m.id}
                                                 onClick={() => handleClick(m)}
                                                 style={
-                                                    i % 2 == 0
+                                                    i % 2 === 0
                                                         ? styles.tableData.odd
                                                         : styles.tableData.even
                                                 }

@@ -59,10 +59,9 @@ const TimeFrameEvent = () => {
 };
 
 export default function AddEvent() {
-    {
-        /* ANCHOR React Hooks and States */
-    }
-    const [open, setOpen] = React.useState(false);
+    /* React Hooks and States */
+
+    const [open, setOpen] = useState(false);
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -71,17 +70,17 @@ export default function AddEvent() {
         setOpen(false);
     };
 
-    const [selectedStartDate, setSelectedStartDate] = React.useState(new Date());
+    const [selectedStartDate, setSelectedStartDate] = useState(new Date());
     const handleStartDateChange = (date) => {
         setSelectedStartDate(date);
     };
 
-    const [selectedEndDate, setSelectedEndDate] = React.useState(new Date());
+    const [selectedEndDate, setSelectedEndDate] = useState(new Date());
     const handleEndDateChange = (date) => {
         setSelectedEndDate(date);
     };
 
-    const [privateEvent, setPrivateEvent] = React.useState({ isPrivate: false });
+    const [privateEvent, setPrivateEvent] = useState({ isPrivate: false });
     const handlePrivateEvent = (event) => {
         setPrivateEvent({ ...privateEvent, [event.target.name]: event.target.checked });
     };
@@ -158,7 +157,7 @@ export default function AddEvent() {
                         />
                     </FormGroup>
 
-                    {allDay.isAllDay == false ? <TimeFrameEvent /> : null}
+                    {allDay.isAllDay === false ? <TimeFrameEvent /> : null}
 
                     <FormControlLabel
                         control={

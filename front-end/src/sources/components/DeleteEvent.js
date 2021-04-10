@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 // Material UI
 import Button from '@material-ui/core/Button';
@@ -10,9 +10,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 export default function DeleteEvent() {
     const [open, setOpen] = React.useState(true);
-    const openDialog = () => {
-        setOpen(true);
-    };
+    // const openDialog = () => {
+    //     setOpen(true);
+    // };
 
     const closeDialog = () => {
         setOpen(false);

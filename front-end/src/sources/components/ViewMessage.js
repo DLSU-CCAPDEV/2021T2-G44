@@ -37,7 +37,6 @@ export default function ViewMessage(props) {
             <div>
                 <Dialog
                     open={props.dialogOpen}
-                    keepMounted
                     TransitionComponent={Transition}
                     onClose={handleClose}
                 >
@@ -70,9 +69,8 @@ export default function ViewMessage(props) {
                         <Button onClick={handleClose}>Close</Button>
                     </DialogActions>
                 </Dialog>
-                
-                {
-                    props.message.sender &&
+
+                {props.message.sender && (
                     <SendMessage
                         dialogOpen={replyDialogOpen}
                         setDialogOpen={setReplyDialogOpen}
@@ -85,7 +83,7 @@ export default function ViewMessage(props) {
                             "\n---------------------------------------------------------\n"
                         }
                     />
-                }
+                )}
             </div>
         );
     else return <div></div>;

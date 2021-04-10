@@ -3,9 +3,9 @@
 */
 
 // Import mock user data
-import userDB from "../placeholderData/users";
+import userDB from '../placeholderData/users.json';
 
-export const getUserData = async (userID) => {
+export const GetUserData = async (userID) => {
     // Normally, API call here
     
     // Get the user data, except the password and access token
