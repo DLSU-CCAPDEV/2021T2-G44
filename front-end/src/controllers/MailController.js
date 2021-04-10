@@ -1,7 +1,7 @@
 // Import the Placeholder File
-import mailDB from "../placeholderData/mail";
+import mailDB from '../placeholderData/mail';
 
-import { getUserData } from "../controllers/UserController";
+import { GetUserData } from './UserController';
 
 export const getInbox = async (uid, start = 0, end = 50) => {
     // Normally, we make an API call here.
@@ -14,7 +14,7 @@ export const getInbox = async (uid, start = 0, end = 50) => {
 
     selected.map(async (mail) => {
         // Get the sender details
-        mail.sender = await getUserData(mail.senderID);
+        mail.sender = await GetUserData(mail.senderID);
 
         // Parse the time
         const date = new Date(mail.sendTime);
@@ -48,7 +48,7 @@ export const getSent = async (uid, start = 0, end = 50) => {
 
     selected.map(async (mail) => {
         // Get the sender details
-        mail.recepient = await getUserData(mail.recepientID);
+        mail.recepient = await GetUserData(mail.recepientID);
 
         // Parse the time
         const date = new Date(mail.sendTime);

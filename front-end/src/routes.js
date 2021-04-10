@@ -14,6 +14,7 @@ import About from './sources/About';
 // Protected Route Imports
 import MyCalendar from './sources/MyCalendar';
 import Profile from './sources/Profile';
+import MyAppointments from './sources/MyAppointments';
 import Mail from './sources/Mail';
 
 // Material UI

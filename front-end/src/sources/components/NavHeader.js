@@ -108,7 +108,7 @@ export default function NavigationHeader(props) {
 
     const options = [
         { text: 'My Calendar', icon: EventIcon, link: '/my-calendar' },
-        { text: 'Complete Events', icon: CheckBoxIcon, link: '/my-appointments' },
+        { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments' },
         { text: 'My Invites', icon: SendIcon },
         { text: 'Inbox', icon: MailIcon, link: '/mail' },
         { text: 'Delete Event', icon: DeleteSweepIcon },
