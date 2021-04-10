@@ -49,6 +49,7 @@ const linkStyles = {
 };
 
 export default function NavigationHeader(props) {
+
     // Check logged in
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const cookieCommands = useCookies(['uid']);
@@ -193,9 +194,9 @@ export default function NavigationHeader(props) {
 
     const handleLogout = () => {
         // Clear cookie
-        removeCookie('uid');
         setOpen(false);
-        history.push('/login');
+        removeCookie("uid");
+        history.push("/login");
     };
 
     const handleProfile = () => {
@@ -215,7 +216,12 @@ export default function NavigationHeader(props) {
                     <Toolbar>
                         <Grid container direction="row" spacing={3} alignItems="center">
                             <Grid item lg={8}>
-                                <Link to="/" className="container" style={brandingStyles} href="index.html">
+                                <Link
+                                    to="/"
+                                    className="container"
+                                    style={brandingStyles}
+                                    href="index.html"
+                                >
                                     <img src={logo} className="logo" alt="Website Logo" />
                                     <div className="logoLine" />
                                     <h1 id="headerName">Sched-It</h1>
@@ -244,7 +250,7 @@ export default function NavigationHeader(props) {
                 >
                     <div className={classes.drawerHeader}>
                         <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                            {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                         </IconButton>
                     </div>
                     <Divider />
@@ -263,15 +269,12 @@ export default function NavigationHeader(props) {
                     </List>
 
                     <List className={classes.footerButtons}>
-                        <Link to="/profile" style={linkStyles}>
-                            <ListItem button key="My Profile">
-                                <ListItemIcon>
-                                    <AccountCircleIcon fontSize="large" />
-                                </ListItemIcon>
-                                <ListItemText primary="My Profile" />
-                            </ListItem>
-                        </Link>
-
+                        <ListItem button onClick={handleProfile} key="My Profile">
+                            <ListItemIcon>
+                                <AccountCircleIcon fontSize="large" />
+                            </ListItemIcon>
+                            <ListItemText primary="My Profile" />
+                        </ListItem>
                         <ListItem button onClick={handleLogout} key="Log Out">
                             <ListItemIcon>
                                 <PowerSettingsNewIcon fontSize="large" />
