@@ -1,11 +1,9 @@
-import React from "react";
-import logo from "./assets/logo.svg";
-import { useEffect } from "react";
-import { Typography, Grid, Paper } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import ToDoComponent from "./components/ToDoList";
-import AddEventButton from "./components/AddEvent";
-import DeleteEventButton from "./components/DeleteEvent";
+import React, { useState, useCallback } from 'react';
+import { useEffect } from 'react';
+import { Typography, Grid, Paper } from '@material-ui/core';
+import ToDoComponent from './components/ToDoList';
+import AddEventButton from './components/AddEvent';
+import DeleteEventButton from './components/DeleteEvent';
 
 // React Scheduler Material UI
 import {
@@ -19,94 +17,87 @@ import {
     AppointmentForm,
     AppointmentTooltip,
     ConfirmationDialog,
-} from "@devexpress/dx-react-scheduler-material-ui";
-import {
-    ViewState,
-    EditingState,
-    IntegratedEditing,
-} from "@devexpress/dx-react-scheduler";
-import { appointments } from "./appointments";
+    AllDayPanel,
+} from '@devexpress/dx-react-scheduler-material-ui';
+import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
 
 // Material UI
-import { fade, withStyles, makeStyles } from "@material-ui/core/styles";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import SearchIcon from "@material-ui/icons/Search";
-import InputBase from "@material-ui/core/InputBase";
-import Button from "@material-ui/core/Button";
-import AddIcon from "@material-ui/icons/Add";
+import { fade, makeStyles } from '@material-ui/core/styles';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import SearchIcon from '@material-ui/icons/Search';
+import InputBase from '@material-ui/core/InputBase';
 
 // Art
-import calendarArt from "./assets/calendarArt.svg";
+import calendarArt from './assets/calendarArt.svg';
 
-{
-    /* ANCHOR Styles */
-}
+/* Styles */
+
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
-        position: "relative",
-        marginTop: "4em",
+        position: 'relative',
+        marginTop: '4em',
     },
     calendarTitle: {
-        fontWeight: "bold",
-        align: "right",
+        fontWeight: 'bold',
+        align: 'right',
     },
     radioLabel: {
-        fontWeight: "bold",
+        fontWeight: 'bold',
     },
     radioButtons: {
-        colorPrimary: "primary",
-        colorSecondary: "primary",
+        colorPrimary: 'primary',
+        colorSecondary: 'primary',
     },
     search: {
-        position: "relative",
+        position: 'relative',
         borderRadius: theme.shape.borderRadius,
         backgroundColor: fade(theme.palette.primary.main, 0.15),
-        "&:hover": {
+        '&:hover': {
             backgroundColor: fade(theme.palette.primary.main, 0.5),
         },
-        width: "100%",
-        [theme.breakpoints.up("sm")]: {
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
             marginLeft: 0,
-            width: "auto",
+            width: 'auto',
         },
     },
     searchIcon: {
         padding: theme.spacing(0, 2),
-        height: "100%",
-        position: "absolute",
-        pointerEvents: "none",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     inputRoot: {
-        color: "inherit",
-        marginRight: "1em",
+        color: 'inherit',
+        marginRight: '1em',
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-        transition: theme.transitions.create("width"),
-        width: "100%",
+        transition: theme.transitions.create('width'),
+        width: '100%',
     },
     toDoList: {
         backgroundColor: theme.palette.accent.main,
         flexGrow: 1,
     },
     toDoListTitle: {
-        textAlign: "center",
-        fontWeight: "bold",
-        marginTop: "1em",
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginTop: '1em',
     },
     addButton: {
-        marginLeft: "5em",
-        marginBottom: "em",
+        marginLeft: '5em',
+        marginBottom: 'em',
     },
     cells: {
         color: theme.palette.accent.main,
@@ -114,35 +105,33 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function commitChanges({ added, changed, deleted }) {
-    const setState = (state) => {
-        let { data } = state;
-        if (added) {
-            const startingAddedId =
-                data.length > 0 ? data[data.length - 1].id + 1 : 0;
-            data = [...data, { id: startingAddedId, ...added }];
-        }
-        if (changed) {
-            data = data.map((appointment) =>
-                changed[appointment.id]
-                    ? { ...appointment, ...changed[appointment.id] }
-                    : appointment
-            );
-        }
-        if (deleted !== undefined) {
-            data = data.filter((appointment) => appointment.id !== deleted);
-        }
-        return { data };
-    };
+    // const setState = (state) => {
+    //     let { data } = state;
+    //     if (added) {
+    //         const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+    //         data = [...data, { id: startingAddedId, ...added }];
+    //     }
+    //     if (changed) {
+    //         data = data.map((appointment) =>
+    //             changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment
+    //         );
+    //     }
+    //     if (deleted !== undefined) {
+    //         data = data.filter((appointment) => appointment.id !== deleted);
+    //     }
+    //     return { data };
+    // };
 }
 
 export default function MyCalendar() {
     const classes = useStyles();
+    const events = require('../placeholderData/events.json');
 
     useEffect(() => {
-        document.title = "My Calendar - Sched-it";
+        document.title = 'My Calendar - Sched-it';
     });
 
-    const [calendarView, setCalendarView] = React.useState("Month");
+    const [calendarView, setCalendarView] = useState('Month');
 
     const handleChange = (event) => {
         setCalendarView(event.target.value);
@@ -152,28 +141,17 @@ export default function MyCalendar() {
         <DeleteEventButton />;
     };
 
-    {
-        /* ANCHOR Customized components */
-    }
-    const disableAddWeekView = React.useCallback((props) => {
-        return (
-            <WeekView.TimeTableCell
-                {...props}
-                onDoubleClick={(e) => undefined}
-            />
-        );
-    });
+    /* Customized components */
 
-    const disableAddMonthView = React.useCallback((props) => {
-        return (
-            <MonthView.TimeTableCell
-                {...props}
-                onDoubleClick={(e) => undefined}
-            />
-        );
-    });
+    const disableAddWeekView = useCallback((props) => {
+        return <WeekView.TimeTableCell {...props} onDoubleClick={(e) => undefined} />;
+    }, []);
 
-    const deleteEvent = React.useCallback((props) => {
+    const disableAddMonthView = useCallback((props) => {
+        return <MonthView.TimeTableCell {...props} onDoubleClick={(e) => undefined} />;
+    }, []);
+
+    const deleteEvent = useCallback((props) => {
         return (
             <AppointmentTooltip.Layout
                 {...props}
@@ -182,65 +160,31 @@ export default function MyCalendar() {
                 onDeleteButtonClick={(e) => openDeleteDialog()}
             />
         );
-    });
+    }, []);
 
-    {
-        /* ANCHOR Rendered View */
-    }
+    /*  Rendered View */
+
     return (
-        <Grid
-            container
-            direction="row"
-            className={classes.root}
-            xs={12}
-            spacing={3}
-        >
+        <Grid container direction="row" className={classes.root} xs={12} spacing={3}>
             {/** LEFT SIDE of the Page */}
 
             <Grid item container direction="column" xs={9}>
                 {/** Title and controls */}
                 <Grid item container direction="row" justify="space-between">
                     {/** Calendar Art */}
-                    <Grid
-                        item
-                        container
-                        direction="row"
-                        xs={2}
-                        style={{ marginLeft: "2%" }}
-                    >
-                        <img
-                            src={calendarArt}
-                            className={classes.calendarArt}
-                        />
+                    <Grid item container direction="row" xs={2} style={{ marginLeft: '2%' }}>
+                        <img src={calendarArt} alt="Calendar Art" className={classes.calendarArt} />
                     </Grid>
 
                     {/** Calendar Title */}
-                    <Grid
-                        item
-                        container
-                        direction="column"
-                        justify="center"
-                        alignItems="center"
-                        xs={3}
-                    >
-                        <Typography
-                            variant="h2"
-                            color="primary"
-                            className={classes.calendarTitle}
-                        >
+                    <Grid item container direction="column" justify="center" alignItems="center" xs={3}>
+                        <Typography variant="h2" color="primary" className={classes.calendarTitle}>
                             My Calendar
                         </Typography>
                     </Grid>
 
                     {/* Add Event Button */}
-                    <Grid
-                        item
-                        container
-                        direction="column"
-                        xs={2}
-                        justify="flex-end"
-                        alignItems="stretch"
-                    >
+                    <Grid item container direction="column" xs={2} justify="flex-end" alignItems="stretch">
                         <AddEventButton />
                     </Grid>
 
@@ -252,15 +196,11 @@ export default function MyCalendar() {
                         alignItems="flex-end"
                         justify="flex-end"
                         xs={2}
-                        style={{ marginLeft: "0.5em" }}
+                        style={{ marginLeft: '0.5em' }}
                     >
                         {/* Calendar View Radio Buttons */}
                         <FormControl component="fieldset">
-                            <FormLabel
-                                component="legend"
-                                className={classes.radioLabel}
-                                style={{ textAlign: "right" }}
-                            >
+                            <FormLabel component="legend" className={classes.radioLabel} style={{ textAlign: 'right' }}>
                                 Calendar View
                             </FormLabel>
                             <RadioGroup
@@ -270,16 +210,12 @@ export default function MyCalendar() {
                                 onChange={handleChange}
                                 row
                             >
-                                <FormControlLabel
-                                    value="Month"
-                                    control={<Radio color="primary" />}
-                                    label="Month"
-                                />
+                                <FormControlLabel value="Month" control={<Radio color="primary" />} label="Month" />
                                 <FormControlLabel
                                     value="Week"
                                     control={<Radio color="primary" />}
                                     label="Week"
-                                    style={{ marginRight: "0" }}
+                                    style={{ marginRight: '0' }}
                                 />
                             </RadioGroup>
                         </FormControl>
@@ -295,7 +231,7 @@ export default function MyCalendar() {
                                     root: classes.inputRoot,
                                     input: classes.inputInput,
                                 }}
-                                inputProps={{ "aria-label": "search" }}
+                                inputProps={{ 'aria-label': 'search' }}
                             />
                         </div>
                     </Grid>
@@ -303,14 +239,13 @@ export default function MyCalendar() {
 
                 {/** Calendar */}
                 <Grid item container>
-                    <Scheduler height={700} data={appointments}>
+                    <Scheduler height={700} data={events}>
                         <ViewState currentViewName={calendarView} />
                         <EditingState onCommitChanges={commitChanges} />
                         <IntegratedEditing />
-                        <MonthView
-                            timeTableCellComponent={disableAddMonthView}
-                        />
+                        <MonthView timeTableCellComponent={disableAddMonthView} />
                         <WeekView timeTableCellComponent={disableAddWeekView} />
+                        <AllDayPanel />
                         <ConfirmationDialog />
                         <Appointments />
                         <AppointmentTooltip layoutComponent={deleteEvent} />
