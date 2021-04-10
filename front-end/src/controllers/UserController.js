@@ -3,22 +3,14 @@
 */
 
 // Import mock user data
-const userDB = require("../placeholderData/users.json");
+import userDB from '../placeholderData/users';
 
-module.exports.getUserData = async (accessToken, userID) => {
-    // Normally, API call here
+export const GetUserData = async (uid) => {
+    if (typeof uid === 'undefined' || uid == null) return null;
 
-    // Check for valid accessToken
-    // For phase 1, we shall abstract the permissions middleware system.
-    if (typeof userDB.find((user) => user.accessToken === accessToken) === "undefined") {
-        // Invalid access token, return null
-        return null;
-    }
+    const userData = userDB?.find((user) => user.id == uid);
 
-    // Get the user data, except the password and access token
-    const user = userDB.find((user) => user.id === userID);
-    delete user.password;
-    delete user.accessToken;
+    delete userData.password;
 
-    return user;
+    return userData;
 };
