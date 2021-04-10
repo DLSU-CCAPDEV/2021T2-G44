@@ -51,7 +51,10 @@ const linkStyles = {
 export default function NavigationHeader(props) {
     // Check logged in
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [cookies, _, removeCookie] = useCookies(['uid']);
+    const cookieCommands = useCookies(['uid']);
+    const cookies = cookieCommands[0];
+    const removeCookie = cookieCommands[2];
+
     useEffect(() => {
         // Check if the uid cookie exists
         if (typeof cookies.uid !== 'undefined' && cookies.uid != null) setIsAuthenticated(true);
@@ -105,9 +108,9 @@ export default function NavigationHeader(props) {
 
     const options = [
         { text: 'My Calendar', icon: EventIcon, link: '/my-calendar' },
-        { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments' },
+        { text: 'Complete Events', icon: CheckBoxIcon, link: '/my-appointments' },
         { text: 'My Invites', icon: SendIcon },
-        { text: 'Inbox', icon: MailIcon },
+        { text: 'Inbox', icon: MailIcon, link: '/mail' },
         { text: 'Delete Event', icon: DeleteSweepIcon },
     ];
 

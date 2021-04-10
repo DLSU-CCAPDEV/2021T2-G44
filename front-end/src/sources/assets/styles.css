@@ -86,8 +86,6 @@ body {
   border-radius: 50px;
   min-width: 415px;
 
-  margin-left: auto;
-
   position: relative;
   right: 5em;
   top: 2em;
@@ -102,6 +100,10 @@ body {
 
     position: relative;
     left: 1em;
+}
+
+.pointerHover:hover {
+    cursor: pointer;
 }
 
 /* MAIN CONTENT DIV */

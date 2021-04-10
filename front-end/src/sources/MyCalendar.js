@@ -20,6 +20,7 @@ import {
     AllDayPanel,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
+import { appointments } from './Appointments';
 
 // Material UI
 import { fade, makeStyles } from '@material-ui/core/styles';

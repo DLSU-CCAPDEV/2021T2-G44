@@ -5,12 +5,12 @@
 // Import mock user data
 import userDB from '../placeholderData/users';
 
-export const GetUserData = async (uid) => {
-    if (typeof uid === 'undefined' || uid == null) return null;
+export const getUserData = async (userID) => {
+    // Normally, API call here
 
-    const userData = userDB?.find((user) => user.id == uid);
-
-    delete userData.password;
+    // Get the user data, except the password and access token
+    const user = userDB.find((user) => user.id === userID);
+    delete user.password;
 
     return userData;
 };

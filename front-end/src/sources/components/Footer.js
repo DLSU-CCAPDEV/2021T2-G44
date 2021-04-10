@@ -14,13 +14,12 @@ const copyrightStyle = {
 
 export default function Footer(props) {
     return (
-        <Grid container>
+        <Grid container direction="column">
             <Box
                 style={{
                     backgroundColor: "#7868E6",
                     width: "100%",
                     height: "32px",
-                    marginTop: "8em",
                 }}
             ></Box>
 

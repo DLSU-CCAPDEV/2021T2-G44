@@ -1,12 +1,12 @@
 import "./assets/styles.css";
 
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 // Component Imports
 import { Paper } from "@material-ui/core";
 import { Avatar } from "@material-ui/core";
-import { Fab, Typography, Grid, TextField } from "@material-ui/core";
+import { Typography, Grid, TextField } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import { Divider } from "@material-ui/core";
@@ -98,24 +98,9 @@ export default function Profile() {
 
     return (
         // entire main content page
-        <Grid
-            container
-            direction="column"
-            style={{ position: "relative", top: "4em" }}
-        >
-            <Grid
-                item
-                container
-                direction="row"
-                justify="center"
-                alignItems="stretch"
-            >
-                <Grid
-                    container
-                    direction="row"
-                    justify="center"
-                    alignItems="stretch"
-                >
+        <Grid container direction="column" style={{ padding: "4em 0 5em 0" }}>
+            <Grid item container direction="row" justify="center" alignItems="stretch">
+                <Grid container direction="row" justify="center" alignItems="stretch">
                     {/* The LeftHand side */}
                     {/* 
                 Todo: 
@@ -124,17 +109,8 @@ export default function Profile() {
                 Bio
                 Change Bio Button 
             */}
-                    <Grid
-                        item
-                        direction="column"
-                        lg={4}
-                        className={classes.stretcher}
-                    >
-                        <Paper
-                            variant="elevation"
-                            elevation={8}
-                            className={classes.profileGrid}
-                        >
+                    <Grid item direction="column" lg={4} className={classes.stretcher}>
+                        <Paper variant="elevation" elevation={8} className={classes.profileGrid}>
                             {/* Grid Inside Paper */}
                             <Grid container direction="column">
                                 {/* Picture Grid */}
@@ -163,12 +139,7 @@ export default function Profile() {
                                 <Divider variant="middle"></Divider>
 
                                 {/* Name Grid */}
-                                <Grid
-                                    item
-                                    container
-                                    direction="column"
-                                    alignItems="center"
-                                >
+                                <Grid item container direction="column" alignItems="center">
                                     <Typography
                                         variant="h5"
                                         align="left"
@@ -182,7 +153,6 @@ export default function Profile() {
                                         multiline
                                         defaultValue="Hello my name is Johnny Johnny Yes Papa eating sugar no papa telling lies no papa open your mouth hahaha"
                                         className={classes.standardSpacer}
-                                        variant="middle"
                                         InputProps={{
                                             readOnly: true,
                                         }}
@@ -229,27 +199,11 @@ export default function Profile() {
                         justify="center"
                         alignItems="stretch"
                     >
-                        <Paper
-                            className={classes.settingsGrid}
-                            variant="elevation"
-                            elevation={8}
-                        >
-                            <Grid
-                                item
-                                container
-                                direction="row"
-                                className={classes.textSpacer}
-                            >
-                                <Typography variant="h4">
-                                    Profile Settings
-                                </Typography>
+                        <Paper className={classes.settingsGrid} variant="elevation" elevation={8}>
+                            <Grid item container direction="row" className={classes.textSpacer}>
+                                <Typography variant="h4">Profile Settings</Typography>
                             </Grid>
-                            <Grid
-                                item
-                                container
-                                direction="row"
-                                alignItems="center"
-                            >
+                            <Grid item container direction="row" alignItems="center">
                                 <TextField
                                     id="firstNameTextBox"
                                     label="First Name"
@@ -266,12 +220,7 @@ export default function Profile() {
                                 </Button>
                             </Grid>
 
-                            <Grid
-                                item
-                                container
-                                direction="row"
-                                alignItems="center"
-                            >
+                            <Grid item container direction="row" alignItems="center">
                                 <TextField
                                     id="lastNameTextBox"
                                     label="Last Name"
@@ -291,20 +240,10 @@ export default function Profile() {
                             <Divider variant="middle"></Divider>
 
                             {/* EMAIL ADDRESS SECTION */}
-                            <Grid
-                                item
-                                container
-                                direction="row"
-                                className={classes.textSpacer}
-                            >
+                            <Grid item container direction="row" className={classes.textSpacer}>
                                 <Typography variant="h4">Email</Typography>
                             </Grid>
-                            <Grid
-                                item
-                                container
-                                direction="row"
-                                alignItems="center"
-                            >
+                            <Grid item container direction="row" alignItems="center">
                                 <TextField
                                     id="emailTextBox"
                                     label="Address"
@@ -323,12 +262,7 @@ export default function Profile() {
 
                             <Divider variant="middle"></Divider>
 
-                            <Grid
-                                item
-                                container
-                                direction="row"
-                                className={classes.textSpacer}
-                            >
+                            <Grid item container direction="row" className={classes.textSpacer}>
                                 <Typography variant="h4">Password</Typography>
                             </Grid>
                             <Button
@@ -339,21 +273,14 @@ export default function Profile() {
                                 Change Password
                             </Button>
                             <Divider variant="middle"></Divider>
-                            <Grid
-                                item
-                                container
-                                direction="row"
-                                className={classes.textSpacer}
-                            >
-                                <Typography variant="h4">
-                                    Delete Account
-                                </Typography>
+                            <Grid item container direction="row" className={classes.textSpacer}>
+                                <Typography variant="h4">Delete Account</Typography>
                             </Grid>
                             <ColorButton
                                 variant="contained"
                                 color="primary"
                                 className={classes.margin}
-                                className={classes.buttonSpacing}
+                                //className={classes.buttonSpacing}
                                 startIcon={<DeleteIcon />}
                             >
                                 Delete

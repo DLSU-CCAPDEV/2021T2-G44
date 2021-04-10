@@ -44,7 +44,7 @@ function Login(props) {
     const history = useHistory();
 
     // Configure State & Handlers
-    const [ _, setCookie ] = useCookies('uid');
+    const setCookie = useCookies("uid")[1];
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
 
@@ -72,11 +72,11 @@ function Login(props) {
         setCookie('uid', uid, cookieOptions);
 
         // Redirect user to dashboard
-        history.push("/dashboard");
+        history.push("/my-calendar");
     };
     
     return (
-        <Grid container direction="column" style={{ position: "relative", top: "4em" }}>
+        <Grid container direction="column" style={{ padding: "5em 0 8em 0" }}>
             <Grid item container direction="row" justify="center" alignItems="center">
                 <Grid item container direction="column" justify="center" alignItems="center" xs={6}>
                     <Grid item>
