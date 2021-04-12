@@ -173,7 +173,7 @@ export default function MyCalendar() {
                 <Grid item container direction="row" justify="space-between">
                     {/** Calendar Art */}
                     <Grid item container direction="row" xs={2} style={{ marginLeft: '2%' }}>
-                        <img src={calendarArt} alt="Calendar Art" className={classes.calendarArt} />
+                        <img src={calendarArt} alt="Calendar Art" />
                     </Grid>
 
                     {/** Calendar Title */}

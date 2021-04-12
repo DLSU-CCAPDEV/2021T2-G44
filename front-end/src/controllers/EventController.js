@@ -1,9 +1,18 @@
 import eventsDB from '../placeholderData/events.json';
 
-export const GetEventsData = async (eventID) => {
-    if (typeof eventID === undefined || eventID == null) return null;
+export const GetSingleEvent = async (appointment) => {
+    const event = eventsDB.find((event) => event.id == appointment.eventID);
+    return event;
+};
 
-    const eventsData = eventsDB.find((event) => event.id == eventID);
+export const GetEventsData = async (userAppointments) => {
+    if (typeof userAppointments === 'undefined' || userAppointments == null) return null;
+
+    let eventsData = [];
+
+    userAppointments.forEach((appointment) => {
+        eventsData.push(eventsDB.find((event) => event.id === appointment.eventID));
+    });
 
     return eventsData;
 };
