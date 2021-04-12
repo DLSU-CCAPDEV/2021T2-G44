@@ -19,7 +19,6 @@ import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import MailIcon from '@material-ui/icons/Mail';
-import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SendIcon from '@material-ui/icons/Send';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
@@ -39,17 +38,93 @@ const brandingStyles = {
 };
 
 const linkStyles = {
-    fontFamily: 'Roboto',
-    fontStyle: 'normal',
-    fontWeight: 'bold',
-    fontSize: '36px',
-    lineHeight: '42px',
     color: '#212121',
     textDecoration: 'none',
 };
 
-export default function NavigationHeader(props) {
+const options = [
+    { text: 'My Calendar', icon: EventIcon, link: '/my-calendar', index: 0 },
+    { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments', index: 1 },
+    { text: 'Inbox', icon: MailIcon, link: '/mail', index: 2 },
+    { text: 'Invites', icon: SendIcon, index: 3 },
+];
 
+const drawerWidth = 300;
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+    },
+    appBar: {
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+    },
+    appBarShift: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginRight: drawerWidth,
+    },
+    title: {
+        flexGrow: 1,
+    },
+    hide: {
+        display: 'none',
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth,
+    },
+    drawerHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: theme.spacing(0, 1),
+        // necessary for content to be below app bar
+        ...theme.mixins.toolbar,
+        justifyContent: 'flex-start',
+    },
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing(3),
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        marginRight: -drawerWidth,
+    },
+    contentShift: {
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginRight: 0,
+    },
+    footerButtons: {
+        position: 'fixed',
+        bottom: '0',
+        width: '100%',
+        height: '60',
+    },
+
+    selected: {
+        '&.Mui-selected': {
+            backgroundColor: theme.palette.accent.main,
+        },
+        '&:hover': {
+            backgroundColor: theme.palette.accent.main,
+            cursor: 'pointer',
+        },
+    },
+}));
+
+export default function NavigationHeader(props) {
     // Check logged in
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const cookieCommands = useCookies(['uid']);
@@ -107,82 +182,14 @@ export default function NavigationHeader(props) {
         );
     };
 
-    const options = [
-        { text: 'My Calendar', icon: EventIcon, link: '/my-calendar' },
-        { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments' },
-        { text: 'My Invites', icon: SendIcon },
-        { text: 'Inbox', icon: MailIcon, link: '/mail' },
-        { text: 'Delete Event', icon: DeleteSweepIcon },
-    ];
-
-    const drawerWidth = 300;
-
-    const useStyles = makeStyles((theme) => ({
-        root: {
-            display: 'flex',
-        },
-        appBar: {
-            transition: theme.transitions.create(['margin', 'width'], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-        },
-        appBarShift: {
-            width: `calc(100% - ${drawerWidth}px)`,
-            transition: theme.transitions.create(['margin', 'width'], {
-                easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-            marginRight: drawerWidth,
-        },
-        title: {
-            flexGrow: 1,
-        },
-        hide: {
-            display: 'none',
-        },
-        drawer: {
-            width: drawerWidth,
-            flexShrink: 0,
-        },
-        drawerPaper: {
-            width: drawerWidth,
-        },
-        drawerHeader: {
-            display: 'flex',
-            alignItems: 'center',
-            padding: theme.spacing(0, 1),
-            // necessary for content to be below app bar
-            ...theme.mixins.toolbar,
-            justifyContent: 'flex-start',
-        },
-        content: {
-            flexGrow: 1,
-            padding: theme.spacing(3),
-            transition: theme.transitions.create('margin', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-            marginRight: -drawerWidth,
-        },
-        contentShift: {
-            transition: theme.transitions.create('margin', {
-                easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-            marginRight: 0,
-        },
-        footerButtons: {
-            position: 'fixed',
-            bottom: '0',
-            width: '100%',
-            height: '60',
-        },
-    }));
-
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
+    const handleListItemClick = (event, index) => {
+        setSelectedIndex(index);
+    };
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -195,11 +202,12 @@ export default function NavigationHeader(props) {
     const handleLogout = () => {
         // Clear cookie
         setOpen(false);
-        removeCookie("uid");
-        history.push("/login");
+        removeCookie('uid');
+        history.push('/login');
     };
 
     const handleProfile = () => {
+        handleDrawerClose();
         history.push('/profile');
     };
 
@@ -216,12 +224,7 @@ export default function NavigationHeader(props) {
                     <Toolbar>
                         <Grid container direction="row" spacing={3} alignItems="center">
                             <Grid item lg={8}>
-                                <Link
-                                    to="/"
-                                    className="container"
-                                    style={brandingStyles}
-                                    href="index.html"
-                                >
+                                <Link to="/" className="container" style={brandingStyles} href="index.html">
                                     <img src={logo} className="logo" alt="Website Logo" />
                                     <div className="logoLine" />
                                     <h1 id="headerName">Sched-It</h1>
@@ -250,15 +253,21 @@ export default function NavigationHeader(props) {
                 >
                     <div className={classes.drawerHeader}>
                         <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                            {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                         </IconButton>
                     </div>
                     <Divider />
 
                     <List>
                         {options.map((images) => (
-                            <Link to={images.link} style={linkStyles}>
-                                <ListItem button key={images.text}>
+                            <Link to={images.link} style={linkStyles} onClick={handleDrawerClose}>
+                                <ListItem
+                                    button
+                                    key={images.text}
+                                    selected={selectedIndex === images.index}
+                                    onClick={(event) => handleListItemClick(event, images.index)}
+                                    className={classes.selected}
+                                >
                                     <ListItemIcon>
                                         <images.icon fontSize="large" />
                                     </ListItemIcon>
@@ -269,18 +278,35 @@ export default function NavigationHeader(props) {
                     </List>
 
                     <List className={classes.footerButtons}>
-                        <ListItem button onClick={handleProfile} key="My Profile">
-                            <ListItemIcon>
-                                <AccountCircleIcon fontSize="large" />
-                            </ListItemIcon>
-                            <ListItemText primary="My Profile" />
-                        </ListItem>
-                        <ListItem button onClick={handleLogout} key="Log Out">
-                            <ListItemIcon>
-                                <PowerSettingsNewIcon fontSize="large" />
-                            </ListItemIcon>
-                            <ListItemText primary="Log Out" />
-                        </ListItem>
+                        <Link style={linkStyles} onClick={handleProfile}>
+                            <ListItem
+                                button
+                                key="My Profile"
+                                selected={selectedIndex === 4}
+                                onClick={(event) => handleListItemClick(event, 4)}
+                                className={classes.selected}
+                            >
+                                <ListItemIcon>
+                                    <AccountCircleIcon fontSize="large" />
+                                </ListItemIcon>
+                                <ListItemText primary="My Profile" />
+                            </ListItem>
+                        </Link>
+
+                        <Link style={linkStyles} onClick={handleLogout}>
+                            <ListItem
+                                button
+                                key="Log Out"
+                                selected={selectedIndex === 5}
+                                onClick={(event) => handleListItemClick(event, 5)}
+                                className={classes.selected}
+                            >
+                                <ListItemIcon>
+                                    <PowerSettingsNewIcon fontSize="large" />
+                                </ListItemIcon>
+                                <ListItemText primary="Log Out" />
+                            </ListItem>
+                        </Link>
                     </List>
                 </Drawer>
             </div>
