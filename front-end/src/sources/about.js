@@ -116,21 +116,21 @@ export default function Homepage() {
                         variant="h5"
                         style={{ position: "relative", top: "1em" }}
                     >
-                        I am currently a second year undergraduate student in De
+                        Adriel is currently a second year undergraduate student in De
                         La Salle University (DLSU) studying Bachelor of Science
                         in Computer Science with specialization in Software
-                        Technology (BS CS-ST). I had my primary education in
-                        Holy Child College of Davao (HCCD) and graduated from my
+                        Technology (BS CS-ST). He had his primary education in
+                        Holy Child College of Davao (HCCD) and graduated 
                         secondary education from Davao Christian High School
                         (DCHS) class of 2019 (STEM).
                         <br />
                         <br />
-                        My main research interest lies in Natural Language
+                        His main research interest lies in Natural Language
                         Processing (NLP) and Computer Vision (CV). As of time of
-                        writing, I reviewed some research papers on the topics
+                        writing, he has reviewed some research papers on the topics
                         and reading up on machine learning techniques. However,
                         no hands-on work has been made so far. On the other
-                        hand, my main development skill set leans more into Full
+                        hand, his main development skill set leans more into Full
                         Stack Web Development (esp Back-end), DevOps, & Computer
                         Software Development.
                     </Typography>

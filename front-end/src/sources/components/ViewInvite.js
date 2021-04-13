@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import "../assets/styles.css";
 
@@ -12,8 +12,6 @@ import {
     DialogTitle,
     Slide,
 } from "@material-ui/core";
-
-import SendMessage from "./SendMessage";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;

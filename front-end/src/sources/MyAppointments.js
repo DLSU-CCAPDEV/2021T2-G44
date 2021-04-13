@@ -11,7 +11,7 @@ import Fab from '@material-ui/core/Fab';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+//import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 
@@ -158,19 +158,19 @@ export default function MyAppointments() {
     // }
 
     // GENERATE COLUMN HEADERS
-    const [columns] = useState([
-        { name: 'title', title: 'Event Name' },
-        { name: 'date', title: 'Date' },
-        { name: 'isPrivate', title: 'Event Type' },
-        { name: 'hostName', title: 'Created By' },
-    ]);
+    // const [columns] = useState([
+    //     { name: 'title', title: 'Event Name' },
+    //     { name: 'date', title: 'Date' },
+    //     { name: 'isPrivate', title: 'Event Type' },
+    //     { name: 'hostName', title: 'Created By' },
+    // ]);
 
     const [rows] = useState([
-        createData('Website Re-Design Plan', '10:15 - 11:00', 'Public', 'Shoobs Querol'),
-        createData('Forte 2021', '10:15 - 11:00', 'Public', 'Lasallian Youth Orchestra'),
-        createData('Neural Network Training', '10:15 - 11:00', 'Public', 'Arren Antioquia'),
-        createData('Windblume Festival', '10:15 - 11:00', 'Private', 'Antonio The Ipis'),
-        createData('Pyroregisvine Slaying', '10:15 - 11:00', 'Private', 'Gian Madrid'),
+        createData("Website Re-Design Plan", "10:15 - 11:00", "Public", "Shoobs Querol"),
+        createData("Forte 2021", "10:15 - 11:00", "Public", "Lasallian Youth Orchestra"),
+        createData("Neural Network Training", "10:15 - 11:00", "Public", "Arren Antioquia"),
+        createData("Windblume Festival", "10:15 - 11:00", "Private", "Antonio The Ipis"),
+        createData("Pyroregisvine Slaying", "10:15 - 11:00", "Private", "Gian Madrid"),
     ]);
 
     return (
@@ -181,7 +181,7 @@ export default function MyAppointments() {
                     <img
                         src={MyAppointmentsArt}
                         alt="My Appointments Art"
-                        style={{ 'height': '175px', 'marginLeft': '8em' }}
+                        style={{ height: "175px", marginLeft: "8em" }}
                     />
                     <Typography variant="h2" className={classes.text}>
                         My Appointments
@@ -190,7 +190,7 @@ export default function MyAppointments() {
 
                 {/* Grid table */}
                 <Grid item container justify="center">
-                    <TableContainer component={Paper} style={{ width: '90%', marginTop: '1em' }}>
+                    <TableContainer component={Paper} style={{ width: "90%", marginTop: "1em" }}>
                         <Table>
                             <TableHead>
                                 <TableRow>
@@ -231,13 +231,17 @@ export default function MyAppointments() {
                                                     <ListItemIcon>
                                                         <PublicIcon />
                                                     </ListItemIcon>
-                                                    <ListItemText primary={`${eventDetails.type} event`} />
+                                                    <ListItemText
+                                                        primary={`${eventDetails.type} event`}
+                                                    />
                                                 </ListItem>
                                                 <ListItem>
                                                     <ListItemIcon>
                                                         <AccountCircleIcon />
                                                     </ListItemIcon>
-                                                    <ListItemText primary={`Created by ${eventDetails.createdBy}`} />
+                                                    <ListItemText
+                                                        primary={`Created by ${eventDetails.createdBy}`}
+                                                    />
                                                 </ListItem>
                                             </List>
                                         )}
@@ -248,7 +252,7 @@ export default function MyAppointments() {
                                                 color="primary"
                                                 aria-label="add"
                                                 className={classes.margin}
-                                                onClick={(e) => alert('You clicked me!')}
+                                                onClick={(e) => alert("You clicked me!")}
                                             >
                                                 <NavigationIcon className={classes.extendedIcon} />
                                                 Go To Event
@@ -263,13 +267,20 @@ export default function MyAppointments() {
                                 </Dialog>
 
                                 {rows.map((row) => (
-                                    <DataRow key={row.title} onClick={() => handleEventDialogOpen(row)}>
+                                    <DataRow
+                                        key={row.title}
+                                        onClick={() => handleEventDialogOpen(row)}
+                                    >
                                         <TableHeaderCell align="center" component="th" scope="row">
                                             {row.title}
                                         </TableHeaderCell>
-                                        <TableHeaderCell align="center">{row.dateTime}</TableHeaderCell>
+                                        <TableHeaderCell align="center">
+                                            {row.dateTime}
+                                        </TableHeaderCell>
                                         <TableHeaderCell align="center">{row.type}</TableHeaderCell>
-                                        <TableHeaderCell align="center">{row.createdBy}</TableHeaderCell>
+                                        <TableHeaderCell align="center">
+                                            {row.createdBy}
+                                        </TableHeaderCell>
                                     </DataRow>
                                 ))}
                             </TableBody>
