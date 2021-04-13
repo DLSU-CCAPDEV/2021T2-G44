@@ -3,7 +3,6 @@
 */
 // Import Mock Data
 import Users from "../placeholderData/users.json";
-require("dotenv").config();
 
 export async function userLogin(emailAddress, password) {
     /*
@@ -12,7 +11,8 @@ export async function userLogin(emailAddress, password) {
     */
     // Look for the email address given
     const userData = Users.find(
-        (user) => user.email === emailAddress && user.password === password
+        (user) =>
+            user.email.toLowerCase() === emailAddress.toLowerCase() && user.password === password
     );
 
     // Check for undefined: return null to the user if undefined

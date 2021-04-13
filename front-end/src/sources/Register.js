@@ -2,9 +2,6 @@ import "./assets/styles.css";
 import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
-// Model & Controller Imports
-import { userLogin } from '../controllers/AuthController';
-
 // Material-UI
 import { Grid, Box, Typography, TextField, withStyles, Fab } from "@material-ui/core";
 
@@ -89,8 +86,7 @@ function Register(props) {
         // DO ACCOUNT CREATION LOGIC HERE
 
         // For phase 1, log in as user 1.
-        const uid = await userLogin("renzo_querol@dlsu.edu.ph", "password1");
-        setCookie("uid", uid, cookieOptions);
+        setCookie("uid", 1, cookieOptions);
 
         // Redirect the user
         history.push("/my-calendar");
