@@ -4,7 +4,7 @@
 
 import React, { useState } from "react";
 
-import { InputBase, TextField } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
 import { Autocomplete } from "@material-ui/lab";

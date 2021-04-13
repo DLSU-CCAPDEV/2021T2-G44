@@ -43,5 +43,14 @@
         "subject": "Welcome to AGLET!",
         "content": "Nothing much here, just wanted to say hi.",
         "attachments": []
+    },
+    {
+        "id": 6,
+        "senderID": 1,
+        "recepientID": 2,
+        "sendTime": "2021-03-24T14:43:20.724Z",
+        "subject": "Appointment with Mr. Benitez",
+        "content": "Please set an appointment for me with Mr. Benitez.",
+        "attachments": []
     }
 ]

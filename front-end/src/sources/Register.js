@@ -89,7 +89,7 @@ function Register(props) {
         // DO ACCOUNT CREATION LOGIC HERE
 
         // For phase 1, log in as user 1.
-        const uid = await userLogin("adriel_amoguis@dlsu.edu.ph", "password1");
+        const uid = await userLogin("renzo_querol@dlsu.edu.ph", "password1");
         setCookie("uid", uid, cookieOptions);
 
         // Redirect the user

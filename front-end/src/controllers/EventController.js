@@ -1,7 +1,7 @@
 import eventsDB from '../placeholderData/events.json';
 
 export const GetSingleEvent = async (appointment) => {
-    const event = eventsDB.find((event) => event.id == appointment.eventID);
+    const event = eventsDB.find((event) => event.id === Number(appointment.eventID));
     return event;
 };
 

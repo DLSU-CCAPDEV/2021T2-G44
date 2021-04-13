@@ -114,7 +114,7 @@ export default function Mail(props) {
     };
 
     return (
-        <Grid container direction="column" style={{ padding: '8em 0 8em 0' }}>
+        <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
             <ViewMessage
                 dialogOpen={viewDialogOpen}
                 setDialogOpen={setViewDialogOpen}
@@ -122,33 +122,63 @@ export default function Mail(props) {
                 mailbox={mailbox}
             />
 
-            <SendMessage dialogOpen={newMessageDialogOpen} setDialogOpen={setNewMessageDialogOpen} />
+            <SendMessage
+                dialogOpen={newMessageDialogOpen}
+                setDialogOpen={setNewMessageDialogOpen}
+            />
 
             <Grid item container direction="row" justify="center">
                 <Grid item container direction="row" xs={2}>
-                    <img src={mailBoxArt} alt="My Appointments Art" style={{ 'height': '200px' }} />
+                    <img src={mailBoxArt} alt="My Appointments Art" style={{ height: "200px" }} />
                 </Grid>
 
                 {/** Mail Title */}
-                <Grid item container direction="column" justify="center" alignItems="flex-start" xs={3}>
-                    <Typography variant="h2" color="primary" style={{ fontWeight: 'bold' }}>
-                        {mailbox === 0 ? 'Inbox' : 'Sent Mail'}
+                <Grid
+                    item
+                    container
+                    direction="column"
+                    justify="center"
+                    alignItems="flex-start"
+                    xs={3}
+                >
+                    <Typography variant="h2" color="primary" style={{ fontWeight: "bold" }}>
+                        {mailbox === 0 ? "Inbox" : "Sent Mail"}
                     </Typography>
                 </Grid>
 
                 {/* Add Message Button */}
-                <Grid item container direction="column" xs={2} justify="flex-end" alignItems="stretch">
-                    <Fab variant="extended" size="medium" color="primary" aria-label="add" onClick={handleNewMessage}>
-                        <NavigationIcon style={{ marginRight: '10px' }} />
+                <Grid
+                    item
+                    container
+                    direction="column"
+                    xs={2}
+                    justify="flex-end"
+                    alignItems="stretch"
+                >
+                    <Fab
+                        variant="extended"
+                        size="medium"
+                        color="primary"
+                        aria-label="add"
+                        onClick={handleNewMessage}
+                    >
+                        <NavigationIcon style={{ marginRight: "10px" }} />
                         New Message
                     </Fab>
                 </Grid>
 
                 {/* Input and Buttons */}
-                <Grid item container direction="row" alignItems="flex-end" justify="flex-end" xs={2}>
+                <Grid
+                    item
+                    container
+                    direction="row"
+                    alignItems="flex-end"
+                    justify="flex-end"
+                    xs={2}
+                >
                     {/* Mail View */}
                     <FormControl component="fieldset">
-                        <FormLabel component="legend" style={{ textAlign: 'right' }}>
+                        <FormLabel component="legend" style={{ textAlign: "right" }}>
                             Mail View
                         </FormLabel>
                         <RadioGroup aria-label="calendar View" name="calendarView" row>
@@ -177,22 +207,28 @@ export default function Mail(props) {
                                     />
                                 }
                                 label="Sent Mail"
-                                style={{ marginRight: '0' }}
+                                style={{ marginRight: "0" }}
                             />
                         </RadioGroup>
                     </FormControl>
                 </Grid>
 
                 <Grid item container direction="column" alignItems="center">
-                    <Grid item container justify justify="center">
-                        <TableContainer component={Paper} style={{ width: '80%', marginTop: '1em' }}>
+                    <Grid item container justify="center">
+                        <TableContainer
+                            component={Paper}
+                            style={{ width: "80%", marginTop: "1em" }}
+                        >
                             <Table aria-label="Inbox Messages">
                                 <TableHead>
                                     <TableRow>
                                         <TableCell style={styles.tableHeaders.from} align="center">
-                                            {mailbox === 0 ? 'From' : 'To'}
+                                            {mailbox === 0 ? "From" : "To"}
                                         </TableCell>
-                                        <TableCell style={styles.tableHeaders.subject} align="center">
+                                        <TableCell
+                                            style={styles.tableHeaders.subject}
+                                            align="center"
+                                        >
                                             Subject
                                         </TableCell>
                                         <TableCell style={styles.tableHeaders.date} align="center">
@@ -208,7 +244,11 @@ export default function Mail(props) {
                                                 className="pointerHover"
                                                 key={m.id}
                                                 onClick={() => handleClick(m)}
-                                                style={i % 2 === 0 ? styles.tableData.odd : styles.tableData.even}
+                                                style={
+                                                    i % 2 === 0
+                                                        ? styles.tableData.odd
+                                                        : styles.tableData.even
+                                                }
                                             >
                                                 <TableCell style={styles.tableData.td}>
                                                     <Typography align="center" variant="subtitle1">
@@ -234,7 +274,11 @@ export default function Mail(props) {
                                                 className="pointerHover"
                                                 key={m.id}
                                                 onClick={() => handleClick(m)}
-                                                style={i % 2 === 0 ? styles.tableData.odd : styles.tableData.even}
+                                                style={
+                                                    i % 2 === 0
+                                                        ? styles.tableData.odd
+                                                        : styles.tableData.even
+                                                }
                                             >
                                                 <TableCell style={styles.tableData.td}>
                                                     <Typography align="center" variant="subtitle1">

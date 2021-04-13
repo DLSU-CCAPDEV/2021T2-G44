@@ -201,7 +201,6 @@ export default function Profile() {
                                             multiline
                                             value={userData.bio}
                                             className={classes.standardSpacer}
-                                            variant="middle"
                                             InputProps={{
                                                 readOnly: true,
                                             }}
@@ -373,7 +372,6 @@ export default function Profile() {
                                 <ColorButton
                                     variant="contained"
                                     color="primary"
-                                    className={classes.margin}
                                     className={classes.buttonSpacing}
                                     startIcon={<DeleteIcon />}
                                 >

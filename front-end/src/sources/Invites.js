@@ -5,7 +5,6 @@ import "./assets/styles.css";
 
 import {
     Grid,
-    Fab,
     Typography,
     Table,
     TableBody,
@@ -14,7 +13,7 @@ import {
     TableHead,
     TableRow,
     Paper,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
 import ViewInvite from "./components/ViewInvite";
 
@@ -91,15 +90,11 @@ export default function Invites(props) {
                 dialogOpen={viewDialogOpen}
                 setDialogOpen={setViewDialogOpen}
                 selectedInvitation={selectedInvitation}
-             />
+            />
 
             <Grid item container direction="row" justify="center">
                 <Grid item container direction="row" xs={2}>
-                    <img
-                        src={mailBoxArt}
-                        alt="My Appointments Art"
-                        style={{ height: "200px" }}
-                    />
+                    <img src={mailBoxArt} alt="My Appointments Art" style={{ height: "200px" }} />
                 </Grid>
 
                 {/** Mail Title */}
@@ -121,7 +116,7 @@ export default function Invites(props) {
                 </Grid>
 
                 <Grid item container direction="column" alignItems="center">
-                    <Grid item container justify justify="center">
+                    <Grid item container justify="center">
                         <TableContainer
                             component={Paper}
                             style={{ width: "80%", marginTop: "1em" }}
@@ -129,10 +124,7 @@ export default function Invites(props) {
                             <Table aria-label="Inbox Messages">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell
-                                            style={styles.tableHeaders.from}
-                                            align="center"
-                                        >
+                                        <TableCell style={styles.tableHeaders.from} align="center">
                                             From
                                         </TableCell>
                                         <TableCell
@@ -141,10 +133,7 @@ export default function Invites(props) {
                                         >
                                             Event
                                         </TableCell>
-                                        <TableCell
-                                            style={styles.tableHeaders.date}
-                                                align="center"
-                                        >
+                                        <TableCell style={styles.tableHeaders.date} align="center">
                                             Invite Date
                                         </TableCell>
                                     </TableRow>
@@ -163,26 +152,17 @@ export default function Invites(props) {
                                                 }
                                             >
                                                 <TableCell style={styles.tableData.td}>
-                                                    <Typography
-                                                        align="center"
-                                                        variant="subtitle1"
-                                                    >
+                                                    <Typography align="center" variant="subtitle1">
                                                         {`${m.host.firstName} ${m.host.lastName}`}
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell style={styles.tableData.td}>
-                                                    <Typography
-                                                        align="center"
-                                                        variant="subtitle1"
-                                                    >
+                                                    <Typography align="center" variant="subtitle1">
                                                         {m.event.title}
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell style={styles.tableData.td}>
-                                                    <Typography
-                                                        align="center"
-                                                        variant="subtitle1"
-                                                    >
+                                                    <Typography align="center" variant="subtitle1">
                                                         {m.inviteSentTime}
                                                     </Typography>
                                                 </TableCell>
