@@ -43,10 +43,10 @@ const linkStyles = {
 };
 
 const options = [
-    { text: 'My Calendar', icon: EventIcon, link: '/my-calendar', index: 0 },
-    { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments', index: 1 },
-    { text: 'Inbox', icon: MailIcon, link: '/mail', index: 2 },
-    { text: 'Invites', icon: SendIcon, index: 3 },
+    { text: "My Calendar", icon: EventIcon, link: "/my-calendar", index: 0 },
+    { text: "My Appointments", icon: CheckBoxIcon, link: "/my-appointments", index: 1 },
+    { text: "Inbox", icon: MailIcon, link: "/mail", index: 2 },
+    { text: "Invites", icon: SendIcon, link: "/invites", index: 3 },
 ];
 
 const drawerWidth = 300;
