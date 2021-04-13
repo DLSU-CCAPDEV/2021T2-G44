@@ -170,12 +170,14 @@ export default function Homepage() {
                         variant="h5"
                         style={{ position: "relative", top: "1em" }}
                     >
-                        Hi im Gian and i'm a Lorem ipsum dolor sit amet,
-                        consectetur adipiscing elit. Sed interdum justo vitae
-                        pellentesque tincidunt. Fusce non justo sit amet est
-                        laoreet facilisis. Quisque eu ipsum ut elit egestas
-                        varius sit amet sollicitudin lacus. Curabitur finibus
-                        mauris ac diam venenatis ornare.
+                        Gian Madrid is a second year student in De La Salle
+                        University currently taking up BS CS-ST. His interests
+                        are Computer Vision, Artificial Intelligence,
+                        Human-Computer Interactions, and Programming as well as
+                        music and video games. His other commitments are being
+                        an AVP in DLSU SPRINT's External commitee as well as
+                        serving as a Marketing Manager in the Lasallian Youth
+                        Orchestra.
                     </Typography>
                 </Grid>
             </Grid>
@@ -213,12 +215,20 @@ export default function Homepage() {
                         variant="h5"
                         style={{ position: "relative", top: "1em" }}
                     >
-                        Hi im Lorenzo and i'm a Lorem ipsum dolor sit amet,
-                        consectetur adipiscing elit. Sed interdum justo vitae
-                        pellentesque tincidunt. Fusce non justo sit amet est
-                        laoreet facilisis. Quisque eu ipsum ut elit egestas
-                        varius sit amet sollicitudin lacus. Curabitur finibus
-                        mauris ac diam venenatis ornare.
+                        Lorenzo Querol is currently a second-year student in De
+                        La Salle University, undertaking Computer Science with a
+                        major in Computer Systems Engineering. He studied at
+                        O.B. Montessori Center Inc. for his Junior High School
+                        Education, and De La Salle University – Integrated
+                        School for his Senior High School Education. He also
+                        studied at NIT Akashi College, Kobe, Japan, as an
+                        exchange student in 2018. He also has other commitments
+                        such as being the Assistant Company Manager of the
+                        Lasallian Youth Orchestra. His interests are in web
+                        development, computer vision, artificial intelligence,
+                        embedded systems, and microarchitecture. His hobbies
+                        include playing games, playing my saxophone, working
+                        out, and cooking.
                     </Typography>
                 </Grid>
             </Grid>
