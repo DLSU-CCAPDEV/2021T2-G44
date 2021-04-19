@@ -49,6 +49,14 @@ const sessionModel = {
 };
 app.use(session(sessionModel));
 
+// Logger
+if(Number(process.env.ENABLE_LOGGER) !== 0) {
+    app.use((req, res, next) => {
+        console.log(`[${new Date().toISOString()}] Connect request from uid <${req.session.uid}>: ${req.url}`);
+        next();
+    });
+}
+
 // Link to external router
 app.use("/", router);
 

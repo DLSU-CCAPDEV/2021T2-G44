@@ -1,5 +1,6 @@
 // Mongoose Models
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const UserModel = require("./models/User.js");
 const MailModel = require("./models/Mail.js");
 
@@ -68,5 +69,11 @@ const users = [
 // Script Start
 console.log("Adding User Data");
 users.forEach((user) => {
-    UserModel.create(user).then(() => console.log("Added user"));
+    // Hash password
+    const salt = bcrypt.genSaltSync(10);
+    user.password = bcrypt.hashSync(user.password, salt);
+    const userData = new UserModel(user);
+    userData.save().then(() => console.log("Added user"));
 });
+
+process.exit();
