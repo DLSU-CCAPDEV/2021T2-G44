@@ -24,6 +24,3 @@ mongoose.Promise = global.Promise;
 // Script Start
 console.log("Purging User Data");
 UserModel.deleteMany({}).then(() => console.log("Purged all UserData"));
-
-
-process.exit();
