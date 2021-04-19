@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "populateDB": "node add_data.js",
+    "purgeDB": "node purge_data.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,7 @@
   },
   "homepage": "https://github.com/DLSU-CCAPDEV/2021T2-G44#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "connect-mongo": "^3.2.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
