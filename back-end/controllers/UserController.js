@@ -1,4 +1,5 @@
 const { body, validationResult } = require("express-validator");
+const bcrypt = require("bcrypt");
 const UserModel = require("../models/User");
 
 /**
@@ -23,6 +24,11 @@ module.exports.createUser = async (req, res) => {
         res.status(400).send("A user with that email already exists.");
         return;
     }
+
+    // Encrypt Password
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(userData.password, salt);
+    userData.password = passwordHash;
 
     // Update user data
     const user = new UserModel(userData);
@@ -52,7 +58,7 @@ module.exports.getCurrentUser = async (req, res) => {
         res.status(404).send("User data not found.");
     } else {
         // Remove password
-        delete userData.password;
+        userData.password = undefined;
         res.status(200).json(userData);
     }
 };
@@ -72,12 +78,42 @@ module.exports.getUser = async (req, res) => {
         res.status(404).send("User data not found.");
     } else {
         // Remove password
-        delete userData.password;
+        userData.password = undefined;
         res.status(200).json(userData);
     }
 };
 
-module.exports.updateUser = async (req, res) => {};
+/**
+ * This controller method updates the 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+module.exports.updateUser = async (req, res) => {
+    const userID = req.params.id;
+    const userData = req.body;
+
+    // Return invalid user data if invalid
+    if (!validationErrors.isEmpty()) {
+        res.status(422).json({ errors: validationErrors.array() });
+        return;
+    }
+
+    // Remove any password updates
+    userData.password = undefined;
+    delete userData.password;
+
+    // Update user data
+    UserModel.updateOne({ _id: userID }, userData)
+        .then((uData) => {
+            uData.password = undefined;
+            res.status(200).json(uData);
+        })
+        .catch((err) => {
+            console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
+            res.status(500).send(err);
+        });
+};
 
 module.exports.changePassword = async (req, res) => {};
 

@@ -9,6 +9,7 @@ const UserController = require("./controllers/UserController");
 // AUTH
 appRouter.post("/auth", AuthController.authenticate);
 appRouter.delete("/auth", AuthController.logout);
+appRouter.get("/auth", AuthController.loggedIn);
 
 // Require Logged-In Middleware & Permissions Injection
 appRouter.use("/api", AuthController.validateSession);

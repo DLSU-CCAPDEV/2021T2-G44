@@ -5,6 +5,7 @@
 
 // Dependencies
 const express = require("express");
+const cors = require("cors");
 const router = require("./router.js");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -31,8 +32,22 @@ const app = express();
 
 // Set up base middleware
 
-// Cookie & JSON Parsers
+// Cross-Origin Resource Sharing
+const corsOptions = {
+    origin: true,
+    methods: ['GET','POST','PUT','DELETE'],
+    allowedHeaders: ['Content-Type','Content-Length'],
+    credentials: true,
+    optionsSuccessStatus: 200,
+}
+app.use(cors(corsOptions));
+
+// // CORS  Pre-flight
+app.options('*', cors(corsOptions));
+
+// Cookie & JSON Parsers 
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Session Authorization & Authentication
@@ -52,7 +67,11 @@ app.use(session(sessionModel));
 // Logger
 if(Number(process.env.ENABLE_LOGGER) !== 0) {
     app.use((req, res, next) => {
-        console.log(`[${new Date().toISOString()}] Connect request from uid <${req.session.uid}>: ${req.url}`);
+        console.log(
+            `[${new Date().toISOString()}] ${req.method} request from uid <${req.session.uid}>: ${
+                req.url
+            }`
+        );
         next();
     });
 }

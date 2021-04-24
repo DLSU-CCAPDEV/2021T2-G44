@@ -26,8 +26,7 @@ import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
-// Cookies
-import { useCookies } from 'react-cookie';
+import { getUID, logout } from "../../controllers/AuthController";
 
 const barStyles = {
     filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
@@ -127,15 +126,15 @@ const useStyles = makeStyles((theme) => ({
 export default function NavigationHeader(props) {
     // Check logged in
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const cookieCommands = useCookies(['uid']);
-    const cookies = cookieCommands[0];
-    const removeCookie = cookieCommands[2];
 
     useEffect(() => {
-        // Check if the uid cookie exists
-        if (typeof cookies.uid !== 'undefined' && cookies.uid != null) setIsAuthenticated(true);
-        else setIsAuthenticated(false);
-    }, [cookies.uid]);
+        getUID()
+            .then((res) => {
+                console.log(res);
+                if (res) setIsAuthenticated(true);
+            })
+            .catch((err) => console.error(err));
+    }, []);
 
     // Extract the Context
     const history = useHistory();
@@ -202,7 +201,7 @@ export default function NavigationHeader(props) {
     const handleLogout = () => {
         // Clear cookie
         setOpen(false);
-        removeCookie('uid');
+        logout();
         history.push('/login');
     };
 
@@ -313,6 +312,7 @@ export default function NavigationHeader(props) {
         );
     };
 
+    console.log(isAuthenticated);
     if (isAuthenticated) return loggedIn();
     else return notLoggedIn();
 }

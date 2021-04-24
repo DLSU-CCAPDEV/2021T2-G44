@@ -1,14 +1,10 @@
-import { useState, useEffect } from 'react';
-import { useCookies } from "react-cookie";
-import { Link, useHistory } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
 import "./assets/styles.css";
-import loginCover from './assets/loginCover.svg';
+import loginCover from "./assets/loginCover.svg";
 
 // Auth Controller
-import { userLogin } from '../controllers/AuthController';
-
-// Cookie Model
-import { cookieOptions } from '../models/Cookie';
+import { userLogin } from "../controllers/AuthController";
 
 // Material-UI Imports
 import { Grid, Typography, Box, TextField, Fab, withStyles } from "@material-ui/core";
@@ -32,21 +28,19 @@ const buttonStyles = {
     margin: "1em",
     color: "white",
     marginBottom: "3em",
-    
 };
 
 function Login(props) {
     useEffect(() => {
-        document.title = "Login - Sched-It"
+        document.title = "Login - Sched-It";
     });
 
     const classes = props.classes;
     const history = useHistory();
 
     // Configure State & Handlers
-    const setCookie = useCookies("uid")[1];
-    const [ email, setEmail ] = useState("");
-    const [ password, setPassword ] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     // Change Event Handlers
     const onEmailChange = (e) => {
@@ -59,22 +53,13 @@ function Login(props) {
 
     // Form submit
     const doLogin = async () => {
-        const uid = await userLogin(email, password);
-        
-        // Check if valid ogin or not
-        if(uid == null)
-        {
-            alert("Invalid email address or password. Please try again.");
-            return;
-        }
-
-        // Set Cookie
-        setCookie('uid', uid, cookieOptions);
+        const loggedIn = await userLogin(email, password);
 
         // Redirect user to dashboard
-        history.push("/my-calendar");
+        if (loggedIn) history.push("/my-calendar");
+        else alert("Error logging in.");
     };
-    
+
     return (
         <Grid container direction="column" style={{ padding: "5em 0 8em 0" }}>
             <Grid item container direction="row" justify="center" alignItems="center">

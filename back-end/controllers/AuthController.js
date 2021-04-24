@@ -29,6 +29,11 @@ module.exports.authenticate = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
+    if (req.session.uid) {
+        res.status(200).send("Already logged in.");
+        return;
+    }
+
     // Get the user data
     const userData = await UserSchema.findOne({ email: email });
 
@@ -54,6 +59,20 @@ module.exports.logout = async (req, res) => {
         // Delete session
         req.session.destroy();
         res.status(200).send("Logged Out");
+    } else {
+        res.status(401).send("You are not logged in.");
+    }
+};
+
+/**
+ * This method checks if the user is logged in.
+ * @param {*} req
+ * @param {*} res
+ */
+ module.exports.loggedIn = async (req, res) => {
+    if (req.session.uid) {
+        // Return OK
+        res.status(200).json({ uid: req.session.uid });
     } else {
         res.status(401).send("You are not logged in.");
     }

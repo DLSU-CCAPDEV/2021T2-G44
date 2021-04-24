@@ -16,6 +16,7 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
+    "axios": "^0.21.1",
     "date-fns": "^2.19.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -56,5 +57,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:3000"
 }
