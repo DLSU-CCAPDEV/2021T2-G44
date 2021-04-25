@@ -9,8 +9,8 @@ import Homepage from "./sources/Homepage";
 import Register from "./sources/Register";
 import Login from "./sources/Login";
 import ErrorPage from "./sources/components/ErrorPage";
-import About from "./sources/About";
 import Loading from "./sources/components/Loading";
+import About from "./sources/Aboutpage";
 
 // Protected Route Imports
 import MyCalendar from "./sources/MyCalendar";
