@@ -97,9 +97,9 @@ if (Number(process.env.ENABLE_LOGGER) !== 0 && process.env.ENABLE_LOGGER) {
 app.use("/", router);
 
 // Listen
-const hostname = process.env.HOSTNAME || "0.0.0.0";
+// const hostname = process.env.HOSTNAME || "0.0.0.0";
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, hostname, () => {
+app.listen(PORT, () => {
     console.log(
         `[${new Date().toISOString()}] Sched-It Backend Server started at http://${hostname}:${PORT}`
     );
