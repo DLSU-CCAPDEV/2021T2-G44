@@ -59,10 +59,7 @@ const corsOptions = {
 
 // CORS  Pre-flight
 app.use(cors(corsOptions));
-
-// JSON Parsers 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+app.options("*", cors(corsOptions));
 
 // Session Authorization & Authentication
 app.use(cookieParser());
@@ -78,6 +75,10 @@ const sessionModel = {
     },
 };
 app.use(session(sessionModel));
+
+// JSON Parsers 
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // Logger
 if (Number(process.env.ENABLE_LOGGER) !== 0 && process.env.ENABLE_LOGGER) {

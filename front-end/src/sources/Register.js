@@ -8,9 +8,9 @@ import { Grid, Box, Typography, TextField, withStyles, Fab } from "@material-ui/
 // Component Imports
 import registerCoverImage from "./assets/registerCover.svg";
 
-// Cookie
-import { useCookies } from 'react-cookie';
-import { cookieOptions } from '../models/Cookie';
+// Controller
+import { RegisterUser } from '../controllers/UserController';
+import { userLogin } from '../controllers/AuthController';
 
 // Custom Inline CSS
 const imageStyles = {
@@ -42,8 +42,6 @@ function Register(props) {
         document.title = "Register - Sched-It";
     });
 
-    const setCookie = useCookies(["uid"])[1];
-
     const history = useHistory();
 
     // States
@@ -52,7 +50,7 @@ function Register(props) {
     const [lastName, setLastName] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
-    console.log(email + firstName + lastName); // This was only done to suppress the unused vars warning. Remove this later.
+    
     // Event Handlers
     const onEmailChange = (e) => {
         setEmail(e.target.value);
@@ -75,7 +73,9 @@ function Register(props) {
     };
 
     // Create Account Button
-    const createAccount = async () => {
+    const createAccount = async (e) => {
+        e.preventDefault();
+
         // Check if passwords match
         if (password !== passwordConfirm) {
             // Show alert to user
@@ -85,11 +85,22 @@ function Register(props) {
 
         // DO ACCOUNT CREATION LOGIC HERE
 
-        // For phase 1, log in as user 1.
-        setCookie("uid", 1, cookieOptions);
+        const uData = {
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            password: password,
+        };
+        const res = await RegisterUser(uData);
 
         // Redirect the user
-        history.push("/my-calendar");
+        if (res === true) {
+            const login = await userLogin(email, password);
+            if   (login) history.push("/my-calendar");
+            else alert("Error logging in.");
+            return;
+        }
+        alert(res.errors.map((err, i) => `${err}\n`));
     };
 
     const { classes } = props;

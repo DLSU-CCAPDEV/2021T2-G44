@@ -1,6 +1,4 @@
-/*
-    For Phase 1, API-calls are abstracted away by simple a JSON-db interface.
-*/
+import request from '../utils/AxiosConfig';
 
 // Import mock user data
 import userDB from '../placeholderData/users.json';
@@ -30,4 +28,12 @@ export const GetUserData = async (userID) => {
     delete user.password;
 
     return user;
+};
+
+export const RegisterUser = async (userData) => {
+    const response = await request.put("register", userData);
+    
+    if(response.status === 201)
+        return true;
+    return response;
 };

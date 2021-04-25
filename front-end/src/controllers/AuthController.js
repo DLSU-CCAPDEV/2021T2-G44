@@ -1,4 +1,4 @@
-import axios from 'axios';
+import request from "../utils/AxiosConfig";
 
 export async function userLogin(emailAddress, password) {
     // Using the given emailAddress and password, login to the API.
@@ -6,39 +6,23 @@ export async function userLogin(emailAddress, password) {
         email: emailAddress,
         password: password,
     };
-    
-    const response = await axios({
-        url: `${process.env.REACT_APP_BACK_END_API}/auth`,
-        method: 'POST',
-        data: reqBody,
-        withCredentials: true
-    }).catch(err => console.error(err));
+
+    const response = await request.post("auth", reqBody);
 
     return response.status === 200;
 }
 
 export async function getUID() {
-    const response = await axios({
-        url: `${process.env.REACT_APP_BACK_END_API}/auth`,
-        method: 'get',
-        withCredentials: true
-    });
+    const response = await request.get("auth");
 
-    if(response.status === 200)
-        return response.data.uid;
+    if (response.status === 200) return response.data.uid;
     return false;
 }
 
 export async function logout() {
     try {
-        const response = await axios({
-            url: `${process.env.REACT_APP_BACK_END_API}/auth`,
-            method: 'delete',
-            withCredentials: true
-        });
-
-        console.log(response);
-    } catch   (ex) {
+        const response = await request.delete("auth");
+    } catch (ex) {
         //console.error(ex);
         return false;
     }

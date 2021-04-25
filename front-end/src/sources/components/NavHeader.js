@@ -133,7 +133,7 @@ export default function NavigationHeader(props) {
                 if (res) setIsAuthenticated(true);
             })
             .catch((err) => console.error(err));
-    }, []);
+    });
 
     // Extract the Context
     const history = useHistory();
