@@ -39,7 +39,7 @@ const app = express();
 // });
 
 // Cross-Origin Resource Sharing
-
+app.set("trust proxy", 1);
 const corsOptions = {
     origin: JSON.parse(process.env.CORS_WHITELIST || '["*"]'),
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
