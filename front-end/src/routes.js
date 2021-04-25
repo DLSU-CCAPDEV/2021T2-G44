@@ -10,6 +10,7 @@ import Register from "./sources/Register";
 import Login from "./sources/Login";
 import ErrorPage from "./sources/components/ErrorPage";
 import About from "./sources/About";
+import Loading from "./sources/Loading";
 
 // Protected Route Imports
 import MyCalendar from "./sources/MyCalendar";
@@ -25,21 +26,21 @@ import { ThemeProvider } from "@material-ui/styles";
 var theme = createMuiTheme({
     palette: {
         primary: {
-            main: "#7868E6",
+            main: "#7868E6"
         },
         secondary: {
-            main: "#B8B5FF",
+            main: "#B8B5FF"
         },
         accent: {
-            main: "#EDEEF7",
+            main: "#EDEEF7"
         },
         dark: {
-            main: "#212121",
+            main: "#212121"
         },
         complement: {
-            main: "#E4FBFF",
-        },
-    },
+            main: "#E4FBFF"
+        }
+    }
 });
 
 theme = responsiveFontSizes(theme);
@@ -52,24 +53,67 @@ export default function Routes(props) {
 
                 <Switch>
                     {/* PUBLIC ROUTES */}
-                    <ProtectedRoute exact path="/" component={Homepage} protected={false} />
-                    <ProtectedRoute exact path="/about" component={About} protected={false} />
-                    <ProtectedRoute path="/register" component={Register} protected={false} />
-                    <ProtectedRoute path="/login" component={Login} protected={false} />
+                    <ProtectedRoute
+                        exact
+                        path="/"
+                        component={Homepage}
+                        protected={false}
+                    />
+                    <ProtectedRoute
+                        exact
+                        path="/about"
+                        component={About}
+                        protected={false}
+                    />
+                    <ProtectedRoute
+                        path="/register"
+                        component={Register}
+                        protected={false}
+                    />
+                    <ProtectedRoute
+                        path="/login"
+                        component={Login}
+                        protected={false}
+                    />
+                    <ProtectedRoute
+                        path="/loading"
+                        component={Loading}
+                        protected={false}
+                    />
 
                     {/* PROTECTED ROUTES */}
-                    <ProtectedRoute path="/my-calendar" component={MyCalendar} protected={true} />
+                    <ProtectedRoute
+                        path="/my-calendar"
+                        component={MyCalendar}
+                        protected={true}
+                    />
                     <ProtectedRoute
                         path="/my-appointments"
                         component={MyAppointments}
                         protected={true}
                     />
-                    <ProtectedRoute path="/profile" component={Profile} protected={true} />
-                    <ProtectedRoute path="/mail" component={Mail} protected={true} />
-                    <ProtectedRoute path="/invites" component={Invites} protected={true} />
+                    <ProtectedRoute
+                        path="/profile"
+                        component={Profile}
+                        protected={true}
+                    />
+                    <ProtectedRoute
+                        path="/mail"
+                        component={Mail}
+                        protected={true}
+                    />
+                    <ProtectedRoute
+                        path="/invites"
+                        component={Invites}
+                        protected={true}
+                    />
 
                     {/* Error */}
-                    <Route render={(props) => <ErrorPage {...props} errorType={404} />} />
+                    <Route
+                        render={(props) => (
+                            <ErrorPage {...props} errorType={404} />
+                        )}
+                    />
                 </Switch>
 
                 <Footer />
