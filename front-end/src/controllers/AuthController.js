@@ -1,6 +1,4 @@
-/*
-    FOR PHASE 1: Using a mock auth token only.
-*/
+import axios from 'axios';
 
 export async function userLogin(emailAddress, password) {
     // Using the given emailAddress and password, login to the API.
@@ -8,52 +6,40 @@ export async function userLogin(emailAddress, password) {
         email: emailAddress,
         password: password,
     };
+    
+    const response = await axios({
+        url: `${process.env.REACT_APP_BACK_END_API}/auth`,
+        method: 'POST',
+        data: reqBody,
+        withCredentials: true
+    }).catch(err => console.error(err));
 
-    try {
-        const response = await fetch(`/auth`, {
-            method: "POST",
-            mode: 'cors',
-            credentials: 'include',
-            body: JSON.stringify(reqBody)
-        });
-
-        return response.ok;
-    } catch   (ex) {
-        console.error(ex);
-        return false;
-    }
+    return response.status === 200;
 }
 
 export async function getUID() {
-    try {
-        const response = await fetch(`/auth`, {
-            method: "GET",
-            credentials: 'include'
-        });
-        
-        if(response.ok) {
-            const res = await response.json();
-            return res.uid;
-        }
-        return false;
-    } catch   (ex) {
-        console.error(ex);
-        return false;
-    }
+    const response = await axios({
+        url: `${process.env.REACT_APP_BACK_END_API}/auth`,
+        method: 'get',
+        withCredentials: true
+    });
+
+    if(response.status === 200)
+        return response.data.uid;
+    return false;
 }
 
 export async function logout() {
     try {
-        const response = await fetch(`/auth`, {
-            method: "DELETE",
-            credentials: 'include'
+        const response = await axios({
+            url: `${process.env.REACT_APP_BACK_END_API}/auth`,
+            method: 'delete',
+            withCredentials: true
         });
 
-        if(response.ok)
-            return true;
-        return false;
+        console.log(response);
     } catch   (ex) {
-        console.error(ex);
+        //console.error(ex);
         return false;
     }
 }

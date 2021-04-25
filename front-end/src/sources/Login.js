@@ -52,7 +52,8 @@ function Login(props) {
     };
 
     // Form submit
-    const doLogin = async () => {
+    const doLogin = async (e) => {
+        e.preventDefault();
         const loggedIn = await userLogin(email, password);
 
         // Redirect user to dashboard

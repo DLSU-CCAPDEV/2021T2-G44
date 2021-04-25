@@ -130,7 +130,6 @@ export default function NavigationHeader(props) {
     useEffect(() => {
         getUID()
             .then((res) => {
-                console.log(res);
                 if (res) setIsAuthenticated(true);
             })
             .catch((err) => console.error(err));

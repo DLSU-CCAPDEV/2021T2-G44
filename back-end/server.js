@@ -32,29 +32,44 @@ const app = express();
 
 // Set up base middleware
 
+// app.use((req, res, next) => {
+//     console.log("Incomming connection... " + req.method);
+//     // console.log(req.headers);
+//     next();
+// });
+
 // Cross-Origin Resource Sharing
+
 const corsOptions = {
-    origin: true,
-    methods: ['GET','POST','PUT','DELETE'],
-    allowedHeaders: ['Content-Type','Content-Length'],
+    origin: JSON.parse(process.env.CORS_WHITELIST || '["*"]'),
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+        "Content-Type",
+        "Content-Length",
+        "Content-Language",
+        "Accept",
+        "Accept-Language",
+        "Accept-Encoding",
+        "Referer",
+        "User-Agent",
+    ],
     credentials: true,
     optionsSuccessStatus: 200,
-}
+};
+
+// CORS  Pre-flight
 app.use(cors(corsOptions));
 
-// // CORS  Pre-flight
-app.options('*', cors(corsOptions));
-
-// Cookie & JSON Parsers 
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
+// JSON Parsers 
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Session Authorization & Authentication
+app.use(cookieParser());
 const sessionModel = {
     secret: process.env.SESSION_SECRET || "Oh dear, I forgot to change the secret key.",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
     cookie: {
         secure: false,
@@ -68,9 +83,9 @@ app.use(session(sessionModel));
 if(Number(process.env.ENABLE_LOGGER) !== 0) {
     app.use((req, res, next) => {
         console.log(
-            `[${new Date().toISOString()}] ${req.method} request from uid <${req.session.uid}>: ${
-                req.url
-            }`
+            `[${new Date().toISOString()}] ${req.method} request from uid <${req.session.uid}> (${
+                req.hostname
+            }) SID: <${req.session.id}>: ${req.url}`
         );
         next();
     });
@@ -86,4 +101,6 @@ app.listen(PORT, hostname, () => {
     console.log(
         `[${new Date().toISOString()}] Sched-It Backend Server started at http://${hostname}:${PORT}`
     );
+    console.log("CORS-Whitelist:");
+    console.log(JSON.parse(process.env.CORS_WHITELIST || '["*"]'));
 });
