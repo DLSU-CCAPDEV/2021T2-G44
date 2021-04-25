@@ -10,7 +10,7 @@ import Register from "./sources/Register";
 import Login from "./sources/Login";
 import ErrorPage from "./sources/components/ErrorPage";
 import About from "./sources/About";
-import Loading from "./sources/Loading";
+import Loading from "./sources/components/Loading";
 
 // Protected Route Imports
 import MyCalendar from "./sources/MyCalendar";
