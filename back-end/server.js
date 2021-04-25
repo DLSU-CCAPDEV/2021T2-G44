@@ -100,9 +100,7 @@ app.use("/", router);
 // const hostname = process.env.HOSTNAME || "0.0.0.0";
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(
-        `[${new Date().toISOString()}] Sched-It Backend Server started at http://${hostname}:${PORT}`
-    );
+    console.log(`[${new Date().toISOString()}] Sched-It Backend Server started on port ${PORT}`);
     console.log("CORS-Whitelist:");
     console.log(JSON.parse(process.env.CORS_WHITELIST || '["*"]'));
 });
