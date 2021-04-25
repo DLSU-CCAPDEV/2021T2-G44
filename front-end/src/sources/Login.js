@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import "./assets/styles.css";
 import loginCover from "./assets/loginCover.svg";
 
 // Auth Controller
 import { userLogin } from "../controllers/AuthController";
+
+// Context Provider
+import { GlobalContext } from "../controllers/ContextController";
 
 // Material-UI Imports
 import { Grid, Typography, Box, TextField, Fab, withStyles } from "@material-ui/core";
@@ -31,6 +34,8 @@ const buttonStyles = {
 };
 
 function Login(props) {
+    const {uid, updateUid} = useContext(GlobalContext);
+
     useEffect(() => {
         document.title = "Login - Sched-It";
     });
@@ -57,8 +62,11 @@ function Login(props) {
         const loggedIn = await userLogin(email, password);
 
         // Redirect user to dashboard
-        if (loggedIn) history.push("/my-calendar");
-        else alert("Error logging in.");
+        if (loggedIn === true) {
+            await updateUid();
+            history.push("/my-calendar");
+        }
+        else alert(loggedIn);
     };
 
     return (

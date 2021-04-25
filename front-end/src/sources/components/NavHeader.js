@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import '../assets/styles.css';
 import logo from '../assets/logo.svg';
 import { Link, useHistory } from 'react-router-dom';
@@ -27,6 +27,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
 import { getUID, logout } from "../../controllers/AuthController";
+import { GlobalContext } from '../../controllers/ContextController';
 
 const barStyles = {
     filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
@@ -125,15 +126,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NavigationHeader(props) {
     // Check logged in
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-    useEffect(() => {
-        getUID()
-            .then((res) => {
-                if (res) setIsAuthenticated(true);
-            })
-            .catch((err) => console.error(err));
-    });
+    const {uid, updateUid} = useContext(GlobalContext);
 
     // Extract the Context
     const history = useHistory();
@@ -200,8 +193,10 @@ export default function NavigationHeader(props) {
     const handleLogout = () => {
         // Clear cookie
         setOpen(false);
-        logout();
-        history.push('/login');
+        logout()
+            .then(() => updateUid())
+            .then(() => history.push('/login'))
+            .catch(err => console.error(err));
     };
 
     const handleProfile = () => {
@@ -311,7 +306,6 @@ export default function NavigationHeader(props) {
         );
     };
 
-    console.log(isAuthenticated);
-    if (isAuthenticated) return loggedIn();
+    if (uid) return loggedIn();
     else return notLoggedIn();
 }

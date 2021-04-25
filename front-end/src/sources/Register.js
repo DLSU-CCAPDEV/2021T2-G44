@@ -1,5 +1,5 @@
 import "./assets/styles.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 // Material-UI
@@ -11,6 +11,7 @@ import registerCoverImage from "./assets/registerCover.svg";
 // Controller
 import { RegisterUser } from '../controllers/UserController';
 import { userLogin } from '../controllers/AuthController';
+import { GlobalContext } from "../controllers/ContextController";
 
 // Custom Inline CSS
 const imageStyles = {
@@ -43,6 +44,7 @@ function Register(props) {
     });
 
     const history = useHistory();
+    const { uid, updateUid } = useContext(GlobalContext);
 
     // States
     const [email, setEmail] = useState("");
@@ -83,21 +85,20 @@ function Register(props) {
             return;
         }
 
-        // DO ACCOUNT CREATION LOGIC HERE
-
-        const uData = {
+        const res = await RegisterUser({
             email: email,
             firstName: firstName,
             lastName: lastName,
             password: password,
-        };
-        const res = await RegisterUser(uData);
+        });
 
         // Redirect the user
         if (res === true) {
             const login = await userLogin(email, password);
-            if   (login) history.push("/my-calendar");
-            else alert("Error logging in.");
+            if (login) {
+                await updateUid();
+                history.push("/my-calendar");
+            } else alert("Error logging in.");
             return;
         }
         alert(res.errors.map((err, i) => `${err}\n`));

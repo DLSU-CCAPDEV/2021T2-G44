@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ProtectedRoute from "./sources/components/ProtectedRoute";
+import GlobalContext from './controllers/ContextController';
 
 // Route Imports
 import NavHeader from "./sources/components/NavHeader";
@@ -10,7 +11,7 @@ import Register from "./sources/Register";
 import Login from "./sources/Login";
 import ErrorPage from "./sources/components/ErrorPage";
 import About from "./sources/About";
-import Loading from "./sources/Loading";
+import Loading from "./sources/components/Loading";
 
 // Protected Route Imports
 import MyCalendar from "./sources/MyCalendar";
@@ -46,78 +47,81 @@ var theme = createMuiTheme({
 theme = responsiveFontSizes(theme);
 
 export default function Routes(props) {
+    
     return (
-        <ThemeProvider theme={theme}>
-            <Router>
-                <NavHeader />
+        <GlobalContext>
+            <ThemeProvider theme={theme}>
+                <Router>
+                    <NavHeader />
 
-                <Switch>
-                    {/* PUBLIC ROUTES */}
-                    <ProtectedRoute
-                        exact
-                        path="/"
-                        component={Homepage}
-                        protected={false}
-                    />
-                    <ProtectedRoute
-                        exact
-                        path="/about"
-                        component={About}
-                        protected={false}
-                    />
-                    <ProtectedRoute
-                        path="/register"
-                        component={Register}
-                        protected={false}
-                    />
-                    <ProtectedRoute
-                        path="/login"
-                        component={Login}
-                        protected={false}
-                    />
-                    <ProtectedRoute
-                        path="/loading"
-                        component={Loading}
-                        protected={false}
-                    />
+                    <Switch>
+                        {/* PUBLIC ROUTES */}
+                        <ProtectedRoute
+                            exact
+                            path="/"
+                            component={Homepage}
+                            protected={false}
+                        />
+                        <ProtectedRoute
+                            exact
+                            path="/about"
+                            component={About}
+                            protected={false}
+                        />
+                        <ProtectedRoute
+                            path="/register"
+                            component={Register}
+                            protected={false}
+                        />
+                        <ProtectedRoute
+                            path="/login"
+                            component={Login}
+                            protected={false}
+                        />
+                        <ProtectedRoute
+                            path="/loading"
+                            component={Loading}
+                            protected={false}
+                        />
 
-                    {/* PROTECTED ROUTES */}
-                    <ProtectedRoute
-                        path="/my-calendar"
-                        component={MyCalendar}
-                        protected={true}
-                    />
-                    <ProtectedRoute
-                        path="/my-appointments"
-                        component={MyAppointments}
-                        protected={true}
-                    />
-                    <ProtectedRoute
-                        path="/profile"
-                        component={Profile}
-                        protected={true}
-                    />
-                    <ProtectedRoute
-                        path="/mail"
-                        component={Mail}
-                        protected={true}
-                    />
-                    <ProtectedRoute
-                        path="/invites"
-                        component={Invites}
-                        protected={true}
-                    />
+                        {/* PROTECTED ROUTES */}
+                        <ProtectedRoute
+                            path="/my-calendar"
+                            component={MyCalendar}
+                            protected={true}
+                        />
+                        <ProtectedRoute
+                            path="/my-appointments"
+                            component={MyAppointments}
+                            protected={true}
+                        />
+                        <ProtectedRoute
+                            path="/profile"
+                            component={Profile}
+                            protected={true}
+                        />
+                        <ProtectedRoute
+                            path="/mail"
+                            component={Mail}
+                            protected={true}
+                        />
+                        <ProtectedRoute
+                            path="/invites"
+                            component={Invites}
+                            protected={true}
+                        />
 
-                    {/* Error */}
-                    <Route
-                        render={(props) => (
-                            <ErrorPage {...props} errorType={404} />
-                        )}
-                    />
-                </Switch>
+                        {/* Error */}
+                        <Route
+                            render={(props) => (
+                                <ErrorPage {...props} errorType={404} />
+                            )}
+                        />
+                    </Switch>
 
-                <Footer />
-            </Router>
-        </ThemeProvider>
+                    <Footer />
+                </Router>
+            </ThemeProvider>
+        </GlobalContext>
     );
 }

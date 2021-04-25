@@ -9,12 +9,13 @@ export async function userLogin(emailAddress, password) {
 
     const response = await request.post("auth", reqBody);
 
-    return response.status === 200;
+    if (response.status === 200) return true;
+    return response.data;
 }
 
 export async function getUID() {
     const response = await request.get("auth");
-
+    
     if (response.status === 200) return response.data.uid;
     return false;
 }

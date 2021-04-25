@@ -19,15 +19,9 @@ export const GetHostsData = async (userEvents) => {
     return uniqueArray;
 };
 
-export const GetUserData = async (userID) => {
-    // Normally, API call here
-
-    // Get the user data, except the password and access token
-    const user = userDB.find((user) => user.id === Number(userID));
-
-    delete user.password;
-
-    return user;
+export const GetUserData = async (userID = "") => {
+    const response = await request.get("api/user/" + userID);
+    return response.data;
 };
 
 export const RegisterUser = async (userData) => {

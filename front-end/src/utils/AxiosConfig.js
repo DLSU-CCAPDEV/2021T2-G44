@@ -8,7 +8,7 @@ const httpProcessor = axios.create({
 // Custom Response Interceptors
 httpProcessor.interceptors.response.use(
     (response) => response,
-    (error) => Promise.reject(error.response.data)
+    (error) => error.response
 );
 
 export default httpProcessor;
