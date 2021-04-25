@@ -69,8 +69,8 @@ const sessionModel = {
     saveUninitialized: false,
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
     cookie: {
-        secure: process.env.PRODUCTION === 1 ? "true" : "false",
-        sameSite: process.env.PRODUCTION === 1 ? "none" : "lax",
+        secure: Number(process.env.PRODUCTION) === 1,
+        sameSite: Number(process.env.PRODUCTION) === 1 ? "none" : "lax",
         httpOnly: true,
         maxAge: Number(process.env.MAX_COOKIE_AGE) || 1e6,
     },
