@@ -84,9 +84,10 @@ if(Number(process.env.ENABLE_LOGGER) !== 0) {
     app.use((req, res, next) => {
         console.log(
             `[${new Date().toISOString()}] ${req.method} request from uid <${req.session.uid}> (${
-                req.hostname
+                req.headers.origin
             }) SID: <${req.session.id}>: ${req.url}`
         );
+        // console.log(req.headers);
         next();
     });
 }
@@ -95,7 +96,7 @@ if(Number(process.env.ENABLE_LOGGER) !== 0) {
 app.use("/", router);
 
 // Listen
-const hostname = process.env.HOSTNAME || "localhost";
+const hostname = process.env.HOSTNAME || "0.0.0.0";
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, hostname, () => {
     console.log(

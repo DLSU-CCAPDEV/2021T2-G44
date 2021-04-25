@@ -6,6 +6,9 @@ const UserController = require("./controllers/UserController");
 
 // Set up Routes
 
+// Test Route
+appRouter.get("/test", (req, res) => res.status(200).send("Test Successful"));
+
 // AUTH
 appRouter.post("/auth", AuthController.authenticate);
 appRouter.delete("/auth", AuthController.logout);
