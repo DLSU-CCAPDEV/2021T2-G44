@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ProtectedRoute from "./sources/components/ProtectedRoute";
-import GlobalContext from './controllers/ContextController';
 
 // Route Imports
 import NavHeader from "./sources/components/NavHeader";
@@ -19,6 +18,9 @@ import Profile from "./sources/Profile";
 import MyAppointments from "./sources/MyAppointments";
 import Mail from "./sources/Mail";
 import Invites from "./sources/Invites";
+
+// Context
+import { GlobalContext } from './controllers/ContextController'; 
 
 // Material UI
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
@@ -48,8 +50,12 @@ theme = responsiveFontSizes(theme);
 
 export default function Routes(props) {
     
-    return (
-        <GlobalContext>
+    const [loading, setLoading] = useState(true);
+    const { updateUid } = useContext(GlobalContext);
+    updateUid().then(() => setLoading(false));
+
+    if(!loading)
+        return (
             <ThemeProvider theme={theme}>
                 <Router>
                     <NavHeader />
@@ -122,6 +128,6 @@ export default function Routes(props) {
                     <Footer />
                 </Router>
             </ThemeProvider>
-        </GlobalContext>
-    );
+        );
+    return <Loading />;
 }
