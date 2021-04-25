@@ -80,7 +80,7 @@ const sessionModel = {
 app.use(session(sessionModel));
 
 // Logger
-if(Number(process.env.ENABLE_LOGGER) !== 0) {
+if (Number(process.env.ENABLE_LOGGER) !== 0 && process.env.ENABLE_LOGGER) {
     app.use((req, res, next) => {
         console.log(
             `[${new Date().toISOString()}] ${req.method} request from uid <${req.session.uid}> (${
