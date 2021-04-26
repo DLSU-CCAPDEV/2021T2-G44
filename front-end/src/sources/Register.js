@@ -1,5 +1,5 @@
 import "./assets/styles.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 // Material-UI
@@ -8,9 +8,10 @@ import { Grid, Box, Typography, TextField, withStyles, Fab } from "@material-ui/
 // Component Imports
 import registerCoverImage from "./assets/registerCover.svg";
 
-// Cookie
-import { useCookies } from 'react-cookie';
-import { cookieOptions } from '../models/Cookie';
+// Controller
+import { RegisterUser } from '../controllers/UserController';
+import { userLogin } from '../controllers/AuthController';
+import { GlobalContext } from "../controllers/ContextController";
 
 // Custom Inline CSS
 const imageStyles = {
@@ -42,9 +43,8 @@ function Register(props) {
         document.title = "Register - Sched-It";
     });
 
-    const setCookie = useCookies(["uid"])[1];
-
     const history = useHistory();
+    const { uid, updateUid } = useContext(GlobalContext);
 
     // States
     const [email, setEmail] = useState("");
@@ -52,7 +52,7 @@ function Register(props) {
     const [lastName, setLastName] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
-    console.log(email + firstName + lastName); // This was only done to suppress the unused vars warning. Remove this later.
+    
     // Event Handlers
     const onEmailChange = (e) => {
         setEmail(e.target.value);
@@ -75,7 +75,9 @@ function Register(props) {
     };
 
     // Create Account Button
-    const createAccount = async () => {
+    const createAccount = async (e) => {
+        e.preventDefault();
+
         // Check if passwords match
         if (password !== passwordConfirm) {
             // Show alert to user
@@ -83,13 +85,23 @@ function Register(props) {
             return;
         }
 
-        // DO ACCOUNT CREATION LOGIC HERE
-
-        // For phase 1, log in as user 1.
-        setCookie("uid", 1, cookieOptions);
+        const res = await RegisterUser({
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            password: password,
+        });
 
         // Redirect the user
-        history.push("/my-calendar");
+        if (res === true) {
+            const login = await userLogin(email, password);
+            if (login) {
+                await updateUid();
+                history.push("/my-calendar");
+            } else alert("Error logging in.");
+            return;
+        }
+        alert(res.errors.map((err, i) => `${err}\n`));
     };
 
     const { classes } = props;

@@ -18,13 +18,13 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: theme.shape.borderRadius,
         backgroundColor: fade(theme.palette.primary.main, 0.15),
         "&:hover": {
-            backgroundColor: fade(theme.palette.primary.main, 0.5),
+            backgroundColor: fade(theme.palette.primary.main, 0.5)
         },
         width: "100%",
         [theme.breakpoints.up("sm")]: {
             marginLeft: 0,
-            width: "auto",
-        },
+            width: "auto"
+        }
     },
     searchIcon: {
         padding: theme.spacing(0, 2),
@@ -33,19 +33,19 @@ const useStyles = makeStyles((theme) => ({
         pointerEvents: "none",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "center"
     },
     inputRoot: {
         color: "inherit",
-        marginRight: "1em",
+        marginRight: "1em"
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create("width"),
-        width: "100%",
-    },
+        width: "100%"
+    }
 }));
 
 export default function SearchEvent(props) {
@@ -81,12 +81,12 @@ const SearchBox = (props) => {
                 {...props}
                 placeholder="Search Event"
                 classes={{
-                    root: classes.inputRoot,
+                    root: classes.inputRoot
                 }}
                 InputProps={{
                     ...props.InputProps,
                     disableUnderline: true,
-                    className: classes.inputInput,
+                    className: classes.inputInput
                 }}
             />
         </div>

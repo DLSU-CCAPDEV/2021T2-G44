@@ -28,7 +28,7 @@ export default function Homepage() {
                 style={{
                     paddingTop: "12em",
                     paddingBottom: "12em",
-                    backgroundColor: "#EDEEF7",
+                    backgroundColor: "#EDEEF7"
                 }}
             >
                 <Grid item xs={4}>
@@ -65,7 +65,7 @@ export default function Homepage() {
                 alignItems="center"
                 style={{
                     paddingTop: "12em",
-                    paddingBottom: "12em",
+                    paddingBottom: "12em"
                 }}
             >
                 <Grid item xs={4}>
@@ -92,7 +92,7 @@ export default function Homepage() {
                 style={{
                     paddingTop: "8em",
                     paddingBottom: "8em",
-                    backgroundColor: "#EDEEF7",
+                    backgroundColor: "#EDEEF7"
                 }}
             >
                 <Grid item xs={4}>
@@ -103,7 +103,7 @@ export default function Homepage() {
                             maxWidth: "75%",
                             maxHeight: "75%",
                             objectFit: "cover",
-                            borderRadius: "50%",
+                            borderRadius: "50%"
                         }}
                     />
                 </Grid>
@@ -116,23 +116,23 @@ export default function Homepage() {
                         variant="h5"
                         style={{ position: "relative", top: "1em" }}
                     >
-                        Adriel is currently a second year undergraduate student in De
-                        La Salle University (DLSU) studying Bachelor of Science
-                        in Computer Science with specialization in Software
-                        Technology (BS CS-ST). He had his primary education in
-                        Holy Child College of Davao (HCCD) and graduated 
-                        secondary education from Davao Christian High School
-                        (DCHS) class of 2019 (STEM).
+                        Adriel is currently a second year undergraduate student
+                        in De La Salle University (DLSU) studying Bachelor of
+                        Science in Computer Science with specialization in
+                        Software Technology (BS CS-ST). He had his primary
+                        education in Holy Child College of Davao (HCCD) and
+                        graduated secondary education from Davao Christian High
+                        School (DCHS) class of 2019 (STEM).
                         <br />
                         <br />
                         His main research interest lies in Natural Language
                         Processing (NLP) and Computer Vision (CV). As of time of
-                        writing, he has reviewed some research papers on the topics
-                        and reading up on machine learning techniques. However,
-                        no hands-on work has been made so far. On the other
-                        hand, his main development skill set leans more into Full
-                        Stack Web Development (esp Back-end), DevOps, & Computer
-                        Software Development.
+                        writing, he has reviewed some research papers on the
+                        topics and reading up on machine learning techniques.
+                        However, no hands-on work has been made so far. On the
+                        other hand, his main development skill set leans more
+                        into Full Stack Web Development (esp Back-end), DevOps,
+                        & Computer Software Development.
                     </Typography>
                 </Grid>
             </Grid>
@@ -145,7 +145,7 @@ export default function Homepage() {
                 alignItems="center"
                 style={{
                     paddingTop: "8em",
-                    paddingBottom: "8em",
+                    paddingBottom: "8em"
                     // backgroundColor: "#EDEEF7",
                 }}
             >
@@ -157,7 +157,7 @@ export default function Homepage() {
                             maxWidth: "75%",
                             maxHeight: "75%",
                             objectFit: "cover",
-                            borderRadius: "50%",
+                            borderRadius: "50%"
                         }}
                     />
                 </Grid>
@@ -191,7 +191,7 @@ export default function Homepage() {
                 style={{
                     paddingTop: "8em",
                     paddingBottom: "8em",
-                    backgroundColor: "#EDEEF7",
+                    backgroundColor: "#EDEEF7"
                 }}
             >
                 <Grid item xs={4}>
@@ -202,7 +202,7 @@ export default function Homepage() {
                             maxWidth: "75%",
                             maxHeight: "75%",
                             objectFit: "cover",
-                            borderRadius: "50%",
+                            borderRadius: "50%"
                         }}
                     />
                 </Grid>

@@ -1,24 +1,30 @@
-/*
-    FOR PHASE 1: Using a mock auth token only.
-*/
-// Import Mock Data
-import Users from "../placeholderData/users.json";
+import request from "../utils/AxiosConfig";
 
 export async function userLogin(emailAddress, password) {
-    /*
-        Normally, we do our API call here.
-        For now, we shall only use mock access tokens.
-    */
-    // Look for the email address given
-    const userData = Users.find(
-        (user) =>
-            user.email.toLowerCase() === emailAddress.toLowerCase() && user.password === password
-    );
+    // Using the given emailAddress and password, login to the API.
+    const reqBody = {
+        email: emailAddress,
+        password: password,
+    };
 
-    // Check for undefined: return null to the user if undefined
-    if (typeof userData === "undefined") return null;
+    const response = await request.post("auth", reqBody);
 
-    // Return the user's accessToken
+    if (response.status === 200) return true;
+    return response.data;
+}
 
-    return userData.id;
+export async function getUID() {
+    const response = await request.get("auth");
+    
+    if (response.status === 200) return response.data.uid;
+    return false;
+}
+
+export async function logout() {
+    try {
+        const response = await request.delete("auth");
+    } catch (ex) {
+        //console.error(ex);
+        return false;
+    }
 }
