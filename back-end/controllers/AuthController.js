@@ -34,6 +34,12 @@ module.exports.authenticate = async (req, res) => {
         return;
     }
 
+    // Check for any null data
+    if (!(email && password)) {
+        res.status(401).send("Missing credentials");
+        return;
+    }
+
     // Get the user data
     const userData = await UserSchema.findOne({ email: email });
 

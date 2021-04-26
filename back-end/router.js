@@ -3,6 +3,7 @@ const appRouter = require("express").Router();
 // Routes
 const AuthController = require('./controllers/AuthController');
 const UserController = require("./controllers/UserController");
+const MailController = require("./controllers/MailController");
 
 // Set up Routes
 
@@ -24,5 +25,11 @@ appRouter.get("/api/user/:id", UserController.getUser);
 appRouter.post("api/user/:id", UserController.updateUser);
 appRouter.post("api/user/password/:id", UserController.changePassword);
 appRouter.delete("/api/user/:id", UserController.deleteUser);
+
+// Mail Operations
+appRouter.get("/api/mail/inbox", MailController.getInbox);
+appRouter.get("/api/mail/sentbox", MailController.getSentBox);
+appRouter.get("/api/mail/:mailID", MailController.getMailByID);
+appRouter.post("/api/mail/send/:recepientEmail", MailController.validateMailData("send"), MailController.sendMail);
 
 module.exports = appRouter;
