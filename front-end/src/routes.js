@@ -129,5 +129,5 @@ export default function Routes(props) {
                 </Router>
             </ThemeProvider>
         );
-    return <Loading />;
+    return <Loading loadingText="Loading Sched-It" />;
 }

@@ -313,6 +313,6 @@ export default function Profile() {
         );
     } else {
         // Return loading screen here
-        return <Loading />;
+        return <Loading loadingText="Loading Profile Page" />;
     }
 }

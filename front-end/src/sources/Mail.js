@@ -31,6 +31,7 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 
 // ART
 import mailBoxArt from './assets/mailBox.svg';
+import sentBoxArt from './assets/sentbox.svg';
 
 // Custom Styles
 const styles = {
@@ -137,7 +138,7 @@ export default function Mail(props) {
                 <Grid item container direction="row" justify="center">
                     <Grid item container direction="row" xs={2}>
                         <img
-                            src={mailBoxArt}
+                            src={mailbox === 0 ? mailBoxArt : sentBoxArt}
                             alt="My Appointments Art"
                             style={{ height: "200px" }}
                         />
@@ -344,5 +345,5 @@ export default function Mail(props) {
             </Grid>
         );
     }
-    return <Loading />;
+    return <Loading loadingText="Loading Mail" />;
 }
