@@ -69,7 +69,6 @@ const styles = {
 
 export default function Mail(props) {
     // Temp
-    const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0);
 
     const [mail, setMail] = useState(null);
@@ -91,21 +90,16 @@ export default function Mail(props) {
     });
 
     useEffect(() => {
-        setLoading(true);
-        const start = page * 10;
-        const end = 50 + page * 10;
-        getInbox(start, end)
-            .then((inbox) => {
-                if (inbox) setMail(inbox);
-                else {alert("Unable to fetch inbox."); setMail([])};
-            })
-            .then(() => getSent(start, end))
-            .then((sentbox) => {
-                if (sentbox) setSent(sentbox);
-                else {alert("Unable to fetch sentbox."); setSent([])};
-            })
-            .then(() => setLoading(false))
-            .catch((err) => console.error(err));
+        const getData = async () => {
+            const start = page*50;
+            const end = 50 + (page*50);
+            const inbox = await getInbox(start, end);
+            const sentbox = await getSent(start, end);
+            setMail(inbox); setSent(sentbox);
+        };
+
+        getData();
+
     }, [page]);
 
     const handleClick = (message) => {
@@ -125,15 +119,15 @@ export default function Mail(props) {
         setNewMessageDialogOpen(true);
     };
 
-    if (mail && sent && !loading) { 
+    if (mail && sent) { 
         return (
             <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
-                <ViewMessage
+                {dialogMessage && <ViewMessage
                     dialogOpen={viewDialogOpen}
                     setDialogOpen={setViewDialogOpen}
                     message={dialogMessage}
                     mailbox={mailbox}
-                />
+                />}
 
                 <SendMessage
                     dialogOpen={newMessageDialogOpen}

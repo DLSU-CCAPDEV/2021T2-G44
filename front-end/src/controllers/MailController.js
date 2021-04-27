@@ -8,13 +8,12 @@ export const getInbox = async (start = 0, end = 50) => {
         const response = await request.get("api/mail/inbox");
 
         if (response.status === 200) {
-            // Add user data for recepient & format dates
-            const mailObject = response.data;
-            await mailObject.map(async m => {
+            // Add user data for sender & format dates
+            return await Promise.all(response.data.map(async m => new Promise(async (resolve) => {
                 m.sender = await GetUserData(m.senderID);
                 m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
-            });
-            return mailObject;
+                return resolve(m);
+            })));
         }
         return false;
     } catch (ex) {
@@ -30,12 +29,11 @@ export const getSent = async (start = 0, end = 50) => {
 
         if (response.status === 200) {
             // Add user data for recepient & format dates
-            const mailObject = response.data;
-            await mailObject.map(async m => {
+            return await Promise.all(response.data.map(async m => new Promise(async (resolve) => {
                 m.recepient = await GetUserData(m.recepientID);
                 m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
-            });
-            return mailObject;
+                return resolve(m);
+            })));
         }
         return false;
     } catch (ex) {
@@ -53,7 +51,7 @@ export const sendMessage = async (userEmail, messageContent) => {
             attachments: messageContent.attachments
         });
     
-        if(response.status === 200)
+        if(response.status === 201)
             return true;
         return false;
     } catch(ex) {

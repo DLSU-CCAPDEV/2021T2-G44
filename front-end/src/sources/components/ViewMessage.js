@@ -23,6 +23,8 @@ export default function ViewMessage(props) {
     
     const [replyDialogOpen, setReplyDialogOpen] = useState(false);
 
+    const messageContent = props.message.content.replace(/\n/g, "\n\n");
+
     const handleClose = () => {
         props.setDialogOpen(false);
     };
@@ -60,7 +62,7 @@ export default function ViewMessage(props) {
                             </Typography>
                             <br />
                             <Typography style={{ color: "black" }} variant="body1">
-                                {props.message.content}
+                                {messageContent}
                             </Typography>
                         </DialogContentText>
                     </DialogContent>

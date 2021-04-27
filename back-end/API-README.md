@@ -45,3 +45,6 @@ These endpoints belong to the UserController and handles dataflow for the User e
     ```
     POST /api/user/:userID ; REQUIRES userID parameter ; RETURNS 200 with BODY containing updated userdata or 400 JSON field "errors"
     ```
+
+### Mail API Endpoints
+Thsese endpoints belong to the MailController and handles dataflow and methods for sending, receiving, and reading mail.

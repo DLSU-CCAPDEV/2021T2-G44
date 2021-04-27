@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { sendMessage } from '../../controllers/MailController';
+
+import Loading from './Loading';
 
 import "../assets/styles.css";
 
@@ -26,25 +28,53 @@ const textFieldStyles = {
 };
 
 export default function SendMessage(props) {
+    // Field change handlers
+    const [recepientEmail, setRecepientEmail] = useState(null);
+    const [messageSubject, setMessageSubject] = useState(null);
+    const [messageContent, setMessageContent] = useState(null);
+    const [attachments, setAttachments] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Initialize message states if ever this is a reply
+    useEffect(() => {
+        setRecepientEmail(props.replyAddress || "");
+        setMessageSubject(props.threadSubject || "");
+        setMessageContent(props.thread || "");
+        setLoading(false);
+    }, [props.replyAddress, props.thread, props.threadSubject]);
+
+
     const handleClose = () => {
         props.setDialogOpen(false);
     };
 
-    const handleSend = () => {
-        // Call to mail handler
+    const handleSend = async (e) => {
+        e.preventDefault();
 
-        // Data Validation
+        // Call send message
 
-        // Call controller
+        const sendStatus = await sendMessage(recepientEmail, {
+            subject: messageSubject,
+            content: messageContent,
+            attachments: attachments
+        });
 
-        alert("Message sent!");
+        if(!sendStatus) {
+            alert("Message send failed.");
+            return;
+        };
+
+        alert("Message has been sent.");
+
         props.setDialogOpen(false);
     };
 
     return (
         <div>
             <Dialog open={props.dialogOpen} TransitionComponent={Transition} onClose={handleClose}>
-                <form onSubmit={handleSend}>
+                {loading && <Loading />}
+                {!loading && 
+                    <form onSubmit={handleSend}>
                     <DialogTitle id="alert-dialog=slide=title">Send a Message</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
@@ -55,14 +85,16 @@ export default function SendMessage(props) {
                                     type="email"
                                     required
                                     style={textFieldStyles}
-                                    defaultValue={props.replyAddress || ""}
+                                    defaultValue={ recepientEmail }
+                                    onChange={(e) => { setRecepientEmail(e.target.value); }}
                                 />
                                 <TextField
                                     id="messageSubject"
                                     label="Message Subject"
                                     required
                                     style={textFieldStyles}
-                                    defaultValue={props.threadSubject || ""}
+                                    defaultValue={ messageSubject }
+                                    onChange={(e) => { setMessageSubject(e.target.value); }}
                                 />
                                 <TextField
                                     id="messageContent"
@@ -70,9 +102,10 @@ export default function SendMessage(props) {
                                     multiline
                                     rows={10}
                                     variant="filled"
-                                    defaultValue={props.thread || ""}
+                                    defaultValue={ messageContent }
                                     required
                                     style={textFieldStyles}
+                                    onChange={(e) => { setMessageContent(e.target.value); }}
                                 />
                             </Grid>
                         </DialogContentText>
@@ -81,7 +114,7 @@ export default function SendMessage(props) {
                         <Button type="submit">Send</Button>
                         <Button onClick={handleClose}>Close</Button>
                     </DialogActions>
-                </form>
+                </form>}
             </Dialog>
         </div>
     );

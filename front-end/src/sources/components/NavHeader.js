@@ -271,7 +271,7 @@ export default function NavigationHeader(props) {
                     </List>
 
                     <List className={classes.footerButtons}>
-                        <Link style={linkStyles} onClick={handleProfile}>
+                        <Link to="/profile" style={linkStyles} onClick={handleProfile}>
                             <ListItem
                                 button
                                 key="My Profile"

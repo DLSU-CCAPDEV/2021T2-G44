@@ -81,8 +81,6 @@ module.exports.sendMail = async (req, res) => {
     const recepientEmail = req.params.recepientEmail;
     const mailData = req.body;
 
-    console.log(recepientEmail);
-
     try {
         // Get recepient user ID
         const recepientData = await UserModel.findOne({ email: recepientEmail });
