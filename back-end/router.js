@@ -30,6 +30,7 @@ appRouter.delete("/api/user/:id", UserController.deleteUser);
 appRouter.get("/api/mail/inbox", MailController.getInbox);
 appRouter.get("/api/mail/sentbox", MailController.getSentBox);
 appRouter.get("/api/mail/:mailID", MailController.getMailByID);
-appRouter.post("/api/mail/send/:recepientEmail", MailController.validateMailData("send"), MailController.sendMail);
+appRouter.post("/api/mail/toggleRead/:messageID", MailController.validateMailData("read"), MailController.toggleRead);
+appRouter.put("/api/mail/send/:recepientEmail", MailController.validateMailData("send"), MailController.sendMail);
 
 module.exports = appRouter;

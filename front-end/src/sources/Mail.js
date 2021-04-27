@@ -271,6 +271,7 @@ export default function Mail(props) {
                                                         <Typography
                                                             align="center"
                                                             variant="subtitle1"
+                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
                                                         >
                                                             {`${m.sender.firstName} ${m.sender.lastName}`}
                                                         </Typography>
@@ -279,6 +280,7 @@ export default function Mail(props) {
                                                         <Typography
                                                             align="center"
                                                             variant="subtitle1"
+                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
                                                         >
                                                             {m.subject}
                                                         </Typography>
@@ -287,6 +289,7 @@ export default function Mail(props) {
                                                         <Typography
                                                             align="center"
                                                             variant="subtitle1"
+                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
                                                         >
                                                             {m.sendTime}
                                                         </Typography>

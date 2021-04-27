@@ -16,6 +16,13 @@ module.exports.getInbox = async (req, res) => {
         const mail = await MailModel.find({ recepientID: userID })
             .skip(start)
             .limit(start + limit);
+        mail.sort((x,y) => {
+            const xDate = new Date(x.sendTime);
+            const yDate = new Date(y.sendTime);
+            if(xDate === yDate) return 0;
+            if(xDate > yDate) return -1;
+            if(xDate < yDate) return 1;
+        });
         res.json(mail);
     } catch (ex) {
         console.error(ex);
@@ -37,6 +44,13 @@ module.exports.getSentBox = async (req, res) => {
         const mail = await MailModel.find({ senderID: userID })
             .skip(start)
             .limit(start + limit);
+        mail.sort((x,y) => {
+            const xDate = new Date(x.sendTime);
+            const yDate = new Date(y.sendTime);
+            if(xDate === yDate) return 0;
+            if(xDate > yDate) return -1;
+            if(xDate < yDate) return 1;
+        });
         res.json(mail);
     } catch (ex) {
         console.error(ex);
@@ -76,6 +90,12 @@ module.exports.getMailByID = async (req, res) => {
     }
 };
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 module.exports.sendMail = async (req, res) => {
     const userID = req.session.uid;
     const recepientEmail = req.params.recepientEmail;
@@ -107,6 +127,31 @@ module.exports.sendMail = async (req, res) => {
     }
 };
 
+module.exports.toggleRead = async (req, res) => {
+    // Get the message ID
+    const messageID = req.params.messageID;
+    const userID = req.session.uid;
+
+    try {
+        // Get the message
+        const message = await MailModel.findOne({ _id: messageID });
+
+        // User must be the recepient of this message
+        if(message.recepientID !== userID) {
+            res.status(403).send("You are not the recepient of this message.");
+            return;
+        }
+
+        // Toggle message read
+        await MailModel.updateOne({ _id: messageID }, { isRead: !(message.isRead) });
+        res.status(200).send("Read status updated.");
+    } catch(ex) {
+        res.status(500).send(ex);
+        console.error(ex);
+        return;
+    }
+};
+
 /**
  * This method contains the validation options to be used by express-validator.
  * @param {*} method
@@ -120,6 +165,11 @@ module.exports.validateMailData = (method) => {
                 body("subject", "Missing subject.").exists().isEmail(),
                 body("content", "Missing content.").exists().isString(),
                 body("attachments", "Please provide a last name.").isArray(),
+            ];
+        }
+        case "read": {
+            return [
+                param("messageID", "Missing message ID.").exists().isString()
             ];
         }
     }
