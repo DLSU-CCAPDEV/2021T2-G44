@@ -1,5 +1,7 @@
 import React from "react";
 
+import { sendMessage } from '../../controllers/MailController';
+
 import "../assets/styles.css";
 
 import {

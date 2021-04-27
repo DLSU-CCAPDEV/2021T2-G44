@@ -125,10 +125,7 @@ export default function Mail(props) {
         setNewMessageDialogOpen(true);
     };
 
-    if (mail && sent && !loading) {
-        console.log(mail);
-        console.log(sent);
-        console.log(loading);
+    if (mail && sent && !loading) { 
         return (
             <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
                 <ViewMessage

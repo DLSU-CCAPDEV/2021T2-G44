@@ -44,7 +44,20 @@ export const getSent = async (start = 0, end = 50) => {
     }
 };
 
-export const sendMessage = (userEmail, messageContent) => {
-    // Normally, this would be an API call to the backend.
-    // For phase 1, this function does nothing.
+export const sendMessage = async (userEmail, messageContent) => {
+    // Make API Call to Send Message
+    try {
+        const response = await request.post("api/mail/send/" + userEmail, {
+            subject: messageContent.subject,
+            content: messageContent.content,
+            attachments: messageContent.attachments
+        });
+    
+        if(response.status === 200)
+            return true;
+        return false;
+    } catch(ex) {
+        console.error(ex);
+        return false;
+    }
 };
