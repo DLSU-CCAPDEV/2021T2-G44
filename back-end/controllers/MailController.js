@@ -15,7 +15,7 @@ module.exports.getInbox = async (req, res) => {
     try {
         const mail = await MailModel.find({ recepientID: userID })
             .skip(start)
-            .limit(start + limit);
+            .limit(limit);
         mail.sort((x,y) => {
             const xDate = new Date(x.sendTime);
             const yDate = new Date(y.sendTime);
@@ -43,7 +43,7 @@ module.exports.getSentBox = async (req, res) => {
     try {
         const mail = await MailModel.find({ senderID: userID })
             .skip(start)
-            .limit(start + limit);
+            .limit(limit);
         mail.sort((x,y) => {
             const xDate = new Date(x.sendTime);
             const yDate = new Date(y.sendTime);
@@ -100,6 +100,13 @@ module.exports.sendMail = async (req, res) => {
     const userID = req.session.uid;
     const recepientEmail = req.params.recepientEmail;
     const mailData = req.body;
+
+    // Return invalid  data if invalid
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+        res.status(422).json({ errors: validationErrors.array() });
+        return;
+    }
 
     try {
         // Get recepient user ID

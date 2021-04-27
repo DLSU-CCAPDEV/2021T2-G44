@@ -22,9 +22,9 @@ appRouter.use("/api", AuthController.validateSession);
 appRouter.put("/register", UserController.validateUserData('createUser'), UserController.createUser);
 appRouter.get("/api/user", UserController.getCurrentUser);
 appRouter.get("/api/user/:id", UserController.getUser);
-appRouter.post("api/user/:id", UserController.updateUser);
-appRouter.post("api/user/password/:id", UserController.changePassword);
-appRouter.delete("/api/user/:id", UserController.deleteUser);
+appRouter.post("api/user/:id", UserController.validateUserData('updateUser'), UserController.updateUser);
+appRouter.post("api/user/password", UserController.validateUserData('changePassword'), UserController.changePassword);
+appRouter.delete("/api/user", UserController.validateUserData('deleteAccount'), UserController.deleteUser);
 
 // Mail Operations
 appRouter.get("/api/mail/inbox", MailController.getInbox);

@@ -94,6 +94,7 @@ module.exports.updateUser = async (req, res) => {
     const userData = req.body;
 
     // Return invalid user data if invalid
+    const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty()) {
         res.status(422).json({ errors: validationErrors.array() });
         return;
@@ -115,9 +116,73 @@ module.exports.updateUser = async (req, res) => {
         });
 };
 
-module.exports.changePassword = async (req, res) => {};
+module.exports.changePassword = async (req, res) => {
+    // Return invalid user data if invalid
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+        res.status(422).json({ errors: validationErrors.array() });
+        return;
+    }
 
-module.exports.deleteUser = async (req, res) => {};
+    // Initialize
+    const userID = req.session.uid;
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+
+    try {
+        // Check if the old password is correct
+        const userData = await UserModel.findOne({ _id: userID });
+        const passwordValidation = await bcrypt.compare(oldPassword, userData.password);
+
+        if(!passwordValidation) {
+            res.status(401).send("The old password provided is invalid.");
+            return;
+        }
+
+        // Change password
+        const salt = bcrypt.genSaltSync(10);
+        const newPasswordHash = bcrypt.hashSync(newPassword, salt);
+
+        await UserModel.updateOne({ _id: userID }, { password: newPasswordHash });
+        res.status(200).send("Password updated.");
+    } catch(ex) {
+        console.error(ex);
+        res.status(500).send(ex);
+    }
+};
+
+module.exports.deleteUser = async (req, res) => {
+    // Return invalid user data if invalid
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+        res.status(422).json({ errors: validationErrors.array() });
+        return;
+    }
+
+    // Initialize
+    const userID = req.session.uid;
+    const password = req.body.password;
+
+    // Validate password
+    try {
+        // Check if the old password is correct
+        const userData = await UserModel.findOne({ _id: userID });
+        const passwordValidation = await bcrypt.compare(password, userData.password);
+
+        if(!passwordValidation) {
+            res.status(401).send("Invalid password.");
+            return;
+        }
+
+        // Proceed with the account deletion
+        await UserModel.deleteOne({ _id: userID });
+        res.status(200).send("Account deleted.");
+
+    } catch(ex) {
+        console.error(ex);
+        res.status(500).send(ex);
+    }
+};
 
 /**
  * This method contains the validation options to be used by express-validator.
@@ -156,9 +221,15 @@ module.exports.validateUserData = (method) => {
         }
         case "changePassword": {
             return [
-                body("password", "Password is too weak.")
+                body("oldPassword", "Old password is invalid.").exists(),
+                body("newPassword", "Password is too weak.")
                     .exists()
                     .isStrongPassword(passwordValidationOptions),
+            ];
+        }
+        case "deleteAccount": {
+            return [
+                body("password", "Password is invalid.").exists()
             ];
         }
     }
