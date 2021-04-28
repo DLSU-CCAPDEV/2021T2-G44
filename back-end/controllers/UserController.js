@@ -90,7 +90,7 @@ module.exports.getUser = async (req, res) => {
  * @returns 
  */
 module.exports.updateUser = async (req, res) => {
-    const userID = req.params.id;
+    const userID = req.session.uid;
     const userData = req.body;
 
     // Return invalid user data if invalid
@@ -212,9 +212,9 @@ module.exports.validateUserData = (method) => {
         }
         case "updateUser": {
             return [
-                body("email", "Missing or Invalid Email Address.").exists().isEmail(),
-                body("firstName", "Please provide a first name.").exists(),
-                body("lastName", "Please provide a last name.").exists(),
+                body("email", "Missing or Invalid Email Address.").optional().isEmail(),
+                body("firstName", "Please provide a first name.").optional().isString(),
+                body("lastName", "Please provide a last name.").optional().isString(),
                 body("bio").optional().isString(),
                 body("avatar").optional().isURL(),
             ];

@@ -33,7 +33,7 @@ export default function ViewMessage(props) {
             props.message.isRead = true;
             toggleRead(props.message._id);
         }
-    }, [props.dialogOpen]);
+    }, [props.dialogOpen, props.message]);
 
     const handleClose = () => {
         props.setDialogOpen(false);
