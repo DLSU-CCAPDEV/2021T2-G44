@@ -1,7 +1,7 @@
-import request from '../utils/AxiosConfig';
+import request from "../utils/AxiosConfig";
 
 // Import mock user data
-import userDB from '../placeholderData/users.json';
+import userDB from "../placeholderData/users.json";
 
 export const GetHostsData = async (userEvents) => {
     // console.log(`${userEvents} AWDUHAYUWGDYAWGDUYWAGDuy`);
@@ -26,8 +26,14 @@ export const GetUserData = async (userID = "") => {
 
 export const RegisterUser = async (userData) => {
     const response = await request.put("register", userData);
-    
-    if(response.status === 201)
-        return true;
+
+    if (response.status === 201) return true;
+    return response;
+};
+
+export const editUserInfo = async (userData) => {
+    const response = await request.post("api/user", userData);
+
+    if (response.status === 200) return true;
     return response;
 };
