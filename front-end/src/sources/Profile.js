@@ -1,61 +1,77 @@
-import "./assets/styles.css";
+import './assets/styles.css';
 
-import { DropzoneDialog } from "material-ui-dropzone";
+import { DropzoneDialog } from 'material-ui-dropzone';
 
-import { useEffect, useState, React, Component } from "react";
+import { useEffect, useState, React, Component } from 'react';
 
-import Loading from "./components/Loading";
+import Loading from './components/Loading';
 
 // Component Imports
-import { Paper } from "@material-ui/core";
-import { Avatar } from "@material-ui/core";
-import { Typography, Grid, TextField } from "@material-ui/core";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
-import { Divider } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { pink } from "@material-ui/core/colors";
-import CreateIcon from "@material-ui/icons/Create";
-import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
+import { Paper } from '@material-ui/core';
+import { Avatar } from '@material-ui/core';
+import { Typography, Grid, TextField } from '@material-ui/core';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
+import { Divider } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { pink } from '@material-ui/core/colors';
+import CreateIcon from '@material-ui/icons/Create';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-import profilePic from "./assets/heheAna.png";
+import clsx from 'clsx';
+import IconButton from '@material-ui/core/IconButton';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FilledInput from '@material-ui/core/FilledInput';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import LockIcon from '@material-ui/icons/Lock';
 
-import { GetUserData, editUserInfo } from "../controllers/UserController";
+import profilePic from './assets/heheAna.png';
+
+import { GetUserData, editUserInfo } from '../controllers/UserController';
 
 // colored Delete Button
 const ColorButton = withStyles((theme) => ({
     root: {
-        color: theme.palette.getContrastText(pink["A400"]),
-        backgroundColor: pink["A400"],
-        "&:hover": {
-            backgroundColor: pink[700]
-        }
-    }
+        color: theme.palette.getContrastText(pink['A400']),
+        backgroundColor: pink['A400'],
+        '&:hover': {
+            backgroundColor: pink[700],
+        },
+    },
 }))(Button);
 
 const useStyle = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
-        position: "relative",
-        marginTop: "4em"
+        position: 'relative',
+        marginTop: '4em',
     },
     profileGrid: {
         backgroundColor: theme.palette.accent.main,
-        marginLeft: "2em",
-        marginTop: "1em",
-        marginRight: "1em",
+        marginLeft: '2em',
+        marginTop: '1em',
+        marginRight: '1em',
 
-        display: "flex"
+        display: 'flex',
     },
     settingsGrid: {
         backgroundColor: theme.palette.accent.main,
-        marginLeft: "1em",
-        marginTop: "1em",
-        marginRight: "2em"
+        marginLeft: '1em',
+        marginTop: '1em',
+        marginRight: '2em',
     },
     profileShowcase: {
-        height: "15em",
-        width: "15em"
+        height: '15em',
+        width: '15em',
 
         // display: flex,
         // alignSelf: Center,
@@ -65,32 +81,40 @@ const useStyle = makeStyles((theme) => ({
         marginRight: theme.spacing(2),
 
         marginBottom: theme.spacing(2),
-        width: "24em"
+        width: '24em',
     },
     profileField: {
         marginLeft: theme.spacing(4),
         marginRight: theme.spacing(2),
 
         marginBottom: theme.spacing(1),
-        width: "17em"
+        width: '17em',
     },
     standardSpacer: {
-        marginTop: "1em",
-        marginBottom: "1em"
+        marginTop: '1em',
+        marginBottom: '1em',
     },
     buttonSpacing: {
         marginLeft: theme.spacing(4),
         marginRight: theme.spacing(2),
-        marginBottom: theme.spacing(2)
+        marginBottom: theme.spacing(2),
     },
     textSpacer: {
-        marginLeft: "1em",
-        marginTop: "1em",
-        marginBottom: "1em"
+        marginLeft: '1em',
+        marginTop: '1em',
+        marginBottom: '1em',
     },
     stretcher: {
-        flexGrow: 1
-    }
+        flexGrow: 1,
+    },
+    passField: {
+        // marginTop: theme.spacing(2),
+        width: '100%',
+    },
+    dividingClass: {
+        marginTop: '1em',
+        marginBottom: '1em',
+    },
 }));
 
 export default function Profile() {
@@ -116,9 +140,14 @@ export default function Profile() {
     const [emailFieldVal, setEmailFieldVal] = useState(false);
 
     const [uploadAvatar, setUploadAvatar] = useState(false);
+    const [changingPassword, setChangingPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const [deleteAccConfirmation, setDeleteAccConfirmation] = useState(false);
+    const [deleteAccount, setDeleteAccount] = useState(false);
 
     useEffect(() => {
-        document.title = "Profile - Sched-It";
+        document.title = 'Profile - Sched-It';
 
         // Get user data
         GetUserData()
@@ -144,7 +173,7 @@ export default function Profile() {
         } else {
             setBioEditable(false);
             const bioEditStatus = await editUserInfo({
-                bio: bioFieldVal
+                bio: bioFieldVal,
             });
             if (bioEditStatus != true) {
                 alert(bioEditStatus);
@@ -162,7 +191,7 @@ export default function Profile() {
         } else {
             setFirstNameEditable(false);
             const firstNameEditStatus = await editUserInfo({
-                firstname: firstNameFieldVal
+                firstname: firstNameFieldVal,
             });
             if (firstNameEditStatus != true) {
                 alert(firstNameEditStatus);
@@ -180,7 +209,7 @@ export default function Profile() {
         } else {
             setLastNameEditable(false);
             const lastNameEditStatus = await editUserInfo({
-                lastname: lastNameFieldVal
+                lastname: lastNameFieldVal,
             });
             if (lastNameEditStatus != true) {
                 alert(lastNameEditStatus);
@@ -198,7 +227,7 @@ export default function Profile() {
         } else {
             setEmailEditable(false);
             const emailEditStatus = await editUserInfo({
-                email: emailFieldVal
+                email: emailFieldVal,
             });
             if (emailEditStatus != true) {
                 alert(emailEditStatus);
@@ -210,27 +239,55 @@ export default function Profile() {
         }
     };
 
+    const handlePasswordChange = async (e) => {
+        if (!changingPassword) {
+            setChangingPassword(true);
+        } else {
+            setChangingPassword(false);
+            setShowPassword(false);
+        }
+    };
+
+    const handleDeleteConfirmation = async (e) => {
+        if (!deleteAccConfirmation) {
+            // Opens the First Dialog Box
+            setDeleteAccConfirmation(true);
+            // Ensures the Second Dialog Box is not to be
+            setDeleteAccount(false);
+        } else {
+            // Closes the First Dialog Box
+            setDeleteAccConfirmation(false);
+        }
+    };
+
+    const handleDeleteAccount = async (e) => {
+        if (!deleteAccount) {
+            // Opens The Second Dialog Box
+            setDeleteAccount(true);
+            // Closes The First Dialog Box
+            setDeleteAccConfirmation(false);
+        } else {
+            // Closes the second Dialog Box
+            setDeleteAccount(false);
+            // resets the showPass State
+            setShowPassword(false);
+        }
+    };
+
+    const handleShowPassword = (e) => {
+        if (!showPassword) {
+            setShowPassword(true);
+        } else {
+            setShowPassword(false);
+        }
+    };
+
     if (!loading) {
         return (
             // entire main content page
-            <Grid
-                container
-                direction="column"
-                style={{ padding: "4em 0 5em 0" }}
-            >
-                <Grid
-                    item
-                    container
-                    direction="row"
-                    justify="center"
-                    alignItems="stretch"
-                >
-                    <Grid
-                        container
-                        direction="row"
-                        justify="center"
-                        alignItems="stretch"
-                    >
+            <Grid container direction="column" justify="center" alignItems="center" style={{ padding: '4em 0 5em 0' }}>
+                <Grid item container direction="row" justify="center" alignItems="stretch">
+                    <Grid container direction="row" justify="center" alignItems="stretch">
                         {/* The LeftHand side */}
                         {/* 
                     Todo: 
@@ -239,17 +296,8 @@ export default function Profile() {
                     Bio
                     Change Bio Button 
                 */}
-                        <Grid
-                            item
-                            direction="column"
-                            lg={4}
-                            className={classes.stretcher}
-                        >
-                            <Paper
-                                variant="elevation"
-                                elevation={8}
-                                className={classes.profileGrid}
-                            >
+                        <Grid item direction="column" lg={4} className={classes.stretcher}>
+                            <Paper variant="elevation" elevation={8} className={classes.profileGrid}>
                                 {/* Grid Inside Paper */}
                                 <Grid container direction="column">
                                     {/* Picture Grid */}
@@ -270,26 +318,22 @@ export default function Profile() {
                                             color="primary"
                                             className={classes.standardSpacer}
                                             startIcon={<PhotoCameraIcon />}
-                                            onClick={() =>
-                                                setUploadAvatar(true)
-                                            }
+                                            onClick={() => setUploadAvatar(true)}
                                         >
                                             Change Profile Picture
                                         </Button>
 
                                         <DropzoneDialog
                                             filesLimit={1}
-                                            acceptedFiles={["image/*"]}
-                                            cancelButtonText={"cancel"}
-                                            submitButtonText={"submit"}
+                                            acceptedFiles={['image/*']}
+                                            cancelButtonText={'cancel'}
+                                            submitButtonText={'submit'}
                                             maxFileSize={5000000}
                                             open={uploadAvatar}
-                                            onClose={() =>
-                                                setUploadAvatar(false)
-                                            }
+                                            onClose={() => setUploadAvatar(false)}
                                             onSave={(files) => {
                                                 setUploadAvatar(false);
-                                                console.log("Files:", files);
+                                                console.log('Files:', files);
                                             }}
                                             showPreviews={true}
                                             showFileNamesInPreview={true}
@@ -299,17 +343,8 @@ export default function Profile() {
                                     <Divider variant="middle"></Divider>
 
                                     {/* Name Grid */}
-                                    <Grid
-                                        item
-                                        container
-                                        direction="column"
-                                        alignItems="center"
-                                    >
-                                        <Typography
-                                            variant="h5"
-                                            align="left"
-                                            className={classes.standardSpacer}
-                                        >
+                                    <Grid item container direction="column" alignItems="center">
+                                        <Typography variant="h5" align="left" className={classes.standardSpacer}>
                                             {`${firstName} ${lastName}`}
                                         </Typography>
                                         <TextField
@@ -319,31 +354,23 @@ export default function Profile() {
                                             defaultValue={bioFieldVal}
                                             className={classes.standardSpacer}
                                             InputProps={{
-                                                readOnly: !bioEditable
+                                                readOnly: !bioEditable,
                                             }}
                                             style={{
-                                                width: "90%"
+                                                width: '90%',
                                             }}
                                             size="small"
                                             variant="outlined"
-                                            onChange={(e) =>
-                                                setFirstNameFieldVal(
-                                                    e.target.value
-                                                )
-                                            }
+                                            onChange={(e) => setFirstNameFieldVal(e.target.value)}
                                         />
                                         <Button
                                             variant="contained"
                                             color="primary"
                                             className={classes.standardSpacer}
-                                            startIcon={
-                                                !bioEditable && <CreateIcon />
-                                            }
+                                            startIcon={!bioEditable && <CreateIcon />}
                                             onClick={handleBioChange}
                                         >
-                                            {bioEditable
-                                                ? "Confirm"
-                                                : "Edit Bio"}
+                                            {bioEditable ? 'Confirm' : 'Edit Bio'}
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -366,174 +393,251 @@ export default function Profile() {
                     Delete Account
                         Delete Account Button
                 */}
-                        <Grid
-                            item
-                            container
-                            direction="column"
-                            lg={8}
-                            justify="center"
-                            alignItems="stretch"
-                        >
-                            <Paper
-                                className={classes.settingsGrid}
-                                variant="elevation"
-                                elevation={8}
-                            >
-                                <Grid
-                                    item
-                                    container
-                                    direction="row"
-                                    className={classes.textSpacer}
-                                >
-                                    <Typography variant="h4">
-                                        Profile Settings
-                                    </Typography>
+                        <Grid item container direction="column" lg={8} justify="center" alignItems="stretch">
+                            <Paper className={classes.settingsGrid} variant="elevation" elevation={8}>
+                                <Grid item container direction="row" className={classes.textSpacer}>
+                                    <Typography variant="h4">Profile Settings</Typography>
                                 </Grid>
-                                <Grid
-                                    item
-                                    container
-                                    direction="row"
-                                    alignItems="center"
-                                >
+                                <Grid item container direction="row" alignItems="center">
                                     <TextField
                                         id="firstNameTextBox"
                                         label="First Name"
                                         defaultValue={firstNameFieldVal}
                                         InputProps={{
-                                            readOnly: !firstNameEditable
+                                            readOnly: !firstNameEditable,
                                         }}
                                         className={classes.profileField}
                                         size="small"
                                         variant="filled"
-                                        onChange={(e) =>
-                                            setFirstNameFieldVal(e.target.value)
-                                        }
+                                        onChange={(e) => setFirstNameFieldVal(e.target.value)}
                                     />
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        startIcon={
-                                            !firstNameEditable && <CreateIcon />
-                                        }
+                                        startIcon={!firstNameEditable && <CreateIcon />}
                                         onClick={handleFirstNameChange}
                                     >
-                                        {firstNameEditable ? "Confirm" : "Edit"}
+                                        {firstNameEditable ? 'Confirm' : 'Edit'}
                                     </Button>
                                 </Grid>
 
-                                <Grid
-                                    item
-                                    container
-                                    direction="row"
-                                    alignItems="center"
-                                >
+                                <Grid item container direction="row" alignItems="center">
                                     <TextField
                                         id="lastNameTextBox"
                                         label="Last Name"
                                         value={lastNameFieldVal}
                                         InputProps={{
-                                            readOnly: !lastNameEditable
+                                            readOnly: !lastNameEditable,
                                         }}
                                         className={classes.profileField}
                                         size="small"
                                         variant="filled"
-                                        onChange={(e) =>
-                                            setLastNameFieldVal(e.target.value)
-                                        }
+                                        onChange={(e) => setLastNameFieldVal(e.target.value)}
                                     />
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        startIcon={
-                                            !lastNameEditable && <CreateIcon />
-                                        }
+                                        startIcon={!lastNameEditable && <CreateIcon />}
                                         onClick={handleLastNameChange}
                                     >
-                                        {lastNameEditable ? "Confirm" : "Edit"}
+                                        {lastNameEditable ? 'Confirm' : 'Edit'}
                                     </Button>
                                 </Grid>
 
                                 <Divider variant="middle"></Divider>
 
                                 {/* EMAIL ADDRESS SECTION */}
-                                <Grid
-                                    item
-                                    container
-                                    direction="row"
-                                    className={classes.textSpacer}
-                                >
+                                <Grid item container direction="row" className={classes.textSpacer}>
                                     <Typography variant="h4">Email</Typography>
                                 </Grid>
-                                <Grid
-                                    item
-                                    container
-                                    direction="row"
-                                    alignItems="center"
-                                >
+                                <Grid item container direction="row" alignItems="center">
                                     <TextField
                                         id="emailTextBox"
                                         label="Address"
                                         value={emailFieldVal}
                                         className={classes.emailField}
                                         InputProps={{
-                                            readOnly: !emailEditable
+                                            readOnly: !emailEditable,
                                         }}
                                         size="small"
                                         variant="filled"
-                                        onChange={(e) =>
-                                            setEmailFieldVal(e.target.value)
-                                        }
+                                        onChange={(e) => setEmailFieldVal(e.target.value)}
                                     />
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        startIcon={
-                                            !emailEditable && <CreateIcon />
-                                        }
+                                        startIcon={!emailEditable && <CreateIcon />}
                                         onClick={handleEmailChange}
                                     >
-                                        {emailEditable ? "Confirm" : "Edit"}
+                                        {emailEditable ? 'Confirm' : 'Edit'}
                                     </Button>
                                 </Grid>
 
                                 <Divider variant="middle"></Divider>
 
-                                <Grid
-                                    item
-                                    container
-                                    direction="row"
-                                    className={classes.textSpacer}
-                                >
-                                    <Typography variant="h4">
-                                        Password
-                                    </Typography>
+                                <Grid item container direction="row" className={classes.textSpacer}>
+                                    <Typography variant="h4">Password</Typography>
                                 </Grid>
                                 <Button
                                     variant="contained"
                                     color="primary"
                                     className={classes.buttonSpacing}
+                                    startIcon={<VpnKeyIcon />}
+                                    onClick={handlePasswordChange}
                                 >
                                     Change Password
                                 </Button>
-                                <Divider variant="middle"></Divider>
-                                <Grid
-                                    item
-                                    container
-                                    direction="row"
-                                    className={classes.textSpacer}
+                                <Dialog
+                                    open={changingPassword}
+                                    onClose={handlePasswordChange}
+                                    aria-labelledby="form-dialog-title"
                                 >
-                                    <Typography variant="h4">
-                                        Delete Account
-                                    </Typography>
+                                    <DialogTitle id="form-dialog-title">Changing Your Password</DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText>
+                                            In order to Change your password please enter your current password, along
+                                            with your new password.
+                                        </DialogContentText>
+                                        <FormControl className={classes.passField} variant="filled">
+                                            <InputLabel htmlFor="filled-adornment-password">
+                                                Current Password
+                                            </InputLabel>
+                                            <FilledInput
+                                                id="filled-adornment-password"
+                                                type={showPassword ? 'text' : 'password'}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleShowPassword}
+                                                            onMouseDown={handleShowPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                            />
+                                        </FormControl>
+
+                                        <Divider variant="middle" className={classes.dividingClass}></Divider>
+
+                                        <FormControl className={classes.passField} variant="filled">
+                                            <InputLabel htmlFor="filled-adornment-password">New Password</InputLabel>
+                                            <FilledInput
+                                                id="filled-adornment-password"
+                                                type={showPassword ? 'text' : 'password'}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleShowPassword}
+                                                            onMouseDown={handleShowPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                            />
+                                        </FormControl>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handlePasswordChange} color="primary">
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            onClick={handlePasswordChange}
+                                            color="primary"
+                                            startIcon={<LockIcon />}
+                                        >
+                                            Confirm Password
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
+
+                                <Grid item container direction="row" className={classes.textSpacer}>
+                                    <Typography variant="h4">Delete Account</Typography>
                                 </Grid>
                                 <ColorButton
                                     variant="contained"
                                     color="primary"
                                     className={classes.buttonSpacing}
                                     startIcon={<DeleteIcon />}
+                                    onClick={handleDeleteConfirmation}
                                 >
                                     Delete
                                 </ColorButton>
+                                <Dialog
+                                    open={deleteAccConfirmation}
+                                    onClose={handleDeleteConfirmation}
+                                    aria-labelledby="form-dialog-title"
+                                >
+                                    <DialogTitle id="form-dialog-title">Delete Sched-it Account?</DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText>
+                                            Are you sure you want to delete your Sched-It Account
+                                        </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleDeleteAccount} color="primary">
+                                            Cancel
+                                        </Button>
+                                        <ColorButton
+                                            variant="contained"
+                                            color="primary"
+                                            startIcon={<LockIcon />}
+                                            onClick={handleDeleteAccount}
+                                        >
+                                            Yes I Want To Delete My Account
+                                        </ColorButton>
+                                    </DialogActions>
+                                </Dialog>
+                                <Dialog
+                                    open={deleteAccount}
+                                    onClose={handleDeleteAccount}
+                                    aria-labelledby="form-dialog-title"
+                                >
+                                    <DialogTitle id="form-dialog-title">Confirm Account Deletion</DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText>
+                                            Enter your Password below to DELETE your account.
+                                        </DialogContentText>
+                                        <FormControl className={classes.passField} variant="filled">
+                                            <InputLabel htmlFor="filled-adornment-password">Enter Password</InputLabel>
+                                            <FilledInput
+                                                id="filled-adornment-password"
+                                                type={showPassword ? 'text' : 'password'}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleShowPassword}
+                                                            onMouseDown={handleShowPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                            />
+                                        </FormControl>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleDeleteAccount} color="primary">
+                                            Cancel
+                                        </Button>
+                                        <ColorButton
+                                            variant="contained"
+                                            color="primary"
+                                            startIcon={<DeleteIcon />}
+                                            onClick={handleDeleteAccount}
+                                        >
+                                            Confirm Account Deletion
+                                        </ColorButton>
+                                    </DialogActions>
+                                </Dialog>
                             </Paper>
                         </Grid>
                     </Grid>
