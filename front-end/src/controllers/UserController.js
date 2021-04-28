@@ -1,7 +1,7 @@
-import request from "../utils/AxiosConfig";
+import request from '../utils/AxiosConfig';
 
 // Import mock user data
-import userDB from "../placeholderData/users.json";
+import userDB from '../placeholderData/users.json';
 
 export const GetHostsData = async (userEvents) => {
     // console.log(`${userEvents} AWDUHAYUWGDYAWGDUYWAGDuy`);
@@ -19,20 +19,34 @@ export const GetHostsData = async (userEvents) => {
     return uniqueArray;
 };
 
-export const GetUserData = async (userID = "") => {
-    const response = await request.get("api/user/" + userID);
+export const GetUserData = async (userID = '') => {
+    const response = await request.get('api/user/' + userID);
     return response.data;
 };
 
 export const RegisterUser = async (userData) => {
-    const response = await request.put("register", userData);
+    const response = await request.put('register', userData);
 
     if (response.status === 201) return true;
     return response;
 };
 
 export const editUserInfo = async (userData) => {
-    const response = await request.post("api/user", userData);
+    const response = await request.post('api/user', userData);
+
+    if (response.status === 200) return true;
+    return response;
+};
+
+export const changePassword = async (userData) => {
+    const response = await request.post('api/user/password', userData);
+
+    if (response.status === 200) return true;
+    return response;
+};
+
+export const deleteUser = async (userData) => {
+    const response = await request.delete('api/user', userData);
 
     if (response.status === 200) return true;
     return response;

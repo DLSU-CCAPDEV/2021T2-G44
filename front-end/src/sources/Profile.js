@@ -24,7 +24,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -36,7 +35,7 @@ import LockIcon from '@material-ui/icons/Lock';
 
 import profilePic from './assets/heheAna.png';
 
-import { GetUserData, editUserInfo } from '../controllers/UserController';
+import { GetUserData, editUserInfo, changePassword, deleteUser } from '../controllers/UserController';
 
 // colored Delete Button
 const ColorButton = withStyles((theme) => ({
@@ -122,7 +121,6 @@ export default function Profile() {
 
     // State for User
     const [loading, setLoading] = useState(true);
-    const [userData, setUserData] = useState(null);
     const [firstName, setFirstName] = useState(null);
     const [lastName, setLastName] = useState(null);
     const [email, setEmail] = useState(null);
@@ -134,17 +132,21 @@ export default function Profile() {
     const [bioEditable, setBioEditable] = useState(false);
     const [emailEditable, setEmailEditable] = useState(false);
 
-    const [firstNameFieldVal, setFirstNameFieldVal] = useState(false);
-    const [lastNameFieldVal, setLastNameFieldVal] = useState(false);
-    const [bioFieldVal, setBioFieldVal] = useState(false);
-    const [emailFieldVal, setEmailFieldVal] = useState(false);
+    const [firstNameFieldVal, setFirstNameFieldVal] = useState('');
+    const [lastNameFieldVal, setLastNameFieldVal] = useState('');
+    const [bioFieldVal, setBioFieldVal] = useState('');
+    const [emailFieldVal, setEmailFieldVal] = useState('');
 
     const [uploadAvatar, setUploadAvatar] = useState(false);
+
     const [changingPassword, setChangingPassword] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [currentPassFieldVal, setCurrentPassFieldVal] = useState('');
+    const [newPassFieldVal, setNewPassFieldVal] = useState('');
 
     const [deleteAccConfirmation, setDeleteAccConfirmation] = useState(false);
     const [deleteAccount, setDeleteAccount] = useState(false);
+    const [delPassFieldVal, setDelPassFieldVal] = useState('');
 
     useEffect(() => {
         document.title = 'Profile - Sched-It';
@@ -244,6 +246,15 @@ export default function Profile() {
             setChangingPassword(true);
         } else {
             setChangingPassword(false);
+            const passwordChangeStatus = await changePassword({
+                oldPassword: currentPassFieldVal,
+                newPassword: newPassFieldVal,
+            });
+            if (passwordChangeStatus != true) {
+                alert(passwordChangeStatus);
+                console.log(passwordChangeStatus);
+                return;
+            }
             setShowPassword(false);
         }
     };
@@ -266,9 +277,19 @@ export default function Profile() {
             setDeleteAccount(true);
             // Closes The First Dialog Box
             setDeleteAccConfirmation(false);
+            // ensures that the passcode is non visible for now
+            setShowPassword(false);
         } else {
             // Closes the second Dialog Box
             setDeleteAccount(false);
+            const accDeleteStatus = await deleteUser({
+                password: delPassFieldVal,
+            });
+            if (accDeleteStatus != true) {
+                alert(accDeleteStatus);
+                console.log(accDeleteStatus);
+                return;
+            }
             // resets the showPass State
             setShowPassword(false);
         }
@@ -489,7 +510,7 @@ export default function Profile() {
                                 </Button>
                                 <Dialog
                                     open={changingPassword}
-                                    onClose={handlePasswordChange}
+                                    onClose={() => setChangingPassword(false)}
                                     aria-labelledby="form-dialog-title"
                                 >
                                     <DialogTitle id="form-dialog-title">Changing Your Password</DialogTitle>
@@ -503,7 +524,8 @@ export default function Profile() {
                                                 Current Password
                                             </InputLabel>
                                             <FilledInput
-                                                id="filled-adornment-password"
+                                                id="currentPasswordField"
+                                                value={currentPassFieldVal}
                                                 type={showPassword ? 'text' : 'password'}
                                                 endAdornment={
                                                     <InputAdornment position="end">
@@ -517,6 +539,7 @@ export default function Profile() {
                                                         </IconButton>
                                                     </InputAdornment>
                                                 }
+                                                onChange={(e) => setCurrentPassFieldVal(e.target.value)}
                                             />
                                         </FormControl>
 
@@ -525,7 +548,8 @@ export default function Profile() {
                                         <FormControl className={classes.passField} variant="filled">
                                             <InputLabel htmlFor="filled-adornment-password">New Password</InputLabel>
                                             <FilledInput
-                                                id="filled-adornment-password"
+                                                id="newPasswordField"
+                                                value={newPassFieldVal}
                                                 type={showPassword ? 'text' : 'password'}
                                                 endAdornment={
                                                     <InputAdornment position="end">
@@ -539,11 +563,12 @@ export default function Profile() {
                                                         </IconButton>
                                                     </InputAdornment>
                                                 }
+                                                onChange={(e) => setNewPassFieldVal(e.target.value)}
                                             />
                                         </FormControl>
                                     </DialogContent>
                                     <DialogActions>
-                                        <Button onClick={handlePasswordChange} color="primary">
+                                        <Button onClick={() => setChangingPassword(false)} color="primary">
                                             Cancel
                                         </Button>
                                         <Button
@@ -581,7 +606,7 @@ export default function Profile() {
                                         </DialogContentText>
                                     </DialogContent>
                                     <DialogActions>
-                                        <Button onClick={handleDeleteAccount} color="primary">
+                                        <Button onClick={() => setDeleteAccConfirmation(false)} color="primary">
                                             Cancel
                                         </Button>
                                         <ColorButton
@@ -605,7 +630,7 @@ export default function Profile() {
                                             Enter your Password below to DELETE your account.
                                         </DialogContentText>
                                         <FormControl className={classes.passField} variant="filled">
-                                            <InputLabel htmlFor="filled-adornment-password">Enter Password</InputLabel>
+                                            <InputLabel htmlFor="delAccPasswordField">Enter Password</InputLabel>
                                             <FilledInput
                                                 id="filled-adornment-password"
                                                 type={showPassword ? 'text' : 'password'}
@@ -621,11 +646,18 @@ export default function Profile() {
                                                         </IconButton>
                                                     </InputAdornment>
                                                 }
+                                                onChange={(e) => setDelPassFieldVal(e.target.value)}
                                             />
                                         </FormControl>
                                     </DialogContent>
                                     <DialogActions>
-                                        <Button onClick={handleDeleteAccount} color="primary">
+                                        <Button
+                                            onClick={() => {
+                                                setDeleteAccount(false);
+                                                setShowPassword(false);
+                                            }}
+                                            color="primary"
+                                        >
                                             Cancel
                                         </Button>
                                         <ColorButton
