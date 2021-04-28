@@ -15,7 +15,7 @@ import {
 
 import SendMessage from "./SendMessage";
 
-import { toggleRead } from '../../controllers/MailController';
+import { toggleRead, streamFile } from '../../controllers/MailController';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -48,7 +48,7 @@ export default function ViewMessage(props) {
         props.message.isRead = false;
         toggleRead(props.message._id);
         props.setDialogOpen(false);
-    }
+    };
 
     if (props.message != null)
         return (
@@ -80,6 +80,11 @@ export default function ViewMessage(props) {
                             <Typography style={{ color: "black" }} variant="body1">
                                 {messageContent.map((e, i) => <p key={i}>{e}</p>)}
                             </Typography>
+                            <br />
+                            <Typography>Attachments</Typography>
+                            {props.message.attachments.map((attachment, i) => {
+                                return <Button onClick={() => streamFile(attachment.fileID)} style={ { marginLeft: "1em" } } key={attachment.fileID}>Attachment #{i+1}</Button>
+                            })}
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>

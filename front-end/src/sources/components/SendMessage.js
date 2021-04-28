@@ -33,8 +33,8 @@ const textFieldStyles = {
 export default function SendMessage(props) {
     // Field change handlers
     const [recepientEmail, setRecepientEmail] = useState(null);
-    const [messageSubject, setMessageSubject] = useState(null);
-    const [messageContent, setMessageContent] = useState([null]);
+    const [messageSubject, setMessageSubject] = useState("");
+    const [messageContent, setMessageContent] = useState("");
     const [attachments, setAttachments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -135,12 +135,13 @@ export default function SendMessage(props) {
                                 <Button style={{ margin:"1em" }} onClick={() => setUploadDialogOpen(true)}>Add Attachments</Button>
                                 <DropzoneDialog
                                     dialogTitle={"Upload Attachments"}
+                                    filesLimit={10}
                                     open={uploadDialogOpen}
                                     onSave={handleSave}
                                     showPreviews={true}
                                     cancelButtonText={"Cancel"}
                                     submitButtonText={"Attach"}
-                                    maxFileSize={500000}
+                                    maxFileSize={5e+7}
                                     onClose={() => setUploadDialogOpen(false)}
                                     showFileNamesInPreview={true}
                                 />

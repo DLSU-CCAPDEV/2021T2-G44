@@ -169,9 +169,9 @@ module.exports.validateMailData = (method) => {
         case "send": {
             return [
                 param("recepientEmail", "Missing recepient email.").exists().isEmail(),
-                body("subject", "Missing subject.").exists().isEmail(),
+                body("subject", "Missing subject.").exists().isString(),
                 body("content", "Missing content.").exists().isString(),
-                body("attachments", "Please provide a last name.").isArray(),
+                body("attachments", "Invalid attachments.").optional().isArray(),
             ];
         }
         case "read": {

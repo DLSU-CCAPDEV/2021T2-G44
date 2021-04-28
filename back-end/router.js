@@ -4,6 +4,7 @@ const appRouter = require("express").Router();
 const AuthController = require('./controllers/AuthController');
 const UserController = require("./controllers/UserController");
 const MailController = require("./controllers/MailController");
+const FileController = require("./controllers/FileController");
 
 // Set up Routes
 
@@ -32,5 +33,11 @@ appRouter.get("/api/mail/sentbox", MailController.getSentBox);
 appRouter.get("/api/mail/:mailID", MailController.getMailByID);
 appRouter.post("/api/mail/toggleRead/:messageID", MailController.validateMailData("read"), MailController.toggleRead);
 appRouter.put("/api/mail/send/:recepientEmail", MailController.validateMailData("send"), MailController.sendMail);
+
+// File Operations
+
+appRouter.post("/api/file", FileController.uploadFiles.array('file'), FileController.handleUpload);
+appRouter.get("/api/file/:fileID", FileController.getFile);
+appRouter.get("/api/file/stream/:fileID", FileController.streamFile);
 
 module.exports = appRouter;

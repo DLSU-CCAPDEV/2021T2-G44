@@ -2,16 +2,39 @@ import request from "../utils/AxiosConfig";
 
 import { GetUserData } from "./UserController";
 
-export const getInbox = async (start = 0, end = 50) => {
+export const getInbox = async (start = 0, limit = 50) => {
     // Make API Call
     try {
-        const response = await request.get("api/mail/inbox");
+        const response = await request.get("api/mail/inbox", {
+            params: {
+                start: start,
+                limit: limit
+            }
+        });
 
         if (response.status === 200) {
             // Add user data for sender & format dates
             return await Promise.all(response.data.map(async m => new Promise(async (resolve) => {
                 m.sender = await GetUserData(m.senderID);
                 m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
+
+                // Process attachments
+                if(m.attachments.length > 0) {
+                    await Promise.all(m.attachments.map(async (attachment, i) => new Promise(async resolve => {
+                        const fileInfo = await request.get("api/file/" + attachment);
+                        if(fileInfo.status !== 200) {
+                            m.attachments[i] = { filename: "", fileID: attachment };
+                            return resolve();
+                        }
+
+                        m.attachments[i] = {
+                            filename: fileInfo.data.filename,
+                            fileID : attachment
+                        };
+                        return resolve();
+                    })));
+                }
+                console.log(m);
                 return resolve(m);
             })));
         }
@@ -22,10 +45,15 @@ export const getInbox = async (start = 0, end = 50) => {
     }
 };
 
-export const getSent = async (start = 0, end = 50) => {
+export const getSent = async (start = 0, limit = 50) => {
     // Make API Call
     try {
-        const response = await request.get("api/mail/sentbox");
+        const response = await request.get("api/mail/sentbox", {
+            params: {
+                start: start,
+                limit: limit
+            }
+        });
 
         if (response.status === 200) {
             // Add user data for recepient & format dates
@@ -45,6 +73,23 @@ export const getSent = async (start = 0, end = 50) => {
 export const sendMessage = async (userEmail, messageContent) => {
     // Make API Call to Send Message
     try {
+        // Upload files first
+        const filesData = new FormData();
+        messageContent.attachments.forEach(file => {
+            filesData.append('file', file);
+        });
+
+        const fileUploadResponse = await request.post('api/file', filesData);
+
+        messageContent.attachments = [];
+        if(fileUploadResponse.status === 200) {
+            fileUploadResponse.data.forEach(fileData => {
+                messageContent.attachments.push(fileData.id);
+            });
+        } else {
+            alert("Error processing attachments.");
+        }
+
         const response = await request.put("api/mail/send/" + userEmail, {
             subject: messageContent.subject,
             content: messageContent.content,
@@ -71,3 +116,7 @@ export const toggleRead = async (messageID) => {
         return false;
     }
 };
+
+export const streamFile = async (fileID) => {
+    await request.get("api/file/stream/" + fileID);
+}

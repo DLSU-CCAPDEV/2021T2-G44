@@ -10,11 +10,8 @@ const router = require("./router.js");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const mongoose = require("mongoose");
-const MongoStore = require("connect-mongo")(session);
-const multer = require("multer");
-const GridFsStorage = require('multer-gridfs-storage');
-const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
+const MongoStore = require("connect-mongo")(session);
 require("dotenv").config();
 
 // Connect to the MongoDB Server
@@ -35,12 +32,6 @@ mongoose.Promise = global.Promise;
 const app = express();
 
 // Set up base middleware
-
-// app.use((req, res, next) => {
-//     console.log("Incomming connection... " + req.method);
-//     // console.log(req.headers);
-//     next();
-// });
 
 // Cross-Origin Resource Sharing
 app.set("trust proxy", 1);
@@ -84,6 +75,7 @@ app.use(session(sessionModel));
 // JSON Parsers 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(methodOverride("_method"));
 
 // Logger
 if (Number(process.env.ENABLE_LOGGER) !== 0 && process.env.ENABLE_LOGGER) {
