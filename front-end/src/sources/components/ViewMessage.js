@@ -11,6 +11,7 @@ import {
     DialogContentText,
     DialogTitle,
     Slide,
+    Snackbar
 } from "@material-ui/core";
 
 import SendMessage from "./SendMessage";
@@ -24,6 +25,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function ViewMessage(props) {
     
     const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+    const [snackbar, setSnackbar] = useState(null);
 
     const messageContent = props.message.content.split("\n");
 
@@ -50,9 +52,21 @@ export default function ViewMessage(props) {
         props.setDialogOpen(false);
     };
 
+    const handleFileDownload = async (file) => {
+        setSnackbar("Preparing your file for download.");
+        streamFile(file);
+    }
+
     if (props.message != null)
         return (
             <div>
+                <Snackbar
+                    open={ snackbar ? true : false }
+                    onClose={ () => setSnackbar(null) }
+                    message={ snackbar }
+                    anchorOrigin={ { vertical: 'top', horizontal: 'center' } }
+                    key={'topcenter'}
+                />
                 <Dialog
                     open={props.dialogOpen}
                     TransitionComponent={Transition}
@@ -83,7 +97,7 @@ export default function ViewMessage(props) {
                             <br />
                             <Typography>Attachments</Typography>
                             {props.message.attachments.map((attachment, i) => {
-                                return <Button onClick={() => streamFile(attachment)} style={ { marginLeft: "1em" } } key={attachment}>Attachment #{i+1}</Button>
+                                return <Button onClick={() => handleFileDownload(attachment)} style={ { marginLeft: "1em" } } key={attachment}>Attachment #{i+1}</Button>
                             })}
                         </DialogContentText>
                     </DialogContent>
