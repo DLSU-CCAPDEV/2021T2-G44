@@ -1,6 +1,6 @@
-const { body, validationResult } = require("express-validator");
-const bcrypt = require("bcrypt");
-const UserModel = require("../models/User");
+const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
+const UserModel = require('../models/User');
 
 /**
  * This controller method creates a user based on the request body.
@@ -21,7 +21,7 @@ module.exports.createUser = async (req, res) => {
     // Check if the email already exists
     const exists = await UserModel.findOne({ email: userData.email });
     if (exists) {
-        res.status(400).send("A user with that email already exists.");
+        res.status(400).send('A user with that email already exists.');
         return;
     }
 
@@ -55,7 +55,7 @@ module.exports.getCurrentUser = async (req, res) => {
     const userData = await UserModel.findOne({ _id: userID });
 
     if (!userData) {
-        res.status(404).send("User data not found.");
+        res.status(404).send('User data not found.');
     } else {
         // Remove password
         userData.password = undefined;
@@ -75,7 +75,7 @@ module.exports.getUser = async (req, res) => {
     const userData = await UserModel.findOne({ _id: userID });
 
     if (!userData) {
-        res.status(404).send("User data not found.");
+        res.status(404).send('User data not found.');
     } else {
         // Remove password
         userData.password = undefined;
@@ -84,10 +84,10 @@ module.exports.getUser = async (req, res) => {
 };
 
 /**
- * This controller method updates the 
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * This controller method updates the
+ * @param {*} req
+ * @param {*} res
+ * @returns
  */
 module.exports.updateUser = async (req, res) => {
     const userID = req.session.uid;
@@ -134,8 +134,8 @@ module.exports.changePassword = async (req, res) => {
         const userData = await UserModel.findOne({ _id: userID });
         const passwordValidation = await bcrypt.compare(oldPassword, userData.password);
 
-        if(!passwordValidation) {
-            res.status(401).send("The old password provided is invalid.");
+        if (!passwordValidation) {
+            res.status(401).send('The old password provided is invalid.');
             return;
         }
 
@@ -144,8 +144,8 @@ module.exports.changePassword = async (req, res) => {
         const newPasswordHash = bcrypt.hashSync(newPassword, salt);
 
         await UserModel.updateOne({ _id: userID }, { password: newPasswordHash });
-        res.status(200).send("Password updated.");
-    } catch(ex) {
+        res.status(200).send('Password updated.');
+    } catch (ex) {
         console.error(ex);
         res.status(500).send(ex);
     }
@@ -169,16 +169,15 @@ module.exports.deleteUser = async (req, res) => {
         const userData = await UserModel.findOne({ _id: userID });
         const passwordValidation = await bcrypt.compare(password, userData.password);
 
-        if(!passwordValidation) {
-            res.status(401).send("Invalid password.");
+        if (!passwordValidation) {
+            res.status(401).send('Invalid password.');
             return;
         }
 
         // Proceed with the account deletion
         await UserModel.deleteOne({ _id: userID });
-        res.status(200).send("Account deleted.");
-
-    } catch(ex) {
+        res.status(200).send('Account deleted.');
+    } catch (ex) {
         console.error(ex);
         res.status(500).send(ex);
     }
@@ -198,19 +197,17 @@ module.exports.validateUserData = (method) => {
         minUppercase: 1,
     };
     switch (method) {
-        case "createUser": {
+        case 'createUser': {
             return [
-                body("email", "Missing or Invalid Email Address.").exists().isEmail(),
-                body("firstName", "Please provide a first name.").exists(),
-                body("lastName", "Please provide a last name.").exists(),
-                body("password", "Password is too weak.")
-                    .exists()
-                    .isStrongPassword(passwordValidationOptions),
-                body("bio").optional().isString(),
-                body("avatar").optional().isURL(),
+                body('email', 'Missing or Invalid Email Address.').exists().isEmail(),
+                body('firstName', 'Please provide a first name.').exists(),
+                body('lastName', 'Please provide a last name.').exists(),
+                body('password', 'Password is too weak.').exists().isStrongPassword(passwordValidationOptions),
+                body('bio').optional().isString(),
+                body('avatar').optional().isURL(),
             ];
         }
-        case "updateUser": {
+        case 'updateUser': {
             return [
                 body("email", "Missing or Invalid Email Address.").optional().isEmail(),
                 body("firstName", "Please provide a first name.").optional().isString(),
@@ -219,18 +216,14 @@ module.exports.validateUserData = (method) => {
                 body("avatar").optional().isURL(),
             ];
         }
-        case "changePassword": {
+        case 'changePassword': {
             return [
-                body("oldPassword", "Old password is invalid.").exists(),
-                body("newPassword", "Password is too weak.")
-                    .exists()
-                    .isStrongPassword(passwordValidationOptions),
+                body('oldPassword', 'Old password is invalid.').exists(),
+                body('newPassword', 'Password is too weak.').exists().isStrongPassword(passwordValidationOptions),
             ];
         }
-        case "deleteAccount": {
-            return [
-                body("password", "Password is invalid.").exists()
-            ];
+        case 'deleteAccount': {
+            return [body('password', 'Password is invalid.').exists()];
         }
     }
 };

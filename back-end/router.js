@@ -1,4 +1,4 @@
-const appRouter = require("express").Router();
+const appRouter = require('express').Router();
 
 // Routes
 const AuthController = require('./controllers/AuthController');
@@ -9,15 +9,15 @@ const FileController = require("./controllers/FileController");
 // Set up Routes
 
 // Test Route
-appRouter.get("/test", (req, res) => res.status(200).send("Test Successful"));
+appRouter.get('/test', (req, res) => res.status(200).send('Test Successful'));
 
 // AUTH
-appRouter.post("/auth", AuthController.authenticate);
-appRouter.delete("/auth", AuthController.logout);
-appRouter.get("/auth", AuthController.loggedIn);
+appRouter.post('/auth', AuthController.authenticate);
+appRouter.delete('/auth', AuthController.logout);
+appRouter.get('/auth', AuthController.loggedIn);
 
 // Require Logged-In Middleware & Permissions Injection
-appRouter.use("/api", AuthController.validateSession);
+appRouter.use('/api', AuthController.validateSession);
 
 // User Operations
 appRouter.put("/register", UserController.validateUserData('createUser'), UserController.createUser);
@@ -28,11 +28,11 @@ appRouter.post("/api/user/password", UserController.validateUserData('changePass
 appRouter.delete("/api/user", UserController.validateUserData('deleteAccount'), UserController.deleteUser);
 
 // Mail Operations
-appRouter.get("/api/mail/inbox", MailController.getInbox);
-appRouter.get("/api/mail/sentbox", MailController.getSentBox);
-appRouter.get("/api/mail/:mailID", MailController.getMailByID);
-appRouter.post("/api/mail/toggleRead/:messageID", MailController.validateMailData("read"), MailController.toggleRead);
-appRouter.put("/api/mail/send/:recepientEmail", MailController.validateMailData("send"), MailController.sendMail);
+appRouter.get('/api/mail/inbox', MailController.getInbox);
+appRouter.get('/api/mail/sentbox', MailController.getSentBox);
+appRouter.get('/api/mail/:mailID', MailController.getMailByID);
+appRouter.post('/api/mail/toggleRead/:messageID', MailController.validateMailData('read'), MailController.toggleRead);
+appRouter.put('/api/mail/send/:recepientEmail', MailController.validateMailData('send'), MailController.sendMail);
 
 // File Operations
 
