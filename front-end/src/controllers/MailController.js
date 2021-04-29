@@ -117,6 +117,19 @@ export const toggleRead = async (messageID) => {
     }
 };
 
-export const streamFile = async (fileID) => {
-    await request.get("api/file/stream/" + fileID);
-}
+export const streamFile = async (file) => {
+    try {
+        const response = await request.get("api/file/stream/" + file.fileID, {
+            responseType: 'blob'
+        });
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', file.filename);
+        document.body.appendChild(link);
+        link.click();
+    } catch(ex) {
+        console.error(ex);
+        return false;
+    }
+};

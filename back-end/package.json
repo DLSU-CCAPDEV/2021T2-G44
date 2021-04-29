@@ -22,6 +22,7 @@
   "homepage": "https://github.com/DLSU-CCAPDEV/2021T2-G44#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "compression": "^1.7.4",
     "connect-mongo": "^3.2.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",

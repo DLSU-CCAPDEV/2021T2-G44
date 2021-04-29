@@ -83,7 +83,7 @@ export default function ViewMessage(props) {
                             <br />
                             <Typography>Attachments</Typography>
                             {props.message.attachments.map((attachment, i) => {
-                                return <Button onClick={() => streamFile(attachment.fileID)} style={ { marginLeft: "1em" } } key={attachment.fileID}>Attachment #{i+1}</Button>
+                                return <Button onClick={() => streamFile(attachment)} style={ { marginLeft: "1em" } } key={attachment}>Attachment #{i+1}</Button>
                             })}
                         </DialogContentText>
                     </DialogContent>

@@ -5,6 +5,7 @@
 
 // Dependencies
 const express = require("express");
+const compression = require('compression');
 const cors = require("cors");
 const router = require("./router.js");
 const cookieParser = require("cookie-parser");
@@ -30,6 +31,7 @@ mongoose.Promise = global.Promise;
 
 // Instantiate the application
 const app = express();
+app.use(compression());
 
 // Set up base middleware
 
@@ -64,8 +66,8 @@ const sessionModel = {
     saveUninitialized: false,
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
     cookie: {
-        secure: Number(process.env.PRODUCTION) === 1,
-        sameSite: Number(process.env.PRODUCTION) === 1 ? "none" : "lax",
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? "none" : "lax",
         httpOnly: true,
         maxAge: Number(process.env.MAX_COOKIE_AGE) || 1e6,
     },
