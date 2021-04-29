@@ -79,14 +79,12 @@ const useStyle = makeStyles((theme) => ({
         marginLeft: theme.spacing(4),
         marginRight: theme.spacing(2),
 
-        marginBottom: theme.spacing(2),
         width: '24em',
+        display: 'flex',
     },
     profileField: {
         marginLeft: theme.spacing(4),
         marginRight: theme.spacing(2),
-
-        marginBottom: theme.spacing(1),
         width: '17em',
     },
     standardSpacer: {
@@ -96,7 +94,6 @@ const useStyle = makeStyles((theme) => ({
     buttonSpacing: {
         marginLeft: theme.spacing(4),
         marginRight: theme.spacing(2),
-        marginBottom: theme.spacing(2),
     },
     textSpacer: {
         marginLeft: '1em',
@@ -306,17 +303,17 @@ export default function Profile() {
     if (!loading) {
         return (
             // entire main content page
-            <Grid container direction="column" justify="center" alignItems="center" style={{ padding: '4em 0 5em 0' }}>
-                <Grid item container direction="row" justify="center" alignItems="stretch">
+            <Grid container direction="column" justify="center" alignItems="stretch" style={{ padding: '4em 0 5em 0' }}>
+                <Grid item container direction="column" justify="center" alignItems="center">
                     <Grid container direction="row" justify="center" alignItems="stretch">
                         {/* The LeftHand side */}
                         {/* 
-                    Todo: 
-                    Profile Pic
-                    Name
-                    Bio
-                    Change Bio Button 
-                */}
+                            Todo: 
+                            Profile Pic
+                            Name
+                            Bio
+                            Change Bio Button 
+                        */}
                         <Grid item direction="column" lg={4} className={classes.stretcher}>
                             <Paper variant="elevation" elevation={8} className={classes.profileGrid}>
                                 {/* Grid Inside Paper */}
@@ -419,7 +416,13 @@ export default function Profile() {
                                 <Grid item container direction="row" className={classes.textSpacer}>
                                     <Typography variant="h4">Profile Settings</Typography>
                                 </Grid>
-                                <Grid item container direction="row" alignItems="center">
+                                <Grid
+                                    item
+                                    container
+                                    direction="row"
+                                    alignItems="center"
+                                    style={{ marginBottom: '1em' }}
+                                >
                                     <TextField
                                         id="firstNameTextBox"
                                         label="First Name"
@@ -442,7 +445,13 @@ export default function Profile() {
                                     </Button>
                                 </Grid>
 
-                                <Grid item container direction="row" alignItems="center">
+                                <Grid
+                                    item
+                                    container
+                                    direction="row"
+                                    alignItems="center"
+                                    style={{ marginBottom: '1em' }}
+                                >
                                     <TextField
                                         id="lastNameTextBox"
                                         label="Last Name"
@@ -465,7 +474,7 @@ export default function Profile() {
                                     </Button>
                                 </Grid>
 
-                                <Divider variant="middle"></Divider>
+                                <Divider variant="middle" style={{ marginTop: '1em' }}></Divider>
 
                                 {/* EMAIL ADDRESS SECTION */}
                                 <Grid item container direction="row" className={classes.textSpacer}>
@@ -494,7 +503,7 @@ export default function Profile() {
                                     </Button>
                                 </Grid>
 
-                                <Divider variant="middle"></Divider>
+                                <Divider variant="middle" style={{ marginTop: '1em' }}></Divider>
 
                                 <Grid item container direction="row" className={classes.textSpacer}>
                                     <Typography variant="h4">Password</Typography>
@@ -543,7 +552,7 @@ export default function Profile() {
                                             />
                                         </FormControl>
 
-                                        <Divider variant="middle" className={classes.dividingClass}></Divider>
+                                        <Divider variant="middle"></Divider>
 
                                         <FormControl className={classes.passField} variant="filled">
                                             <InputLabel htmlFor="filled-adornment-password">New Password</InputLabel>
@@ -582,6 +591,8 @@ export default function Profile() {
                                     </DialogActions>
                                 </Dialog>
 
+                                <Divider variant="middle" style={{ marginTop: '1em' }}></Divider>
+
                                 <Grid item container direction="row" className={classes.textSpacer}>
                                     <Typography variant="h4">Delete Account</Typography>
                                 </Grid>
@@ -591,6 +602,7 @@ export default function Profile() {
                                     className={classes.buttonSpacing}
                                     startIcon={<DeleteIcon />}
                                     onClick={handleDeleteConfirmation}
+                                    style={{ marginBottom: '3%' }}
                                 >
                                     Delete
                                 </ColorButton>
