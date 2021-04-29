@@ -2,7 +2,10 @@ import './assets/styles.css';
 
 import { DropzoneDialog } from 'material-ui-dropzone';
 
-import { useEffect, useState, React, Component } from 'react';
+import { useEffect, useState, React, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+
+import {GlobalContext} from '../controllers/ContextController';
 
 import Loading from './components/Loading';
 
@@ -35,7 +38,7 @@ import LockIcon from '@material-ui/icons/Lock';
 
 import profilePic from './assets/heheAna.png';
 
-import { GetUserData, editUserInfo, changePassword, deleteUser } from '../controllers/UserController';
+import { GetUserData, editUserInfo, changePassword, deleteUser, changeAvatar } from '../controllers/UserController';
 
 // colored Delete Button
 const ColorButton = withStyles((theme) => ({
@@ -118,6 +121,9 @@ const useStyle = makeStyles((theme) => ({
 
 export default function Profile() {
     const classes = useStyle();
+
+    const history = useHistory();
+    const { updateUid } = useContext(GlobalContext);
 
     // State for User
     const [loading, setLoading] = useState(true);
@@ -290,6 +296,12 @@ export default function Profile() {
                 console.log(accDeleteStatus);
                 return;
             }
+
+            // Logout the user
+            history.push('/loading');
+            await updateUid();
+            history.push('/');
+
             // resets the showPass State
             setShowPassword(false);
         }
@@ -301,6 +313,17 @@ export default function Profile() {
         } else {
             setShowPassword(false);
         }
+    };
+
+    const handleSaveAvatar = async ([file]) => {
+        setUploadAvatar(false);
+        const status = await changeAvatar(file);
+        if(status !== true) {
+            alert(status);
+            return;
+        }
+
+        alert("Avatar changed successfully.");
     };
 
     if (!loading) {
@@ -346,16 +369,14 @@ export default function Profile() {
 
                                         <DropzoneDialog
                                             filesLimit={1}
+                                            dialogTitle="Upload Image"
                                             acceptedFiles={['image/*']}
-                                            cancelButtonText={'cancel'}
-                                            submitButtonText={'submit'}
+                                            cancelButtonText={'Cancel'}
+                                            submitButtonText={'Change Avatar'}
                                             maxFileSize={5000000}
                                             open={uploadAvatar}
                                             onClose={() => setUploadAvatar(false)}
-                                            onSave={(files) => {
-                                                setUploadAvatar(false);
-                                                console.log('Files:', files);
-                                            }}
+                                            onSave={handleSaveAvatar}
                                             showPreviews={true}
                                             showFileNamesInPreview={true}
                                         />

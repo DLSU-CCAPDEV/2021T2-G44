@@ -176,6 +176,7 @@ module.exports.deleteUser = async (req, res) => {
 
         // Proceed with the account deletion
         await UserModel.deleteOne({ _id: userID });
+        req.session.destroy();
         res.status(200).send('Account deleted.');
     } catch (ex) {
         console.error(ex);
@@ -223,7 +224,7 @@ module.exports.validateUserData = (method) => {
             ];
         }
         case 'deleteAccount': {
-            return [body('password', 'Password is invalid.').exists()];
+            return [body('password', 'Password is invalid.').exists().isString()];
         }
     }
 };

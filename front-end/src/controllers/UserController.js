@@ -38,6 +38,25 @@ export const editUserInfo = async (userData) => {
     return response;
 };
 
+export const changeAvatar = async (image) => {
+    // Upload files first
+    const filesData = new FormData();
+    filesData.append('file', image);
+    const fileUploadResponse = await request.post('api/file', filesData);
+    if(fileUploadResponse.status !== 200) {
+        return fileUploadResponse;
+    }
+
+    // Update the user's AVATAR property.
+    const updateStatus = await editUserInfo({
+        avatar: fileUploadResponse.data[0].id
+    });
+    if(updateStatus.status !== 200) {
+        return fileUploadResponse;
+    }
+    return true;
+};
+
 export const changePassword = async (userData) => {
     const response = await request.post('api/user/password', userData);
 
@@ -46,8 +65,20 @@ export const changePassword = async (userData) => {
 };
 
 export const deleteUser = async (userData) => {
-    const response = await request.delete('api/user', userData);
+    const response = await request.delete('api/user', {
+        data: userData
+    });
 
     if (response.status === 200) return true;
     return response;
+};
+
+export const renderAvatar = async (avatarID) => {
+    try {
+        // API Call to Stream
+        
+    } catch(ex) {
+        console.error(ex);
+        return false;
+    }
 };
