@@ -13,7 +13,12 @@ module.exports.createUser = async (req, res) => {
     // Check if the email already exists
     const exists = await UserModel.findOne({ email: userData.email });
     if (exists) {
-        res.status(400).send('A user with that email already exists.');
+        res.status(400).json({
+            success: false,
+            errors: [{
+                msg: "A user with that email already exists."
+            }]
+        });
         return;
     }
 
@@ -27,11 +32,19 @@ module.exports.createUser = async (req, res) => {
     user.save()
         .then((uData) => {
             uData.password = undefined;
-            res.status(201).json(uData);
+            res.status(201).json({
+                success: true,
+                userData: uData
+            });
         })
         .catch((err) => {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
-            res.status(500).send(err);
+            res.status(500).json({
+                success: false,
+                errors: [{
+                    msg: err
+                }]
+            });
         });
 };
 
@@ -47,11 +60,19 @@ module.exports.getCurrentUser = async (req, res) => {
     const userData = await UserModel.findOne({ _id: userID });
 
     if (!userData) {
-        res.status(404).send('User data not found.');
+        res.status(400).json({
+            success: false,
+            errors: [{
+                msg: "User not found."
+            }]
+        });
     } else {
         // Remove password
         userData.password = undefined;
-        res.status(200).json(userData);
+        res.status(200).json({
+            success: true,
+            userData: userData
+        });
     }
 };
 
@@ -63,15 +84,33 @@ module.exports.getCurrentUser = async (req, res) => {
 module.exports.getUser = async (req, res) => {
     const userID = req.params.id;
 
-    // Find the user
-    const userData = await UserModel.findOne({ _id: userID });
+    try {
+        // Find the user
+        const userData = await UserModel.findOne({ _id: userID });
 
-    if (!userData) {
-        res.status(404).send('User data not found.');
-    } else {
-        // Remove password
-        userData.password = undefined;
-        res.status(200).json(userData);
+        if (!userData) {
+            res.status(404).json({
+                success: false,
+                errors: [{
+                    msg: "User not found."
+                }]
+            });
+        } else {
+            // Remove password
+            userData.password = undefined;
+            res.status(200).json({
+                success: true,
+                userData: userData
+            });
+        }
+    } catch(ex) {
+        console.error(ex);
+        res.status(500).json({
+            success: false,
+            errors: [
+                { msg: ex }
+            ]
+        });
     }
 };
 
@@ -93,11 +132,19 @@ module.exports.updateUser = async (req, res) => {
     UserModel.updateOne({ _id: userID }, userData)
         .then((uData) => {
             uData.password = undefined;
-            res.status(200).json(uData);
+            res.status(200).json({
+                success: true,
+                userData: uData
+            });
         })
         .catch((err) => {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
-            res.status(500).send(err);
+            res.status(500).json({
+                success: false,
+                errors: [{
+                    msg: err
+                }]
+            });
         });
 };
 
@@ -113,7 +160,12 @@ module.exports.changePassword = async (req, res) => {
         const passwordValidation = await bcrypt.compare(oldPassword, userData.password);
 
         if (!passwordValidation) {
-            res.status(401).send('The old password provided is invalid.');
+            res.status(401).json({
+                success: false,
+                errors: [{
+                    msg: "The old password provided is invalid."
+                }]
+            });
             return;
         }
 
@@ -122,10 +174,17 @@ module.exports.changePassword = async (req, res) => {
         const newPasswordHash = bcrypt.hashSync(newPassword, salt);
 
         await UserModel.updateOne({ _id: userID }, { password: newPasswordHash });
-        res.status(200).send('Password updated.');
+        res.status(200).json({
+            success: true
+        });
     } catch (ex) {
         console.error(ex);
-        res.status(500).send(ex);
+        res.status(500).json({
+            success: false,
+            errors: [
+                { msg: ex }
+            ]
+        });
     }
 };
 
@@ -141,17 +200,27 @@ module.exports.deleteUser = async (req, res) => {
         const passwordValidation = await bcrypt.compare(password, userData.password);
 
         if (!passwordValidation) {
-            res.status(401).send('Invalid password.');
+            res.status(401).json({
+                success: false,
+                errors: [{
+                    msg: "The password provided is invalid."
+                }]
+            });
             return;
         }
 
         // Proceed with the account deletion
         await UserModel.deleteOne({ _id: userID });
         req.session.destroy();
-        res.status(200).send('Account deleted.');
+        res.status(200).json({ success: true });
     } catch (ex) {
         console.error(ex);
-        res.status(500).send(ex);
+        res.status(500).json({
+            success: false,
+            errors: [
+                { msg: ex }
+            ]
+        });
     }
 };
 
@@ -173,13 +242,23 @@ module.exports.searchUserByName = async (req, res) => {
         ]);
 
         if(!result) {
-            res.status(200).json([]);
+            res.status(200).json({
+                success: true,
+                results: []
+            });
         }
 
-        res.status(200).json(result);
+        res.status(200).json({
+            success: true,
+            results: result
+        });
     } catch(ex) {
-        console.error(ex); 
-        res.status(500).send(ex);
-        return;
+        console.error(ex);
+        res.status(500).json({
+            success: false,
+            errors: [
+                { msg: ex }
+            ]
+        });
     }
 };
