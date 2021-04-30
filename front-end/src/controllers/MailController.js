@@ -113,15 +113,15 @@ export const sendMessage = async (userEmail, messageContent) => {
             filesData.append('file', file);
         });
 
-        const fileUploadResponse = await request.post('api/file', filesData);
+        const fileUploadResponse = await request.put('api/file', filesData);
 
         messageContent.attachments = [];
-        if(fileUploadResponse.status === 200) {
-            fileUploadResponse.data.forEach(fileData => {
+        if(fileUploadResponse.data.success) {
+            fileUploadResponse.data.file.forEach(fileData => {
                 messageContent.attachments.push(fileData.id);
             });
         } else {
-            alert("Error processing attachments.");
+            return fileUploadResponse.data;
         }
 
         const response = await request.put("api/mail/send/" + userEmail, {
@@ -129,13 +129,11 @@ export const sendMessage = async (userEmail, messageContent) => {
             content: messageContent.content,
             attachments: messageContent.attachments
         });
-    
-        if(response.status === 201)
-            return true;
-        return false;
+        
+        return response.data;
     } catch(ex) {
         console.error(ex);
-        return false;
+        return { success: false, errors: [{ msg: ex }] };
     }
 };
 

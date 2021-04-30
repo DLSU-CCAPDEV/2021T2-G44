@@ -95,7 +95,8 @@ export default function ViewMessage(props) {
                                 {messageContent.map((e, i) => <p key={i}>{e}</p>)}
                             </Typography>
                             <br />
-                            <Typography>Attachments</Typography>
+                            {props.message.attachments.length > 0 && ( <Typography>Attachments</Typography> )}
+                            {props.message.attachments.length === 0 && ( <Typography>No attachments</Typography> )}
                             {props.message.attachments.map((attachment, i) => {
                                 return <Button onClick={() => handleFileDownload(attachment)} style={ { marginLeft: "1em" } } key={attachment}>Attachment #{i+1}</Button>
                             })}

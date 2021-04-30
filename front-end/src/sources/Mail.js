@@ -9,6 +9,7 @@ import Loading from "./components/Loading";
 
 // Material-UI
 import {
+    Snackbar,
     Grid,
     Fab,
     Typography,
@@ -71,6 +72,7 @@ const styles = {
 export default function Mail(props) {
     // Temp
     const [page, setPage] = useState(0);
+    const [snackbar, setSnackbar] = useState(null);
 
     const [mail, setMail] = useState(null);
     const [sent, setSent] = useState(null);
@@ -80,26 +82,35 @@ export default function Mail(props) {
     const [dialogMessage, setDialogMessage] = useState(null);
     const [mailbox, setMailbox] = useState(0);
 
-    useEffect(() => {
-        switch (mailbox) {
-            case 1:
-                document.title = 'Sent Mail - Sched-It';
-                break;
-            default:
-                document.title = 'Inbox - Sched-It';
-        }
-    });
+    switch (mailbox) {
+        case 1:
+            document.title = 'Sent Mail - Sched-It';
+            break;
+        default:
+            document.title = 'Inbox - Sched-It';
+    }
 
     useEffect(() => {
         const getData = async () => {
-            const start = page*50;
-            const end = 50 + (page*50);
-            const inbox = await getInbox(start, end);
-            const sentbox = await getSent(start, end);
-            setMail(inbox); setSent(sentbox);
+            const inbox = await getInbox(page*25, 25);
+            if(!inbox.success) {
+                setSnackbar(inbox.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
+            }
+            const sentbox = await getSent(page*25, 25);
+            if(!sentbox.success) {
+                setSnackbar(sentbox.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
+            }
+            if(inbox.success) setMail(inbox.mail); 
+            if(sentbox.success) setSent(sentbox.mail);
         };
 
-        getData();
+        getData().catch((ex) => {
+            console.error(ex);
+            setSnackbar(ex);
+            setTimeout(() => setSnackbar(null), 5000);
+        });
 
     }, [page]);
 
@@ -123,6 +134,13 @@ export default function Mail(props) {
     if (mail && sent) { 
         return (
             <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
+                 <Snackbar
+                    open={snackbar ? true : false}
+                    onClose={() => setSnackbar(null)}
+                    message={snackbar}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    key={"topcenter"}
+                />
                 {dialogMessage && <ViewMessage
                     dialogOpen={viewDialogOpen}
                     setDialogOpen={setViewDialogOpen}
