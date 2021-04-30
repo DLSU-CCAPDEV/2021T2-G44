@@ -27,14 +27,18 @@ module.exports.createUser = async (req, res) => {
     const passwordHash = await bcrypt.hash(userData.password, salt);
     userData.password = passwordHash;
 
-    // Update user data
+    // Case the names properly
+    userData.firstName = titleCase(firstName);
+    userData.lastName = titleCase(lastName);
+
+    // Save user data
     const user = new UserModel(userData);
     user.save()
         .then((uData) => {
             uData.password = undefined;
             res.status(201).json({
                 success: true,
-                userData: uData
+                userData: userData,
             });
         })
         .catch((err) => {
@@ -128,13 +132,17 @@ module.exports.updateUser = async (req, res) => {
     userData.password = undefined;
     delete userData.password;
 
+    // Case the names properly (if there are)
+    if(userData.firstName) userData.firstName = titleCase(firstName);
+    if(userData.lastName) userData.lastName = titleCase(lastName);
+
     // Update user data
     UserModel.updateOne({ _id: userID }, userData)
         .then((uData) => {
-            uData.password = undefined;
+            userData.password = undefined;
             res.status(200).json({
                 success: true,
-                userData: uData
+                userData: userData,
             });
         })
         .catch((err) => {
@@ -261,4 +269,19 @@ module.exports.searchUserByName = async (req, res) => {
             ]
         });
     }
+};
+
+// Helper Methods
+
+/**
+ * This function properly cases a string as a title.
+ * The first letter of each word will be capitalized.
+ * @param {*} string 
+ */
+const titleCase = string => {
+    const tokens = string.toLowerCase().split(' ');
+    for(let i = 0; i < tokens.length; i++) {
+        tokens[i] = tokens[i].charAt(0).toUpperCase() + tokens[i].substring(1);
+    }
+    return tokens.join(' ');
 };

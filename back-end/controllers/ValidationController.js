@@ -28,12 +28,18 @@ module.exports.validateInputs = (req, res, next) => {
     switch (method) {
         case 'createUser': {
             return [
-                body('email', 'Missing or Invalid Email Address.').exists().isEmail(),
-                body('firstName', 'Please provide a first name.').exists(),
-                body('lastName', 'Please provide a last name.').exists(),
-                body('password', 'Password is too weak.').exists().isStrongPassword(passwordValidationOptions),
-                body('bio').optional().isString(),
-                body('avatar').optional().isURL(),
+                body("email", "Missing or Invalid Email Address.").exists().isEmail(),
+                body("firstName", "Please provide a first name.").exists(),
+                body("lastName", "Please provide a last name.").exists(),
+                body(
+                    "password",
+                    "Password is too weak. Password must be at least 8 characters long, " +
+                        "contains at least one symbol, at least one number, at least two lowercase letters, and at least one uppercase letter."
+                )
+                    .exists()
+                    .isStrongPassword(passwordValidationOptions),
+                body("bio").optional().isString(),
+                body("avatar").optional().isURL(),
             ];
         }
         case 'searchUser': {
@@ -52,8 +58,14 @@ module.exports.validateInputs = (req, res, next) => {
         }
         case 'changePassword': {
             return [
-                body('oldPassword', 'Old password is invalid.').exists(),
-                body('newPassword', 'Password is too weak.').exists().isStrongPassword(passwordValidationOptions),
+                body("oldPassword", "Old password is invalid.").exists(),
+                body(
+                    "newPassword",
+                    "Password is too weak. Password must be at least 8 characters long, " +
+                        "contains at least one symbol, at least one number, at least two lowercase letters, and at least one uppercase letter."
+                )
+                    .exists()
+                    .isStrongPassword(passwordValidationOptions),
             ];
         }
         case 'deleteAccount': {

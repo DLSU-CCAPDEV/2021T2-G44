@@ -13,7 +13,7 @@ import { GlobalContext } from "../controllers/ContextController";
 import Loading from './components/Loading';
 
 // Material-UI Imports
-import { Grid, Typography, Box, TextField, Fab, withStyles } from "@material-ui/core";
+import { Snackbar, Grid, Typography, Box, TextField, Fab, withStyles } from "@material-ui/core";
 
 const textFieldTheme = {
     root: {
@@ -37,7 +37,7 @@ const buttonStyles = {
 };
 
 function Login(props) {
-    const {uid, updateUid} = useContext(GlobalContext);
+    const {updateUid} = useContext(GlobalContext);
 
     useEffect(() => {
         document.title = "Login - Sched-It";
@@ -47,6 +47,7 @@ function Login(props) {
     const history = useHistory();
 
     // Configure State & Handlers
+    const [snackbar, setSnackbar] = useState(null);
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -64,22 +65,29 @@ function Login(props) {
     const doLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const loggedIn = await userLogin(email, password);
+        const authResponse = await userLogin(email, password);
 
         // Redirect user to dashboard
-        if (loggedIn === true) {
-            await updateUid();
+        if (!authResponse.success) {
             setLoading(false);
-            history.push("/my-calendar");
+            setSnackbar(authResponse.errors[0].msg);
+            setTimeout(() => setSnackbar(null), 5000);   
         }
-        else {
-            alert(loggedIn);
-            setLoading(false);
-        }
+        await updateUid();
+        setLoading(false);
+        history.push("/my-calendar");
+        return;
     };
 
     return (
         <Grid container direction="column" style={{ padding: "5em 0 8em 0" }}>
+            <Snackbar
+                open={snackbar ? true : false}
+                onClose={() => setSnackbar(null)}
+                message={snackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                key={"topcenter"}
+            />
             <Grid item container direction="row" justify="center" alignItems="center">
                 { loading && <Loading loadingText="Logging you in"/> }
                 { !loading && 

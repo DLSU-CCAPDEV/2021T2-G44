@@ -10,12 +10,12 @@ export default function ContextProvider({ children }) {
     const updateUid = async () => {
         const userID = await getUID();
 
-        if (!userID) {
+        if (!userID.success) {
             setUid(null);
             return;
         }
 
-        setUid(userID);
+        setUid(userID.uid);
     };
 
     return <GlobalContext.Provider value={{ uid, updateUid }}>{children}</GlobalContext.Provider>;

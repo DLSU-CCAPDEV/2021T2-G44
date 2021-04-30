@@ -1,5 +1,5 @@
 import { Route } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 
 import ErrorPage from "./ErrorPage";
 
@@ -7,7 +7,7 @@ import { GlobalContext } from "../../controllers/ContextController";
 
 export default function ProtectedRoute({ component: Component, ...rest }) {
     // Check if logged in
-    const { uid, updateUid } = useContext(GlobalContext);
+    const { uid } = useContext(GlobalContext);
 
     // Protected
     if (uid && rest.protected) {
