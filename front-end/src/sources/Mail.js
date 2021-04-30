@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getInbox, getSent } from '../controllers/MailController';
+import { getInbox, getSent, getMailCount } from '../controllers/MailController';
 
 import './assets/styles.css';
 
@@ -20,6 +20,7 @@ import {
     TableHead,
     TableRow,
     Paper,
+    Button
 } from '@material-ui/core';
 
 import Radio from '@material-ui/core/Radio';
@@ -29,6 +30,8 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
 import NavigationIcon from '@material-ui/icons/Navigation';
+import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
 // ART
 import mailBoxArt from './assets/mailBox.svg';
@@ -72,6 +75,7 @@ const styles = {
 export default function Mail(props) {
     // Temp
     const [page, setPage] = useState(0);
+    const [totalMail, setTotalMail] = useState(0);
     const [snackbar, setSnackbar] = useState(null);
 
     const [mail, setMail] = useState(null);
@@ -92,6 +96,11 @@ export default function Mail(props) {
 
     useEffect(() => {
         const getData = async () => {
+            const mailCount = await getMailCount();
+            if(!mailCount.success) {
+                setSnackbar(inbox.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
+            }
             const inbox = await getInbox(page*25, 25);
             if(!inbox.success) {
                 setSnackbar(inbox.errors[0].msg);
@@ -102,6 +111,7 @@ export default function Mail(props) {
                 setSnackbar(sentbox.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
             }
+            if(mailCount.success) setTotalMail({ inbox: mailCount.mailCount.inbox, sentbox: mailCount.mailCount.sentbox })
             if(inbox.success) setMail(inbox.mail); 
             if(sentbox.success) setSent(sentbox.mail);
         };
@@ -357,6 +367,13 @@ export default function Mail(props) {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+                        </Grid>
+                        <Grid container direction="row" alignItems="center" justify="flex-end" style={ { margin: "2em 0 0 0", width: "80%" } }>
+                            <Button color="primary" variant="contained"><ArrowLeftIcon /></Button>
+                            <Typography style={{ margin: "0 1em 0 1em" }} variant="h6">
+                                Page {page+1} of {mailbox === 0 ? Math.floor(1+ totalMail.inbox / 25) : Math.floor(1 + totalMail.sentbox / 25)}
+                                </Typography>
+                            <Button color="primary" variant="contained"><ArrowRightIcon /></Button>
                         </Grid>
                     </Grid>
                 </Grid>

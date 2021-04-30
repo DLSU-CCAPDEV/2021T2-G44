@@ -35,6 +35,7 @@ appRouter.post("/api/user/password", ValidationController.validateUserData('chan
 appRouter.delete("/api/user", ValidationController.validateUserData('deleteAccount'), ValidationController.validateInputs, UserController.deleteUser);
 
 // Mail Operations
+appRouter.get('/api/mail/count', MailController.totalMail);
 appRouter.get('/api/mail/inbox', MailController.getInbox);
 appRouter.get('/api/mail/sentbox', MailController.getSentBox);
 appRouter.get('/api/mail/:mailID', MailController.getMailByID);

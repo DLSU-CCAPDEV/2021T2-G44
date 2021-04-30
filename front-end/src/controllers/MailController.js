@@ -2,6 +2,22 @@ import request from "../utils/AxiosConfig";
 
 import { GetUserData } from "./UserController";
 
+export const getMailCount = async () => {
+    // Make API Call
+    try {
+        const response = await request.get("api/mail/count");
+        return response.data;
+    } catch (ex) {
+        console.error(ex);
+        return {
+            success: false,
+            errors: [{
+                msg: ex
+            }]
+        };
+    }
+};
+
 export const getInbox = async (start = 0, limit = 50) => {
     // Make API Call
     try {

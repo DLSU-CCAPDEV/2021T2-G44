@@ -208,3 +208,26 @@ module.exports.toggleRead = async (req, res) => {
         });
     }
 };
+
+module.exports.totalMail = async (req, res) => {
+    const userID = req.session.uid;
+
+    try {
+        const inboxCount = await MailModel.countDocuments({ recepientID: userID });
+        const sentboxCount = await MailModel.countDocuments({ senderID: userID });
+
+        res.status(200).json({
+            success: true,
+            mailCount: {
+                inbox: inboxCount,
+                sentbox: sentboxCount
+            }
+        })
+    } catch(ex) {
+        console.error(ex);
+        res.status(500).json({
+            success: false,
+            errors: [{ msg: ex }]
+        })
+    }
+};
