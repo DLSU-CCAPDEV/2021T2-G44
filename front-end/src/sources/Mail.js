@@ -141,6 +141,15 @@ export default function Mail(props) {
         setNewMessageDialogOpen(true);
     };
 
+    const handlePreviousPage = () => {
+        if(page !== 0)
+            setPage(page - 1);
+    };
+
+    const handleNextPage = () => {
+        setPage(page + 1);
+    };
+
     if (mail && sent) { 
         return (
             <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
@@ -369,11 +378,11 @@ export default function Mail(props) {
                             </TableContainer>
                         </Grid>
                         <Grid container direction="row" alignItems="center" justify="flex-end" style={ { margin: "2em 0 0 0", width: "80%" } }>
-                            <Button color="primary" variant="contained"><ArrowLeftIcon /></Button>
+                            <Button color="primary" variant="contained" onClick={handlePreviousPage} disabled={page === 0}><ArrowLeftIcon /></Button>
                             <Typography style={{ margin: "0 1em 0 1em" }} variant="h6">
                                 Page {page+1} of {mailbox === 0 ? Math.floor(1+ totalMail.inbox / 25) : Math.floor(1 + totalMail.sentbox / 25)}
                                 </Typography>
-                            <Button color="primary" variant="contained"><ArrowRightIcon /></Button>
+                            <Button color="primary" variant="contained" onClick={handleNextPage} disabled={(mailbox === 0 ? Math.floor(totalMail.inbox / 25) : Math.floor(totalMail.sentbox / 25)) <= 1}><ArrowRightIcon /></Button>
                         </Grid>
                     </Grid>
                 </Grid>
