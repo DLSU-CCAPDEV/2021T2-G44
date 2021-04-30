@@ -82,13 +82,13 @@ body {
 
 /* COMPONENTS */
 .registerBox {
-  background-color: #7868E6;
-  border-radius: 50px;
-  min-width: 415px;
+    background-color: #7868e6;
+    border-radius: 50px;
+    min-width: 415px;
 
-  position: relative;
-  right: 5em;
-  top: 2em;
+    position: relative;
+    right: 5em;
+    top: 2em;
 }
 
 .registerForm {

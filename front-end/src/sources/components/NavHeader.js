@@ -26,7 +26,7 @@ import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
-import { logout } from "../../controllers/AuthController";
+import { logout } from '../../controllers/AuthController';
 import { GlobalContext } from '../../controllers/ContextController';
 import Loading from './Loading';
 
@@ -44,10 +44,10 @@ const linkStyles = {
 };
 
 const options = [
-    { text: "My Calendar", icon: EventIcon, link: "/my-calendar", index: 0 },
-    { text: "My Appointments", icon: CheckBoxIcon, link: "/my-appointments", index: 1 },
-    { text: "Mail", icon: MailIcon, link: "/mail", index: 2 },
-    { text: "Invites", icon: SendIcon, link: "/invites", index: 3 },
+    { text: 'My Calendar', icon: EventIcon, link: '/my-calendar', index: 0 },
+    { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments', index: 1 },
+    { text: 'Mail', icon: MailIcon, link: '/mail', index: 2 },
+    { text: 'Invites', icon: SendIcon, link: '/invites', index: 3 },
 ];
 
 const drawerWidth = 300;
@@ -127,7 +127,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NavigationHeader(props) {
     // Check logged in
-    const {uid, updateUid} = useContext(GlobalContext);
+    const { uid, updateUid } = useContext(GlobalContext);
 
     // Extract the Context
     const history = useHistory();
@@ -198,7 +198,7 @@ export default function NavigationHeader(props) {
         logout()
             .then(() => updateUid())
             .then(() => history.push('/login'))
-            .catch(err => console.error(err));
+            .catch((err) => console.error(err));
     };
 
     const handleProfile = () => {
