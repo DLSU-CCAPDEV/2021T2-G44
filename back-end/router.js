@@ -1,6 +1,7 @@
 const appRouter = require('express').Router();
 
 // Routes
+const ValidationController = require('./controllers/ValidationController');
 const AuthController = require('./controllers/AuthController');
 const UserController = require("./controllers/UserController");
 const MailController = require("./controllers/MailController");
@@ -20,22 +21,22 @@ appRouter.get('/auth', AuthController.loggedIn);
 appRouter.use('/api', AuthController.validateSession);
 
 // User Operations
-appRouter.put("/register", UserController.validateUserData('createUser'), UserController.createUser);
+appRouter.put("/register", ValidationController.validateUserData('createUser'), ValidationController.validateInputs, UserController.createUser);
 appRouter.get("/api/user", UserController.getCurrentUser);
+appRouter.get("/api/user/search/:name", UserController.searchUserByName);
 appRouter.get("/api/user/:id", UserController.getUser);
-appRouter.post("/api/user", UserController.validateUserData('updateUser'), UserController.updateUser);
-appRouter.post("/api/user/password", UserController.validateUserData('changePassword'), UserController.changePassword);
-appRouter.delete("/api/user", UserController.validateUserData('deleteAccount'), UserController.deleteUser);
+appRouter.post("/api/user", ValidationController.validateUserData('updateUser'), ValidationController.validateInputs, UserController.updateUser);
+appRouter.post("/api/user/password", ValidationController.validateUserData('changePassword'), ValidationController.validateInputs, UserController.changePassword);
+appRouter.delete("/api/user", ValidationController.validateUserData('deleteAccount'), ValidationController.validateInputs, UserController.deleteUser);
 
 // Mail Operations
 appRouter.get('/api/mail/inbox', MailController.getInbox);
 appRouter.get('/api/mail/sentbox', MailController.getSentBox);
 appRouter.get('/api/mail/:mailID', MailController.getMailByID);
-appRouter.post('/api/mail/toggleRead/:messageID', MailController.validateMailData('read'), MailController.toggleRead);
-appRouter.put('/api/mail/send/:recepientEmail', MailController.validateMailData('send'), MailController.sendMail);
+appRouter.post('/api/mail/toggleRead/:messageID', ValidationController.validateMailData('read'), ValidationController.validateInputs, MailController.toggleRead);
+appRouter.put('/api/mail/send/:recepientEmail', ValidationController.validateMailData('send'), ValidationController.validateInputs, MailController.sendMail);
 
 // File Operations
-
 appRouter.post("/api/file", FileController.uploadFiles.array('file'), FileController.handleUpload);
 appRouter.get("/api/file/:fileID", FileController.getFile);
 appRouter.get("/api/file/stream/:fileID", FileController.streamFile);

@@ -21,6 +21,10 @@ export const GetHostsData = async (userEvents) => {
 
 export const GetUserData = async (userID = '') => {
     const response = await request.get('api/user/' + userID);
+    
+    if(response.status !== 200) {
+        return false;
+    }
     return response.data;
 };
 

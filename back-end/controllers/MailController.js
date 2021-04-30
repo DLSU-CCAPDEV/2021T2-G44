@@ -1,4 +1,3 @@
-const { body, validationResult, param } = require("express-validator");
 const MailModel = require("../models/Mail");
 const UserModel = require("../models/User");
 
@@ -101,13 +100,6 @@ module.exports.sendMail = async (req, res) => {
     const recepientEmail = req.params.recepientEmail;
     const mailData = req.body;
 
-    // Return invalid  data if invalid
-    const validationErrors = validationResult(req);
-    if (!validationErrors.isEmpty()) {
-        res.status(422).json({ errors: validationErrors.array() });
-        return;
-    }
-
     try {
         // Get recepient user ID
         const recepientData = await UserModel.findOne({ email: recepientEmail });
@@ -156,28 +148,5 @@ module.exports.toggleRead = async (req, res) => {
         res.status(500).send(ex);
         console.error(ex);
         return;
-    }
-};
-
-/**
- * This method contains the validation options to be used by express-validator.
- * @param {*} method
- * @returns
- */
-module.exports.validateMailData = (method) => {
-    switch (method) {
-        case "send": {
-            return [
-                param("recepientEmail", "Missing recepient email.").exists().isEmail(),
-                body("subject", "Missing subject.").exists().isString(),
-                body("content", "Missing content.").exists().isString(),
-                body("attachments", "Invalid attachments.").optional().isArray(),
-            ];
-        }
-        case "read": {
-            return [
-                param("messageID", "Missing message ID.").exists().isString()
-            ];
-        }
     }
 };

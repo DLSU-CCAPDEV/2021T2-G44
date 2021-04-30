@@ -15,6 +15,7 @@ import About from "./sources/Aboutpage";
 // Protected Route Imports
 import MyCalendar from "./sources/MyCalendar";
 import Profile from "./sources/Profile";
+import UserProfile from './sources/UserProfile';
 import MyAppointments from "./sources/MyAppointments";
 import Mail from "./sources/Mail";
 import Invites from "./sources/Invites";
@@ -104,6 +105,11 @@ export default function Routes(props) {
                         <ProtectedRoute
                             path="/profile"
                             component={Profile}
+                            protected={true}
+                        />
+                        <ProtectedRoute
+                            path="/user/:userID"
+                            component={UserProfile}
                             protected={true}
                         />
                         <ProtectedRoute

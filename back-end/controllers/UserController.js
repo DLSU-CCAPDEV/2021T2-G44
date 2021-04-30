@@ -1,4 +1,3 @@
-const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const UserModel = require('../models/User');
 
@@ -9,14 +8,7 @@ const UserModel = require('../models/User');
  * @param {*} res
  */
 module.exports.createUser = async (req, res) => {
-    const validationErrors = validationResult(req);
     const userData = req.body;
-
-    // Return invalid user data if invalid
-    if (!validationErrors.isEmpty()) {
-        res.status(422).json({ errors: validationErrors.array() });
-        return;
-    }
 
     // Check if the email already exists
     const exists = await UserModel.findOne({ email: userData.email });
@@ -93,13 +85,6 @@ module.exports.updateUser = async (req, res) => {
     const userID = req.session.uid;
     const userData = req.body;
 
-    // Return invalid user data if invalid
-    const validationErrors = validationResult(req);
-    if (!validationErrors.isEmpty()) {
-        res.status(422).json({ errors: validationErrors.array() });
-        return;
-    }
-
     // Remove any password updates
     userData.password = undefined;
     delete userData.password;
@@ -117,13 +102,6 @@ module.exports.updateUser = async (req, res) => {
 };
 
 module.exports.changePassword = async (req, res) => {
-    // Return invalid user data if invalid
-    const validationErrors = validationResult(req);
-    if (!validationErrors.isEmpty()) {
-        res.status(422).json({ errors: validationErrors.array() });
-        return;
-    }
-
     // Initialize
     const userID = req.session.uid;
     const oldPassword = req.body.oldPassword;
@@ -152,13 +130,6 @@ module.exports.changePassword = async (req, res) => {
 };
 
 module.exports.deleteUser = async (req, res) => {
-    // Return invalid user data if invalid
-    const validationErrors = validationResult(req);
-    if (!validationErrors.isEmpty()) {
-        res.status(422).json({ errors: validationErrors.array() });
-        return;
-    }
-
     // Initialize
     const userID = req.session.uid;
     const password = req.body.password;
@@ -185,46 +156,30 @@ module.exports.deleteUser = async (req, res) => {
 };
 
 /**
- * This method contains the validation options to be used by express-validator.
- * @param {*} method
- * @returns
+ * This controller method searches a user by name.
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
  */
-module.exports.validateUserData = (method) => {
-    const passwordValidationOptions = {
-        minLength: 8,
-        minSymbols: 1,
-        minNumbers: 1,
-        minLowercase: 2,
-        minUppercase: 1,
-    };
-    switch (method) {
-        case 'createUser': {
-            return [
-                body('email', 'Missing or Invalid Email Address.').exists().isEmail(),
-                body('firstName', 'Please provide a first name.').exists(),
-                body('lastName', 'Please provide a last name.').exists(),
-                body('password', 'Password is too weak.').exists().isStrongPassword(passwordValidationOptions),
-                body('bio').optional().isString(),
-                body('avatar').optional().isURL(),
-            ];
+module.exports.searchUserByName = async (req, res) => {
+    // Get the query parameters
+    const name = req.params.name;
+
+    try {
+        // Mongoose Query
+        const result = await UserModel.aggregate([
+            {$project: { "name" : { $concat : [ "$firstName", " ", "$lastName" ] } }},
+            {$match: {"name": {$regex: '.*' + name + '.*', $options: 'i'}}}
+        ]);
+
+        if(!result) {
+            res.status(200).json([]);
         }
-        case 'updateUser': {
-            return [
-                body("email", "Missing or Invalid Email Address.").optional().isEmail(),
-                body("firstName", "Please provide a first name.").optional().isString(),
-                body("lastName", "Please provide a last name.").optional().isString(),
-                body("bio").optional().isString(),
-                body("avatar").optional().isURL(),
-            ];
-        }
-        case 'changePassword': {
-            return [
-                body('oldPassword', 'Old password is invalid.').exists(),
-                body('newPassword', 'Password is too weak.').exists().isStrongPassword(passwordValidationOptions),
-            ];
-        }
-        case 'deleteAccount': {
-            return [body('password', 'Password is invalid.').exists().isString()];
-        }
+
+        res.status(200).json(result);
+    } catch(ex) {
+        console.error(ex); 
+        res.status(500).send(ex);
+        return;
     }
 };

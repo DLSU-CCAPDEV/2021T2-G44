@@ -56,10 +56,28 @@ export const getSent = async (start = 0, limit = 50) => {
         });
 
         if (response.status === 200) {
-            // Add user data for recepient & format dates
+            // Add user data for sender & format dates
             return await Promise.all(response.data.map(async m => new Promise(async (resolve) => {
                 m.recepient = await GetUserData(m.recepientID);
                 m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
+
+                // Process attachments
+                if(m.attachments.length > 0) {
+                    await Promise.all(m.attachments.map(async (attachment, i) => new Promise(async resolve => {
+                        const fileInfo = await request.get("api/file/" + attachment);
+                        if(fileInfo.status !== 200) {
+                            m.attachments[i] = { filename: "", fileID: attachment };
+                            return resolve();
+                        }
+
+                        m.attachments[i] = {
+                            filename: fileInfo.data.filename,
+                            fileID : attachment
+                        };
+                        return resolve();
+                    })));
+                }
+                console.log(m);
                 return resolve(m);
             })));
         }
@@ -119,6 +137,7 @@ export const toggleRead = async (messageID) => {
 
 export const streamFile = async (file) => {
     try {
+        console.log(file);
         const response = await request.get("api/file/stream/" + file.fileID, {
             responseType: 'blob'
         });
