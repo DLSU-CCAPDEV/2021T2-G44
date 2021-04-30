@@ -15,6 +15,7 @@ import About from "./sources/Aboutpage";
 // Protected Route Imports
 import MyCalendar from "./sources/MyCalendar";
 import Profile from "./sources/Profile";
+import UserProfile from './sources/UserProfile';
 import MyAppointments from "./sources/MyAppointments";
 import Mail from "./sources/Mail";
 import Invites from "./sources/Invites";
@@ -107,6 +108,11 @@ export default function Routes(props) {
                             protected={true}
                         />
                         <ProtectedRoute
+                            path="/user/:userID"
+                            component={UserProfile}
+                            protected={true}
+                        />
+                        <ProtectedRoute
                             path="/mail"
                             component={Mail}
                             protected={true}
@@ -129,5 +135,5 @@ export default function Routes(props) {
                 </Router>
             </ThemeProvider>
         );
-    return <Loading />;
+    return <Loading loadingText="Loading Sched-It" />;
 }

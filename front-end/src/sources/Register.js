@@ -7,6 +7,7 @@ import { Grid, Box, Typography, TextField, withStyles, Fab } from "@material-ui/
 
 // Component Imports
 import registerCoverImage from "./assets/registerCover.svg";
+import Loading from "./components/Loading";
 
 // Controller
 import { RegisterUser } from '../controllers/UserController';
@@ -45,6 +46,7 @@ function Register(props) {
 
     const history = useHistory();
     const { uid, updateUid } = useContext(GlobalContext);
+    const [loading, setLoading] = useState(false);
 
     // States
     const [email, setEmail] = useState("");
@@ -77,6 +79,7 @@ function Register(props) {
     // Create Account Button
     const createAccount = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         // Check if passwords match
         if (password !== passwordConfirm) {
@@ -98,114 +101,120 @@ function Register(props) {
             if (login) {
                 await updateUid();
                 history.push("/my-calendar");
-            } else alert("Error logging in.");
+                return;
+            } 
+            alert("Error logging in.");
+            setLoading(false);
             return;
         }
         alert(res.errors.map((err, i) => `${err}\n`));
+        setLoading(false);
     };
 
     const { classes } = props;
 
-    return (
-        <Grid container direction="column" style={{ padding: "2em 0 8em 0" }}>
-            <Grid item container direction="row" justify="center" alignItems="center">
-                <Grid item>
-                    <Box className="registerBox">
-                        <form onSubmit={createAccount}>
-                            <Grid container direction="column" justify="center" alignItems="center">
-                                <TextField
-                                    required
-                                    label="Email"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="email"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    style={{ marginTop: "3em" }}
-                                    onChange={onEmailChange}
-                                />
-                                <TextField
-                                    required
-                                    label="First Name"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="text"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    onChange={onFirstNameChange}
-                                />
-                                <TextField
-                                    required
-                                    label="Last Name"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="text"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    onChange={onLastNameChange}
-                                />
-                                <TextField
-                                    required
-                                    label="Password"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="password"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    onChange={onPasswordChange}
-                                />
-                                <TextField
-                                    required
-                                    label="Confirm Password"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="password"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    onChange={onPasswordConfirmChange}
-                                />
-                                <p style={{ color: "white", margin: "0.5em" }}>
-                                    Already have an account?{" "}
-                                    <Link to="/login" style={{ color: "white" }}>
-                                        Login
-                                    </Link>
-                                </p>
-                                <Fab
-                                    type="submit"
-                                    variant="extended"
-                                    size="medium"
-                                    color="secondary"
-                                    style={buttonStyles}
-                                >
-                                    Create Account
-                                </Fab>
-                            </Grid>
-                        </form>
-                    </Box>
-                </Grid>
+    if(!loading)
+        return (
+            <Grid container direction="column" style={{ padding: "2em 0 8em 0" }}>
+                <Grid item container direction="row" justify="center" alignItems="center">
+                    <Grid item>
+                        <Box className="registerBox">
+                            <form onSubmit={createAccount}>
+                                <Grid container direction="column" justify="center" alignItems="center">
+                                    <TextField
+                                        required
+                                        label="Email"
+                                        variant="filled"
+                                        className={classes.root}
+                                        type="email"
+                                        InputProps={{
+                                            className: classes.input,
+                                            disableUnderline: true,
+                                        }}
+                                        style={{ marginTop: "3em" }}
+                                        onChange={onEmailChange}
+                                    />
+                                    <TextField
+                                        required
+                                        label="First Name"
+                                        variant="filled"
+                                        className={classes.root}
+                                        type="text"
+                                        InputProps={{
+                                            className: classes.input,
+                                            disableUnderline: true,
+                                        }}
+                                        onChange={onFirstNameChange}
+                                    />
+                                    <TextField
+                                        required
+                                        label="Last Name"
+                                        variant="filled"
+                                        className={classes.root}
+                                        type="text"
+                                        InputProps={{
+                                            className: classes.input,
+                                            disableUnderline: true,
+                                        }}
+                                        onChange={onLastNameChange}
+                                    />
+                                    <TextField
+                                        required
+                                        label="Password"
+                                        variant="filled"
+                                        className={classes.root}
+                                        type="password"
+                                        InputProps={{
+                                            className: classes.input,
+                                            disableUnderline: true,
+                                        }}
+                                        onChange={onPasswordChange}
+                                    />
+                                    <TextField
+                                        required
+                                        label="Confirm Password"
+                                        variant="filled"
+                                        className={classes.root}
+                                        type="password"
+                                        InputProps={{
+                                            className: classes.input,
+                                            disableUnderline: true,
+                                        }}
+                                        onChange={onPasswordConfirmChange}
+                                    />
+                                    <p style={{ color: "white", margin: "0.5em" }}>
+                                        Already have an account?{" "}
+                                        <Link to="/login" style={{ color: "white" }}>
+                                            Login
+                                        </Link>
+                                    </p>
+                                    <Fab
+                                        type="submit"
+                                        variant="extended"
+                                        size="medium"
+                                        color="secondary"
+                                        style={buttonStyles}
+                                    >
+                                        Create Account
+                                    </Fab>
+                                </Grid>
+                            </form>
+                        </Box>
+                    </Grid>
 
-                <Grid item>
-                    <Typography style={{ fontWeight: "700", fontSize: "64px" }} variant="subtitle2">
-                        Register now
-                    </Typography>
-                    <Typography variant="body1" style={{ width: "15em", fontSize: "24px" }}>
-                        and start bringing people together the right way
-                    </Typography>
-                    <img src={registerCoverImage} alt="Register Cover" style={imageStyles} />
+                    <Grid item>
+                        <Typography style={{ fontWeight: "700", fontSize: "64px" }} variant="subtitle2">
+                            Register now
+                        </Typography>
+                        <Typography variant="body1" style={{ width: "15em", fontSize: "24px" }}>
+                            and start bringing people together the right way
+                        </Typography>
+                        <img src={registerCoverImage} alt="Register Cover" style={imageStyles} />
+                    </Grid>
                 </Grid>
             </Grid>
-        </Grid>
-    );
+        );
+    return <Loading loadingText="Creating your account"/>
 }
 
 export default withStyles(textFieldTheme)(Register);

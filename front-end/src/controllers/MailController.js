@@ -1,77 +1,154 @@
-// Import the Placeholder File
-import mailDB from '../placeholderData/mail';
+import request from "../utils/AxiosConfig";
 
-import { GetUserData } from './UserController';
+import { GetUserData } from "./UserController";
 
-export const getInbox = async (uid, start = 0, end = 50) => {
-    // Normally, we make an API call here.
+export const getInbox = async (start = 0, limit = 50) => {
+    // Make API Call
+    try {
+        const response = await request.get("api/mail/inbox", {
+            params: {
+                start: start,
+                limit: limit
+            }
+        });
 
-    // For Phase 1:
-    const allMail = mailDB.filter((mail) => mail.recepientID === Number(uid));
+        if (response.status === 200) {
+            // Add user data for sender & format dates
+            return await Promise.all(response.data.map(async m => new Promise(async (resolve) => {
+                m.sender = await GetUserData(m.senderID);
+                m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
 
-    // Get sender details
-    const selected = allMail.slice(start, end);
+                // Process attachments
+                if(m.attachments.length > 0) {
+                    await Promise.all(m.attachments.map(async (attachment, i) => new Promise(async resolve => {
+                        const fileInfo = await request.get("api/file/" + attachment);
+                        if(fileInfo.status !== 200) {
+                            m.attachments[i] = { filename: "", fileID: attachment };
+                            return resolve();
+                        }
 
-    selected.map(async (mail) => {
-        // Get the sender details
-        mail.sender = await GetUserData(mail.senderID);
-
-        // Parse the time
-        const date = new Date(mail.sendTime);
-        const now = new Date();
-
-        if (
-            date.getDate() === now.getDate() &&
-            date.getMonth() === now.getMonth() &&
-            date.getFullYear() === now.getFullYear()
-        ) {
-            // Parse as time
-            mail.sendTime = `Today ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+                        m.attachments[i] = {
+                            filename: fileInfo.data.filename,
+                            fileID : attachment
+                        };
+                        return resolve();
+                    })));
+                }
+                console.log(m);
+                return resolve(m);
+            })));
         }
-        // Parse as datetime
-        else mail.sendTime = date.toDateString();
-    });
-
-    // Sort by date
-
-    return selected;
+        return false;
+    } catch (ex) {
+        console.error(ex);
+        return false;
+    }
 };
 
-export const getSent = async (uid, start = 0, end = 50) => {
-    // Normally, we make an API call here.
+export const getSent = async (start = 0, limit = 50) => {
+    // Make API Call
+    try {
+        const response = await request.get("api/mail/sentbox", {
+            params: {
+                start: start,
+                limit: limit
+            }
+        });
 
-    // For Phase 1:
-    const allMail = mailDB.filter((mail) => mail.senderID === Number(uid));
+        if (response.status === 200) {
+            // Add user data for sender & format dates
+            return await Promise.all(response.data.map(async m => new Promise(async (resolve) => {
+                m.recepient = await GetUserData(m.recepientID);
+                m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
 
-    // Get sender details
-    const selected = allMail.slice(start, end);
+                // Process attachments
+                if(m.attachments.length > 0) {
+                    await Promise.all(m.attachments.map(async (attachment, i) => new Promise(async resolve => {
+                        const fileInfo = await request.get("api/file/" + attachment);
+                        if(fileInfo.status !== 200) {
+                            m.attachments[i] = { filename: "", fileID: attachment };
+                            return resolve();
+                        }
 
-    selected.map(async (mail) => {
-        // Get the sender details
-        mail.recepient = await GetUserData(mail.recepientID);
-
-        // Parse the time
-        const date = new Date(mail.sendTime);
-        const now = new Date();
-
-        if (
-            date.getDate() === now.getDate() &&
-            date.getMonth() === now.getMonth() &&
-            date.getFullYear() === now.getFullYear()
-        ) {
-            // Parse as time
-            mail.sendTime = `Today ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+                        m.attachments[i] = {
+                            filename: fileInfo.data.filename,
+                            fileID : attachment
+                        };
+                        return resolve();
+                    })));
+                }
+                console.log(m);
+                return resolve(m);
+            })));
         }
-        // Parse as datetime
-        else mail.sendTime = date.toDateString();
-    });
-
-    // Sort by date
-
-    return selected;
+        return false;
+    } catch (ex) {
+        console.error(ex);
+        return false;
+    }
 };
 
-export const sendMessage = (userEmail, messageContent) => {
-    // Normally, this would be an API call to the backend.
-    // For phase 1, this function does nothing.
+export const sendMessage = async (userEmail, messageContent) => {
+    // Make API Call to Send Message
+    try {
+        // Upload files first
+        const filesData = new FormData();
+        messageContent.attachments.forEach(file => {
+            filesData.append('file', file);
+        });
+
+        const fileUploadResponse = await request.post('api/file', filesData);
+
+        messageContent.attachments = [];
+        if(fileUploadResponse.status === 200) {
+            fileUploadResponse.data.forEach(fileData => {
+                messageContent.attachments.push(fileData.id);
+            });
+        } else {
+            alert("Error processing attachments.");
+        }
+
+        const response = await request.put("api/mail/send/" + userEmail, {
+            subject: messageContent.subject,
+            content: messageContent.content,
+            attachments: messageContent.attachments
+        });
+    
+        if(response.status === 201)
+            return true;
+        return false;
+    } catch(ex) {
+        console.error(ex);
+        return false;
+    }
+};
+
+export const toggleRead = async (messageID) => {
+    // Make API Call to Toggle Read
+    try {
+        const response = await request.post("api/mail/toggleRead/" + messageID);
+        if(response.status === 200) return true;
+        return false;
+    } catch(ex) {
+        console.error(ex);
+        return false;
+    }
+};
+
+export const streamFile = async (file) => {
+    try {
+        console.log(file);
+        const response = await request.get("api/file/stream/" + file.fileID, {
+            responseType: 'blob'
+        });
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', file.filename);
+        document.body.appendChild(link);
+        link.click();
+    } catch(ex) {
+        console.error(ex);
+        return false;
+    }
 };
