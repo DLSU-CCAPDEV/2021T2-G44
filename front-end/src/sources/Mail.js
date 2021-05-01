@@ -150,118 +150,119 @@ export default function Mail(props) {
         setPage(page + 1);
     };
 
-    if (mail && sent) { 
-        return (
-            <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
-                 <Snackbar
-                    open={snackbar ? true : false}
-                    onClose={() => setSnackbar(null)}
-                    message={snackbar}
-                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
-                    key={"topcenter"}
-                />
-                {dialogMessage && <ViewMessage
-                    dialogOpen={viewDialogOpen}
-                    setDialogOpen={setViewDialogOpen}
-                    message={dialogMessage}
-                    mailbox={mailbox}
-                />}
+    return (
+        <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
+                <Snackbar
+                open={snackbar ? true : false}
+                onClose={() => setSnackbar(null)}
+                message={snackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                key={"topcenter"}
+            />
+            {dialogMessage && <ViewMessage
+                dialogOpen={viewDialogOpen}
+                setDialogOpen={setViewDialogOpen}
+                message={dialogMessage}
+                mailbox={mailbox}
+            />}
 
-                <SendMessage
-                    dialogOpen={newMessageDialogOpen}
-                    setDialogOpen={setNewMessageDialogOpen}
-                />
+            <SendMessage
+                dialogOpen={newMessageDialogOpen}
+                setDialogOpen={setNewMessageDialogOpen}
+            />
 
-                <Grid item container direction="row" justify="center">
-                    <Grid item container direction="row" xs={2}>
-                        <img
-                            src={mailbox === 0 ? mailBoxArt : sentBoxArt}
-                            alt="My Appointments Art"
-                            style={{ height: "200px" }}
-                        />
-                    </Grid>
+            <Grid item container direction="row" justify="center">
+                <Grid item container direction="row" xs={2}>
+                    <img
+                        src={mailbox === 0 ? mailBoxArt : sentBoxArt}
+                        alt="My Appointments Art"
+                        style={{ height: "200px" }}
+                    />
+                </Grid>
 
-                    {/** Mail Title */}
-                    <Grid
-                        item
-                        container
-                        direction="column"
-                        justify="center"
-                        alignItems="flex-start"
-                        xs={3}
+                {/** Mail Title */}
+                <Grid
+                    item
+                    container
+                    direction="column"
+                    justify="center"
+                    alignItems="flex-start"
+                    xs={3}
+                >
+                    <Typography variant="h2" color="primary" style={{ fontWeight: "bold" }}>
+                        {mailbox === 0 ? "Inbox" : "Sent Mail"}
+                    </Typography>
+                </Grid>
+
+                {/* Add Message Button */}
+                <Grid
+                    item
+                    container
+                    direction="column"
+                    xs={2}
+                    justify="flex-end"
+                    alignItems="stretch"
+                >
+                    <Fab
+                        variant="extended"
+                        size="medium"
+                        color="primary"
+                        aria-label="add"
+                        onClick={handleNewMessage}
                     >
-                        <Typography variant="h2" color="primary" style={{ fontWeight: "bold" }}>
-                            {mailbox === 0 ? "Inbox" : "Sent Mail"}
-                        </Typography>
-                    </Grid>
+                        <NavigationIcon style={{ marginRight: "10px" }} />
+                        New Message
+                    </Fab>
+                </Grid>
 
-                    {/* Add Message Button */}
-                    <Grid
-                        item
-                        container
-                        direction="column"
-                        xs={2}
-                        justify="flex-end"
-                        alignItems="stretch"
-                    >
-                        <Fab
-                            variant="extended"
-                            size="medium"
-                            color="primary"
-                            aria-label="add"
-                            onClick={handleNewMessage}
-                        >
-                            <NavigationIcon style={{ marginRight: "10px" }} />
-                            New Message
-                        </Fab>
-                    </Grid>
-
-                    {/* Input and Buttons */}
-                    <Grid
-                        item
-                        container
-                        direction="row"
-                        alignItems="flex-end"
-                        justify="flex-end"
-                        xs={2}
-                    >
-                        {/* Mail View */}
-                        <FormControl component="fieldset">
-                            <FormLabel component="legend" style={{ textAlign: "right" }}>
-                                Mail View
-                            </FormLabel>
-                            <RadioGroup aria-label="calendar View" name="calendarView" row>
-                                <FormControlLabel
-                                    value="Month"
-                                    control={
-                                        <Radio
-                                            checked={mailbox === 0}
-                                            onChange={handleMailBoxChange}
-                                            value="Inbox"
-                                            name="Inbox-Radio-Button"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="Inbox"
-                                />
-                                <FormControlLabel
-                                    value="Week"
-                                    control={
-                                        <Radio
-                                            checked={mailbox === 1}
-                                            onChange={handleMailBoxChange}
-                                            value="Sent"
-                                            name="Inbox-Radio-Button"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="Sent Mail"
-                                    style={{ marginRight: "0" }}
-                                />
-                            </RadioGroup>
-                        </FormControl>
-                    </Grid>
-
+                {/* Input and Buttons */}
+                <Grid
+                    item
+                    container
+                    direction="row"
+                    alignItems="flex-end"
+                    justify="flex-end"
+                    xs={2}
+                >
+                    {/* Mail View */}
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend" style={{ textAlign: "right" }}>
+                            Mail View
+                        </FormLabel>
+                        <RadioGroup aria-label="calendar View" name="calendarView" row>
+                            <FormControlLabel
+                                value="Month"
+                                control={
+                                    <Radio
+                                        checked={mailbox === 0}
+                                        onChange={handleMailBoxChange}
+                                        value="Inbox"
+                                        name="Inbox-Radio-Button"
+                                        color="primary"
+                                    />
+                                }
+                                label="Inbox"
+                            />
+                            <FormControlLabel
+                                value="Week"
+                                control={
+                                    <Radio
+                                        checked={mailbox === 1}
+                                        onChange={handleMailBoxChange}
+                                        value="Sent"
+                                        name="Inbox-Radio-Button"
+                                        color="primary"
+                                    />
+                                }
+                                label="Sent Mail"
+                                style={{ marginRight: "0" }}
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                </Grid>
+                
+                { !(mail && sent) && <Loading loadingText="Loading your mail"/> }
+                { mail && sent &&
                     <Grid item container direction="column" alignItems="center">
                         <Grid item container justify="center">
                             <TableContainer
@@ -385,9 +386,8 @@ export default function Mail(props) {
                             <Button color="primary" variant="contained" onClick={handleNextPage} disabled={(mailbox === 0 ? Math.floor(totalMail.inbox / 25) : Math.floor(totalMail.sentbox / 25)) <= 1}><ArrowRightIcon /></Button>
                         </Grid>
                     </Grid>
-                </Grid>
+                }
             </Grid>
-        );
-    }
-    return <Loading loadingText="Loading Mail" />;
+        </Grid>
+    );
 }

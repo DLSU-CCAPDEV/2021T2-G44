@@ -8,6 +8,7 @@ const EventController = require('./controllers/EventController');
 const AppointmentController = require('./controllers/AppointmentController');
 const MailController = require('./controllers/MailController');
 const FileController = require('./controllers/FileController');
+const TodoController = require('./controllers/TodoController');
 
 // Set up Routes
 
@@ -85,6 +86,12 @@ appRouter.put(
     ValidationController.validateInputs,
     MailController.sendMail
 );
+
+// Todo-list Operations
+appRouter.get('/api/todo', TodoController.getAllTodo);
+appRouter.put('/api/todo', ValidationController.validateTodo('create'), ValidationController.validateInputs, TodoController.addTodo);
+appRouter.post('/api/todo', ValidationController.validateTodo('toggleComplete'), ValidationController.validateInputs, TodoController.toggleCompleted);
+appRouter.delete('/api/todo', ValidationController.validateTodo('delete'), ValidationController.validateInputs, TodoController.deleteTodo);
 
 // File Operations
 appRouter.put("/api/file", FileController.uploadFiles.array("file"), FileController.handleUpload);

@@ -184,3 +184,28 @@ module.exports.validateInputs = (req, res, next) => {
         }
     }
 };
+
+/**
+ *
+ * @param {*} method
+ * @returns
+ */
+ module.exports.validateTodo = (method) => {
+    switch (method) {
+        case 'create': {
+            return [
+                body('title','Please insert a title.').exists().isString()
+            ]
+        }
+        case 'toggleComplete': {
+            return [
+                body('todoID','Please provide a to-do list item ID.').exists().isString()
+            ]
+        }
+        case 'delete': {
+            return [
+                body('todoID','Please provide a to-do list item ID.').exists().isString()
+            ]
+        }
+    }
+};
