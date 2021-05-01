@@ -52,15 +52,16 @@ appRouter.delete(
 );
 
 // Event Operations
-appRouter.put('/api/event', EventController.validateEventData('createEvent'), EventController.createEvent);
+appRouter.put('/api/event', ValidationController.validateEventData('createEvent'), ValidationController.validateInputs, EventController.createEvent);
 appRouter.get('/api/event', EventController.getEvent);
-appRouter.post('/api/event/:id', EventController.validateEventData('updateEvent'), EventController.updateEvent);
+appRouter.post('/api/event/:id', ValidationController.validateEventData('updateEvent'), ValidationController.validateInputs, EventController.updateEvent);
 appRouter.delete('/api/event/:id', EventController.deleteEvent);
 
 // Appointment Operations
 appRouter.put(
     '/api/appointment',
-    AppointmentController.validateAppointmentData('createAppointment'),
+    ValidationController.validateAppointmentData('createAppointment'),
+    ValidationController.validateInputs,
     AppointmentController.createAppointment
 );
 appRouter.get('/api/appointment/:id', AppointmentController.getAppointment);

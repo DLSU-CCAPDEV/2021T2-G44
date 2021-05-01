@@ -1,4 +1,3 @@
-import eventsDB from '../placeholderData/events.json';
 import request from '../utils/AxiosConfig';
 
 export const addEvent = async (eventData) => {
@@ -7,3 +6,5 @@ export const addEvent = async (eventData) => {
     if (response.status === 201) return true;
     return response;
 };
+
+export const GetEventByID = async () => {};

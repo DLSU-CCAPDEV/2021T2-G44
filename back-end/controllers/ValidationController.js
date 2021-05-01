@@ -96,3 +96,91 @@ module.exports.validateInputs = (req, res, next) => {
         }
     }
 };
+
+/**
+ *
+ * @param {*} method
+ * @returns
+ */
+ module.exports.validateEventData = (method) => {
+    switch (method) {
+        case 'createEvent': {
+            return [
+                body('title', 'Please provide a title.').exists(),
+                body('numParticipants', 'Please provide a valid number.')
+                    .exists()
+                    .isInt()
+                    .custom((value) => {
+                        return value > 0;
+                    }),
+                body('timeLimit', 'Please provide a valid number.')
+                    .exists()
+                    .isInt()
+                    .custom((value) => {
+                        return value >= 300 && value <= 28800;
+                    }),
+                body('endDate').custom((value, { req }) => {
+                    if (new Date(value) <= new Date(req.body.startDate)) {
+                        throw new Error('End Date must be after Start Date.');
+                    }
+                    return true;
+                }),
+                body('startDate', 'Start Date must be after the current date.').isAfter(new Date().toString()),
+            ];
+        }
+        case 'updateEvent': {
+            return [
+                body('title', 'Please provide a title.').exists(),
+                body('numParticipants', 'Please provide a valid number.')
+                    .exists()
+                    .isInt()
+                    .custom((value) => {
+                        return value > 0;
+                    }),
+                body('timeLimit', 'Please provide a valid number.')
+                    .exists()
+                    .isInt()
+                    .custom((value) => {
+                        return value >= 300 && value <= 28800;
+                    }),
+                body('endDate').custom((value, { req }) => {
+                    if (new Date(value) <= new Date(req.body.startDate)) {
+                        throw new Error('End Date must be after Start Date.');
+                    }
+                    return true;
+                }),
+                body('startDate', 'Start Date must be after the current date.').isAfter(new Date().toString()),
+            ];
+        }
+    }
+};
+
+/**
+ *
+ * @param {*} method
+ * @returns
+ */
+ module.exports.validateAppointmentData = (method) => {
+    switch (method) {
+        case 'createAppointment': {
+            return [
+                body('endTime').custom((value, { req }) => {
+                    if (new Date(value) <= new Date(req.body.startTime)) {
+                        throw new Error('End Time must be after Start Time.');
+                    }
+                    return true;
+                }),
+            ];
+        }
+        case 'updateAppointment': {
+            return [
+                body('endTime').custom((value, { req }) => {
+                    if (new Date(value) <= new Date(req.body.startTime)) {
+                        throw new Error('End Time must be after Start Time.');
+                    }
+                    return true;
+                }),
+            ];
+        }
+    }
+};
