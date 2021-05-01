@@ -5,6 +5,7 @@ import './assets/styles.css';
 
 import ViewMessage from './components/ViewMessage';
 import SendMessage from './components/SendMessage';
+import Loading from "./components/Loading";
 
 // Material-UI
 import {
@@ -30,9 +31,7 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 
 // ART
 import mailBoxArt from './assets/mailBox.svg';
-
-// Temporary
-import { useCookies } from 'react-cookie';
+import sentBoxArt from './assets/sentbox.svg';
 
 // Custom Styles
 const styles = {
@@ -71,7 +70,7 @@ const styles = {
 
 export default function Mail(props) {
     // Temp
-    const [cookies] = useCookies(['uid']);
+    const [page, setPage] = useState(0);
 
     const [mail, setMail] = useState(null);
     const [sent, setSent] = useState(null);
@@ -92,9 +91,17 @@ export default function Mail(props) {
     });
 
     useEffect(() => {
-        getInbox(cookies.uid).then((inbox) => setMail(inbox));
-        getSent(cookies.uid).then((sentMail) => setSent(sentMail));
-    }, [cookies.uid]);
+        const getData = async () => {
+            const start = page*50;
+            const end = 50 + (page*50);
+            const inbox = await getInbox(start, end);
+            const sentbox = await getSent(start, end);
+            setMail(inbox); setSent(sentbox);
+        };
+
+        getData();
+
+    }, [page]);
 
     const handleClick = (message) => {
         // Render dialog box here
@@ -113,196 +120,230 @@ export default function Mail(props) {
         setNewMessageDialogOpen(true);
     };
 
-    return (
-        <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
-            <ViewMessage
-                dialogOpen={viewDialogOpen}
-                setDialogOpen={setViewDialogOpen}
-                message={dialogMessage}
-                mailbox={mailbox}
-            />
+    if (mail && sent) { 
+        return (
+            <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
+                {dialogMessage && <ViewMessage
+                    dialogOpen={viewDialogOpen}
+                    setDialogOpen={setViewDialogOpen}
+                    message={dialogMessage}
+                    mailbox={mailbox}
+                />}
 
-            <SendMessage
-                dialogOpen={newMessageDialogOpen}
-                setDialogOpen={setNewMessageDialogOpen}
-            />
+                <SendMessage
+                    dialogOpen={newMessageDialogOpen}
+                    setDialogOpen={setNewMessageDialogOpen}
+                />
 
-            <Grid item container direction="row" justify="center">
-                <Grid item container direction="row" xs={2}>
-                    <img src={mailBoxArt} alt="My Appointments Art" style={{ height: "200px" }} />
-                </Grid>
+                <Grid item container direction="row" justify="center">
+                    <Grid item container direction="row" xs={2}>
+                        <img
+                            src={mailbox === 0 ? mailBoxArt : sentBoxArt}
+                            alt="My Appointments Art"
+                            style={{ height: "200px" }}
+                        />
+                    </Grid>
 
-                {/** Mail Title */}
-                <Grid
-                    item
-                    container
-                    direction="column"
-                    justify="center"
-                    alignItems="flex-start"
-                    xs={3}
-                >
-                    <Typography variant="h2" color="primary" style={{ fontWeight: "bold" }}>
-                        {mailbox === 0 ? "Inbox" : "Sent Mail"}
-                    </Typography>
-                </Grid>
-
-                {/* Add Message Button */}
-                <Grid
-                    item
-                    container
-                    direction="column"
-                    xs={2}
-                    justify="flex-end"
-                    alignItems="stretch"
-                >
-                    <Fab
-                        variant="extended"
-                        size="medium"
-                        color="primary"
-                        aria-label="add"
-                        onClick={handleNewMessage}
+                    {/** Mail Title */}
+                    <Grid
+                        item
+                        container
+                        direction="column"
+                        justify="center"
+                        alignItems="flex-start"
+                        xs={3}
                     >
-                        <NavigationIcon style={{ marginRight: "10px" }} />
-                        New Message
-                    </Fab>
-                </Grid>
+                        <Typography variant="h2" color="primary" style={{ fontWeight: "bold" }}>
+                            {mailbox === 0 ? "Inbox" : "Sent Mail"}
+                        </Typography>
+                    </Grid>
 
-                {/* Input and Buttons */}
-                <Grid
-                    item
-                    container
-                    direction="row"
-                    alignItems="flex-end"
-                    justify="flex-end"
-                    xs={2}
-                >
-                    {/* Mail View */}
-                    <FormControl component="fieldset">
-                        <FormLabel component="legend" style={{ textAlign: "right" }}>
-                            Mail View
-                        </FormLabel>
-                        <RadioGroup aria-label="calendar View" name="calendarView" row>
-                            <FormControlLabel
-                                value="Month"
-                                control={
-                                    <Radio
-                                        checked={mailbox === 0}
-                                        onChange={handleMailBoxChange}
-                                        value="Inbox"
-                                        name="Inbox-Radio-Button"
-                                        color="primary"
-                                    />
-                                }
-                                label="Inbox"
-                            />
-                            <FormControlLabel
-                                value="Week"
-                                control={
-                                    <Radio
-                                        checked={mailbox === 1}
-                                        onChange={handleMailBoxChange}
-                                        value="Sent"
-                                        name="Inbox-Radio-Button"
-                                        color="primary"
-                                    />
-                                }
-                                label="Sent Mail"
-                                style={{ marginRight: "0" }}
-                            />
-                        </RadioGroup>
-                    </FormControl>
-                </Grid>
-
-                <Grid item container direction="column" alignItems="center">
-                    <Grid item container justify="center">
-                        <TableContainer
-                            component={Paper}
-                            style={{ width: "80%", marginTop: "1em" }}
+                    {/* Add Message Button */}
+                    <Grid
+                        item
+                        container
+                        direction="column"
+                        xs={2}
+                        justify="flex-end"
+                        alignItems="stretch"
+                    >
+                        <Fab
+                            variant="extended"
+                            size="medium"
+                            color="primary"
+                            aria-label="add"
+                            onClick={handleNewMessage}
                         >
-                            <Table aria-label="Inbox Messages">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell style={styles.tableHeaders.from} align="center">
-                                            {mailbox === 0 ? "From" : "To"}
-                                        </TableCell>
-                                        <TableCell
-                                            style={styles.tableHeaders.subject}
-                                            align="center"
-                                        >
-                                            Subject
-                                        </TableCell>
-                                        <TableCell style={styles.tableHeaders.date} align="center">
-                                            Date
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {mail &&
-                                        mailbox === 0 &&
-                                        mail.map((m, i) => (
-                                            <TableRow
-                                                className="pointerHover"
-                                                key={m.id}
-                                                onClick={() => handleClick(m)}
-                                                style={
-                                                    i % 2 === 0
-                                                        ? styles.tableData.odd
-                                                        : styles.tableData.even
-                                                }
+                            <NavigationIcon style={{ marginRight: "10px" }} />
+                            New Message
+                        </Fab>
+                    </Grid>
+
+                    {/* Input and Buttons */}
+                    <Grid
+                        item
+                        container
+                        direction="row"
+                        alignItems="flex-end"
+                        justify="flex-end"
+                        xs={2}
+                    >
+                        {/* Mail View */}
+                        <FormControl component="fieldset">
+                            <FormLabel component="legend" style={{ textAlign: "right" }}>
+                                Mail View
+                            </FormLabel>
+                            <RadioGroup aria-label="calendar View" name="calendarView" row>
+                                <FormControlLabel
+                                    value="Month"
+                                    control={
+                                        <Radio
+                                            checked={mailbox === 0}
+                                            onChange={handleMailBoxChange}
+                                            value="Inbox"
+                                            name="Inbox-Radio-Button"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Inbox"
+                                />
+                                <FormControlLabel
+                                    value="Week"
+                                    control={
+                                        <Radio
+                                            checked={mailbox === 1}
+                                            onChange={handleMailBoxChange}
+                                            value="Sent"
+                                            name="Inbox-Radio-Button"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Sent Mail"
+                                    style={{ marginRight: "0" }}
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item container direction="column" alignItems="center">
+                        <Grid item container justify="center">
+                            <TableContainer
+                                component={Paper}
+                                style={{ width: "80%", marginTop: "1em" }}
+                            >
+                                <Table aria-label="Inbox Messages">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell
+                                                style={styles.tableHeaders.from}
+                                                align="center"
                                             >
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {`${m.sender.firstName} ${m.sender.lastName}`}
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {m.subject}
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {m.sendTime}
-                                                    </Typography>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    {sent &&
-                                        mailbox === 1 &&
-                                        sent.map((m, i) => (
-                                            <TableRow
-                                                className="pointerHover"
-                                                key={m.id}
-                                                onClick={() => handleClick(m)}
-                                                style={
-                                                    i % 2 === 0
-                                                        ? styles.tableData.odd
-                                                        : styles.tableData.even
-                                                }
+                                                {mailbox === 0 ? "From" : "To"}
+                                            </TableCell>
+                                            <TableCell
+                                                style={styles.tableHeaders.subject}
+                                                align="center"
                                             >
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {`${m.recepient.firstName} ${m.recepient.lastName}`}
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {m.subject}
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {m.sendTime}
-                                                    </Typography>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                                                Subject
+                                            </TableCell>
+                                            <TableCell
+                                                style={styles.tableHeaders.date}
+                                                align="center"
+                                            >
+                                                Date
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {mail &&
+                                            mailbox === 0 &&
+                                            mail.map((m, i) => (
+                                                <TableRow
+                                                    className="pointerHover"
+                                                    key={m._id}
+                                                    onClick={() => handleClick(m)}
+                                                    style={
+                                                        i % 2 === 0
+                                                            ? styles.tableData.odd
+                                                            : styles.tableData.even
+                                                    }
+                                                >
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography
+                                                            align="center"
+                                                            variant="subtitle1"
+                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
+                                                        >
+                                                            {`${m.sender.firstName} ${m.sender.lastName}`}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography
+                                                            align="center"
+                                                            variant="subtitle1"
+                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
+                                                        >
+                                                            {m.subject}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography
+                                                            align="center"
+                                                            variant="subtitle1"
+                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
+                                                        >
+                                                            {m.sendTime}
+                                                        </Typography>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        {sent &&
+                                            mailbox === 1 &&
+                                            sent.map((m, i) => (
+                                                <TableRow
+                                                    className="pointerHover"
+                                                    key={m._id}
+                                                    onClick={() => handleClick(m)}
+                                                    style={
+                                                        i % 2 === 0
+                                                            ? styles.tableData.odd
+                                                            : styles.tableData.even
+                                                    }
+                                                >
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography
+                                                            align="center"
+                                                            variant="subtitle1"
+                                                        >
+                                                            {`${m.recepient.firstName} ${m.recepient.lastName}`}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography
+                                                            align="center"
+                                                            variant="subtitle1"
+                                                        >
+                                                            {m.subject}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography
+                                                            align="center"
+                                                            variant="subtitle1"
+                                                        >
+                                                            {m.sendTime}
+                                                        </Typography>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
-        </Grid>
-    );
+        );
+    }
+    return <Loading loadingText="Loading Mail" />;
 }

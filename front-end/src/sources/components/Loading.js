@@ -3,12 +3,13 @@
 import { Grid } from "@material-ui/core";
 import { animated as a, useSpring } from "react-spring";
 
-function Icon() {
+function Icon(props) {
     const uBound = 1500 + 1;
     return (
         <Grid
             container
-            direction="row"
+            direction="column"
+            alignItems="center"
             justify="center"
             style={{ paddingBottom: "13%", paddingTop: "13%" }}
         >
@@ -220,6 +221,7 @@ function Icon() {
                     }}
                 ></a.path>
             </svg>
+            <h1>{props.loadingText || ""}</h1>
         </Grid>
     );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import '../assets/styles.css';
 
@@ -11,9 +11,12 @@ import {
     DialogContentText,
     DialogTitle,
     Slide,
+    Snackbar
 } from "@material-ui/core";
 
 import SendMessage from "./SendMessage";
+
+import { toggleRead, streamFile } from '../../controllers/MailController';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -22,6 +25,17 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function ViewMessage(props) {
     
     const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+    const [snackbar, setSnackbar] = useState(null);
+
+    const messageContent = props.message.content.split("\n");
+
+    // Tag the message as read
+    useEffect(() => {
+        if(!props.message.isRead) {
+            props.message.isRead = true;
+            toggleRead(props.message._id);
+        }
+    }, [props.dialogOpen, props.message]);
 
     const handleClose = () => {
         props.setDialogOpen(false);
@@ -32,9 +46,27 @@ export default function ViewMessage(props) {
         setReplyDialogOpen(true);
     };
 
+    const handleMarkAsUnread = () => {
+        props.message.isRead = false;
+        toggleRead(props.message._id);
+        props.setDialogOpen(false);
+    };
+
+    const handleFileDownload = async (file) => {
+        setSnackbar("Preparing your file for download.");
+        streamFile(file);
+    }
+
     if (props.message != null)
         return (
             <div>
+                <Snackbar
+                    open={ snackbar ? true : false }
+                    onClose={ () => setSnackbar(null) }
+                    message={ snackbar }
+                    anchorOrigin={ { vertical: 'top', horizontal: 'center' } }
+                    key={'topcenter'}
+                />
                 <Dialog
                     open={props.dialogOpen}
                     TransitionComponent={Transition}
@@ -60,12 +92,18 @@ export default function ViewMessage(props) {
                             </Typography>
                             <br />
                             <Typography style={{ color: "black" }} variant="body1">
-                                {props.message.content}
+                                {messageContent.map((e, i) => <p key={i}>{e}</p>)}
                             </Typography>
+                            <br />
+                            <Typography>Attachments</Typography>
+                            {props.message.attachments.map((attachment, i) => {
+                                return <Button onClick={() => handleFileDownload(attachment)} style={ { marginLeft: "1em" } } key={attachment}>Attachment #{i+1}</Button>
+                            })}
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
                         {props.message.sender && <Button onClick={handleReply}>Reply</Button>}
+                        {props.message.sender && <Button onClick={handleMarkAsUnread}>Mark as Unread</Button>}
                         <Button onClick={handleClose}>Close</Button>
                     </DialogActions>
                 </Dialog>

@@ -26,8 +26,9 @@ import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
-import { getUID, logout } from "../../controllers/AuthController";
+import { logout } from "../../controllers/AuthController";
 import { GlobalContext } from '../../controllers/ContextController';
+import Loading from './Loading';
 
 const barStyles = {
     filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
@@ -45,7 +46,7 @@ const linkStyles = {
 const options = [
     { text: "My Calendar", icon: EventIcon, link: "/my-calendar", index: 0 },
     { text: "My Appointments", icon: CheckBoxIcon, link: "/my-appointments", index: 1 },
-    { text: "Inbox", icon: MailIcon, link: "/mail", index: 2 },
+    { text: "Mail", icon: MailIcon, link: "/mail", index: 2 },
     { text: "Invites", icon: SendIcon, link: "/invites", index: 3 },
 ];
 
@@ -193,6 +194,7 @@ export default function NavigationHeader(props) {
     const handleLogout = () => {
         // Clear cookie
         setOpen(false);
+        history.push('/loading');
         logout()
             .then(() => updateUid())
             .then(() => history.push('/login'))
@@ -271,7 +273,7 @@ export default function NavigationHeader(props) {
                     </List>
 
                     <List className={classes.footerButtons}>
-                        <Link style={linkStyles} onClick={handleProfile}>
+                        <Link to="/profile" style={linkStyles} onClick={handleProfile}>
                             <ListItem
                                 button
                                 key="My Profile"

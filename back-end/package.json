@@ -22,13 +22,18 @@
   "homepage": "https://github.com/DLSU-CCAPDEV/2021T2-G44#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "compression": "^1.7.4",
     "connect-mongo": "^3.2.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "express-validator": "^6.10.0",
-    "mongoose": "^5.12.4"
+    "method-override": "^3.0.0",
+    "mongoose": "^5.12.4",
+    "multer": "^1.4.2",
+    "multer-gridfs-storage": "^4.2.0"
   }
 }
