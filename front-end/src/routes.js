@@ -56,7 +56,7 @@ export default function Routes(props) {
 
     useEffect(() => {
         updateUid().then(() => setLoading(false));
-    }, [uid]);
+    }, [uid, updateUid]);
 
     if(!loading)
         return (

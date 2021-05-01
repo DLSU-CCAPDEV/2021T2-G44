@@ -98,7 +98,7 @@ export default function Mail(props) {
         const getData = async () => {
             const mailCount = await getMailCount();
             if(!mailCount.success) {
-                setSnackbar(inbox.errors[0].msg);
+                setSnackbar(mailCount.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
             }
             const inbox = await getInbox(page*25, 25);

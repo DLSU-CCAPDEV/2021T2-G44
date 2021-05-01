@@ -31,7 +31,7 @@ export default function ViewMessage(props) {
 
     // Tag the message as read
     useEffect(() => {
-        if(!props.message.isRead) {
+        if(!props.message.isRead && props.message.sender) {
             props.message.isRead = true;
             toggleRead(props.message._id);
         }
