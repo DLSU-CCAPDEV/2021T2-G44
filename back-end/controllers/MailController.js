@@ -1,6 +1,8 @@
 const MailModel = require("../models/Mail");
 const UserModel = require("../models/User");
 
+const { mailTransporter } = require("./SmtpController");
+
 /**
  * This controller method returns the logged in user's inbox based on optional start and end bounds.
  * @param {*} req
@@ -161,6 +163,29 @@ module.exports.sendMail = async (req, res) => {
             success: true,
             mail: mailData
         });
+
+        // Send email notification to the recepient
+        const userData = await UserModel.findOne({ _id: userID });
+        await mailTransporter.sendMail({
+            from: "Sched-It Mailer <no-reply@sched-it-front.herokuapp.com>",
+            to: recepientData.email,
+            subject: `${userData.firstName} ${userData.lastName} has sent you a message on Sched-It`,
+            html: `
+                <h2>${mailData.subject}</h2>
+                <hr />
+                <p>${mailData.content}</p>
+                <br />
+                <p>${mailData.attachments.length} attachments.</p>
+                <hr />
+                <a href="https://sched-it-front.herokuapp.com/mail">View on Sched-It</a>
+                <br />
+                <img src="https://sched-it-front.herokuapp.com/footer.svg" />
+            `
+        }, (error, result) => {
+            if(error) return console.error(`[${new Date().toISOString()}] SMTP Error: ${error}`);
+            return console.log(`[${new Date().toISOString()}] SMTP: Sent New Mail Notification: ${result.messageId}`);
+        });
+
         return;
     } catch (ex) {
         console.error(ex);
