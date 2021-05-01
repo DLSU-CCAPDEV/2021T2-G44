@@ -28,7 +28,6 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
 import { logout } from "../../controllers/AuthController";
 import { GlobalContext } from '../../controllers/ContextController';
-import Loading from './Loading';
 
 const barStyles = {
     filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
@@ -194,6 +193,7 @@ export default function NavigationHeader(props) {
     const handleLogout = () => {
         // Clear cookie
         setOpen(false);
+        console.log('reasfd');
         history.push('/loading');
         logout()
             .then(() => updateUid())

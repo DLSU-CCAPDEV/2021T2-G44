@@ -52,15 +52,16 @@ appRouter.delete(
 );
 
 // Event Operations
-appRouter.put('/api/event', EventController.validateEventData('createEvent'), EventController.createEvent);
+appRouter.put('/api/event', ValidationController.validateEventData('createEvent'), ValidationController.validateInputs, EventController.createEvent);
 appRouter.get('/api/event', EventController.getEvent);
-appRouter.post('/api/event/:id', EventController.validateEventData('updateEvent'), EventController.updateEvent);
+appRouter.post('/api/event/:id', ValidationController.validateEventData('updateEvent'), ValidationController.validateInputs, EventController.updateEvent);
 appRouter.delete('/api/event/:id', EventController.deleteEvent);
 
 // Appointment Operations
 appRouter.put(
     '/api/appointment',
-    AppointmentController.validateAppointmentData('createAppointment'),
+    ValidationController.validateAppointmentData('createAppointment'),
+    ValidationController.validateInputs,
     AppointmentController.createAppointment
 );
 appRouter.get('/api/appointment/:id', AppointmentController.getAppointment);
@@ -68,6 +69,7 @@ appRouter.post('/api/appointment/:aid', AppointmentController.updateAppointment)
 appRouter.delete('/api/appointment/:id', AppointmentController.deleteAppointment);
 
 // Mail Operations
+appRouter.get('/api/mail/count', MailController.totalMail);
 appRouter.get('/api/mail/inbox', MailController.getInbox);
 appRouter.get('/api/mail/sentbox', MailController.getSentBox);
 appRouter.get('/api/mail/:mailID', MailController.getMailByID);
@@ -85,8 +87,8 @@ appRouter.put(
 );
 
 // File Operations
-appRouter.post('/api/file', FileController.uploadFiles.array('file'), FileController.handleUpload);
-appRouter.get('/api/file/:fileID', FileController.getFile);
-appRouter.get('/api/file/stream/:fileID', FileController.streamFile);
+appRouter.put("/api/file", FileController.uploadFiles.array("file"), FileController.handleUpload);
+appRouter.get("/api/file/:fileID", FileController.getFile);
+appRouter.get("/api/file/stream/:fileID", FileController.streamFile);
 
 module.exports = appRouter;

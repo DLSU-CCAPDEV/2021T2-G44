@@ -1,4 +1,3 @@
-const { body, validationResult } = require('express-validator');
 const AppointmentModel = require('../models/Appointment');
 
 /**
@@ -8,24 +7,24 @@ const AppointmentModel = require('../models/Appointment');
  * @returns
  */
 module.exports.createAppointment = async (req, res) => {
-    const validationErrors = validationResult(req);
     const appointmentData = req.body;
-
-    // Return invalid appointment data if invalid
-    if (!validationErrors.isEmpty()) {
-        res.status(422).json({ errors: validationErrors.array() });
-        return;
-    }
 
     // Insert appointment data
     const appointment = new AppointmentModel(appointmentData);
     try {
         await appointment.save();
-        res.status(201).json(appointment);
+        res.status(201).json({
+            success: true,
+            appointment: appointment
+        });
         return;
     } catch (err) {
         console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
-        res.status(500).send(err);
+        res.status(500).json({
+            success: false,
+            errors: [{ msg: err }]
+        });
+        return;
     }
 };
 
@@ -37,25 +36,25 @@ module.exports.createAppointment = async (req, res) => {
  * @param {*} res
  */
 module.exports.getAppointment = async (req, res) => {
-    const validationErrors = validationResult(req);
     const userID = req.params.id;
     const appointmentID = req.query.aid;
-
-    // Return invalid get request data if invalid
-    if (!validationErrors.isEmpty()) {
-        res.status(422).json({ errors: validationErrors.array() });
-        return;
-    }
 
     // Find current user's specific appointment
     if (userID && appointmentID) {
         try {
             const aData = await AppointmentModel.find({ participantID: userID });
-            res.status(200).json(aData);
+            res.status(200).json({
+                success: true,
+                appointments: aData
+            });
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
-            res.status(404).send(err);
+            res.status(500).json({
+                success: false,
+                errors: [{ msg: err }]
+            }); 
+            return;
         }
     }
 
@@ -63,16 +62,26 @@ module.exports.getAppointment = async (req, res) => {
     if (userID && !appointmentID) {
         try {
             const aData = await AppointmentModel.find({ participantID: userID });
-            res.status(200).json(aData);
+            res.status(200).json({
+                success: true,
+                appointments: aData
+            });
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
-            res.status(404).send(err);
+            res.status(500).json({
+                success: false,
+                errors: [{ msg: err }]
+            }); 
+            return;
         }
     }
 
     // If userID is undefined
-    return res.status(400).send('UserID is undefined.');
+    return res.status(400).json({
+        success: false,
+        errors: [{ msg: 'UserID is undefined.' }]
+    });
 };
 
 /**
@@ -83,30 +92,33 @@ module.exports.getAppointment = async (req, res) => {
  * @returns
  */
 module.exports.updateAppointment = async (req, res) => {
-    const validationErrors = validationResult(req);
     const appointmentID = req.params.id;
     const appointmentData = req.body;
-
-    // Return invalid appointment data if invalid
-    if (!validationErrors.isEmpty()) {
-        res.status(422).json({ errors: validationErrors.array() });
-        return;
-    }
 
     // Update appointment data
     if (appointmentID) {
         try {
             const aData = await AppointmentModel.updateOne({ _id: appointmentID }, appointmentData);
-            res.status(200).json(aData);
+            res.status(200).json({
+                success: true,
+                appointment: appointmentData
+            });
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
-            res.status(500).send(err);
+            res.status(500).json({
+                success: false,
+                errors: [{ msg: err }]
+            }); 
+            return;
         }
     }
 
     // If appointmentID is undefined
-    return res.status(400).send('appointmentID is undefined.');
+    return res.status(400).json({
+        success: false,
+        errors: [{ msg: 'appointmentID is undefined.' }]
+    });
 };
 
 /**
@@ -122,21 +134,19 @@ module.exports.deleteAppointment = async (req, res) => {
     const userID = req.params.id;
     const appointmentID = req.query.aid;
 
-    // Return invalid appointment data if invalid
-    if (!validationErrors.isEmpty()) {
-        res.status(422).json({ errors: validationErrors.array() });
-        return;
-    }
-
     // delete a current users's specified appointment
     if (userID && appointmentID) {
         try {
             const aData = await AppointmentModel.deleteOne({ _id: appointmentID });
-            res.status(200).json(aData);
+            res.status(200).json({ success: true, aData: aData});
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
-            res.status(500).send(err);
+            res.status(500).json({
+                success: false,
+                errors: [{ msg: err }]
+            }); 
+            return;
         }
     }
 
@@ -144,44 +154,21 @@ module.exports.deleteAppointment = async (req, res) => {
     if (userID && !appointmentID) {
         try {
             const aData = await AppointmentModel.deleteMany({ participantID: userID });
-            res.status(200).json(aData);
+            res.status(200).json({ success: true, aData: aData});
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
-            res.status(500).send(err);
+            res.status(500).json({
+                success: false,
+                errors: [{ msg: err }]
+            }); 
+            return;
         }
     }
 
     // If userID is undefined
-    return res.status(400).send('UserID is undefined.');
-};
-
-/**
- *
- * @param {*} method
- * @returns
- */
-module.exports.validateAppointmentData = (method) => {
-    switch (method) {
-        case 'createAppointment': {
-            return [
-                body('endTime').custom((value, { req }) => {
-                    if (new Date(value) <= new Date(req.body.startTime)) {
-                        throw new Error('End Time must be after Start Time.');
-                    }
-                    return true;
-                }),
-            ];
-        }
-        case 'updateAppointment': {
-            return [
-                body('endTime').custom((value, { req }) => {
-                    if (new Date(value) <= new Date(req.body.startTime)) {
-                        throw new Error('End Time must be after Start Time.');
-                    }
-                    return true;
-                }),
-            ];
-        }
-    }
+    return res.status(400).json({
+        success: false,
+        errors: [{ msg: 'UserID is undefined.' }]
+    });
 };

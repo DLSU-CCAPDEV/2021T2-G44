@@ -3,7 +3,10 @@ const { body, param, validationResult } = require('express-validator');
 module.exports.validateInputs = (req, res, next) => {
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty()) {
-        res.status(422).json({ errors: validationErrors.array() });
+        res.status(422).json({ 
+            success: false,
+            errors: validationErrors.array() 
+        });
         return;
     }
     next();
@@ -25,12 +28,18 @@ module.exports.validateInputs = (req, res, next) => {
     switch (method) {
         case 'createUser': {
             return [
-                body('email', 'Missing or Invalid Email Address.').exists().isEmail(),
-                body('firstName', 'Please provide a first name.').exists(),
-                body('lastName', 'Please provide a last name.').exists(),
-                body('password', 'Password is too weak.').exists().isStrongPassword(passwordValidationOptions),
-                body('bio').optional().isString(),
-                body('avatar').optional().isURL(),
+                body("email", "Missing or Invalid Email Address.").exists().isEmail(),
+                body("firstName", "Please provide a first name.").exists(),
+                body("lastName", "Please provide a last name.").exists(),
+                body(
+                    "password",
+                    "Password is too weak. Password must be at least 8 characters long, " +
+                        "contains at least one symbol, at least one number, at least two lowercase letters, and at least one uppercase letter."
+                )
+                    .exists()
+                    .isStrongPassword(passwordValidationOptions),
+                body("bio").optional().isString(),
+                body("avatar").optional().isURL(),
             ];
         }
         case 'searchUser': {
@@ -49,8 +58,14 @@ module.exports.validateInputs = (req, res, next) => {
         }
         case 'changePassword': {
             return [
-                body('oldPassword', 'Old password is invalid.').exists(),
-                body('newPassword', 'Password is too weak.').exists().isStrongPassword(passwordValidationOptions),
+                body("oldPassword", "Old password is invalid.").exists(),
+                body(
+                    "newPassword",
+                    "Password is too weak. Password must be at least 8 characters long, " +
+                        "contains at least one symbol, at least one number, at least two lowercase letters, and at least one uppercase letter."
+                )
+                    .exists()
+                    .isStrongPassword(passwordValidationOptions),
             ];
         }
         case 'deleteAccount': {
@@ -77,6 +92,94 @@ module.exports.validateInputs = (req, res, next) => {
         case "read": {
             return [
                 param("messageID", "Missing message ID.").exists().isString()
+            ];
+        }
+    }
+};
+
+/**
+ *
+ * @param {*} method
+ * @returns
+ */
+ module.exports.validateEventData = (method) => {
+    switch (method) {
+        case 'createEvent': {
+            return [
+                body('title', 'Please provide a title.').exists(),
+                body('numParticipants', 'Please provide a valid number.')
+                    .exists()
+                    .isInt()
+                    .custom((value) => {
+                        return value > 0;
+                    }),
+                body('timeLimit', 'Please provide a valid number.')
+                    .exists()
+                    .isInt()
+                    .custom((value) => {
+                        return value >= 300 && value <= 28800;
+                    }),
+                body('endDate').custom((value, { req }) => {
+                    if (new Date(value) <= new Date(req.body.startDate)) {
+                        throw new Error('End Date must be after Start Date.');
+                    }
+                    return true;
+                }),
+                body('startDate', 'Start Date must be after the current date.').isAfter(new Date().toString()),
+            ];
+        }
+        case 'updateEvent': {
+            return [
+                body('title', 'Please provide a title.').exists(),
+                body('numParticipants', 'Please provide a valid number.')
+                    .exists()
+                    .isInt()
+                    .custom((value) => {
+                        return value > 0;
+                    }),
+                body('timeLimit', 'Please provide a valid number.')
+                    .exists()
+                    .isInt()
+                    .custom((value) => {
+                        return value >= 300 && value <= 28800;
+                    }),
+                body('endDate').custom((value, { req }) => {
+                    if (new Date(value) <= new Date(req.body.startDate)) {
+                        throw new Error('End Date must be after Start Date.');
+                    }
+                    return true;
+                }),
+                body('startDate', 'Start Date must be after the current date.').isAfter(new Date().toString()),
+            ];
+        }
+    }
+};
+
+/**
+ *
+ * @param {*} method
+ * @returns
+ */
+ module.exports.validateAppointmentData = (method) => {
+    switch (method) {
+        case 'createAppointment': {
+            return [
+                body('endTime').custom((value, { req }) => {
+                    if (new Date(value) <= new Date(req.body.startTime)) {
+                        throw new Error('End Time must be after Start Time.');
+                    }
+                    return true;
+                }),
+            ];
+        }
+        case 'updateAppointment': {
+            return [
+                body('endTime').custom((value, { req }) => {
+                    if (new Date(value) <= new Date(req.body.startTime)) {
+                        throw new Error('End Time must be after Start Time.');
+                    }
+                    return true;
+                }),
             ];
         }
     }
