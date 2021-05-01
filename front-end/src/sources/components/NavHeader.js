@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import '../assets/styles.css';
+// import '../assets/styles.css';
 import logo from '../assets/logo.svg';
 import { Link, useHistory } from 'react-router-dom';
 

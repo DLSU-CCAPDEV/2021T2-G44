@@ -1,47 +1,47 @@
-import "./assets/styles.css";
-import { useEffect, useState, useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
+// import './assets/styles.css';
+import { useEffect, useState, useContext } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
 // Material-UI
-import { Grid, Box, Typography, TextField, withStyles, Fab } from "@material-ui/core";
+import { Grid, Box, Typography, TextField, withStyles, Fab } from '@material-ui/core';
 
 // Component Imports
-import registerCoverImage from "./assets/registerCover.svg";
-import Loading from "./components/Loading";
+import registerCoverImage from './assets/registerCover.svg';
+import Loading from './components/Loading';
 
 // Controller
 import { RegisterUser } from '../controllers/UserController';
 import { userLogin } from '../controllers/AuthController';
-import { GlobalContext } from "../controllers/ContextController";
+import { GlobalContext } from '../controllers/ContextController';
 
 // Custom Inline CSS
 const imageStyles = {
-    marginTop: "-8em"
-}
+    marginTop: '-8em',
+};
 
 const textFieldTheme = {
     root: {
-        background: "#FFFFFF",
-        width: "70%",
-        margin: "1em",
-        borderRadius: "8px"
+        background: '#FFFFFF',
+        width: '70%',
+        margin: '1em',
+        borderRadius: '8px',
     },
     input: {
-        color: "black",
-        fontSize: "24px",
-        borderRadius: "8px"
+        color: 'black',
+        fontSize: '24px',
+        borderRadius: '8px',
     },
 };
 
 const buttonStyles = {
-    margin: "1em",
-    color: "white",
-    marginBottom: "3em"
-}
+    margin: '1em',
+    marginBottom: '3em',
+    color: 'white',
+};
 
 function Register(props) {
     useEffect(() => {
-        document.title = "Register - Sched-It";
+        document.title = 'Register - Sched-It';
     });
 
     const history = useHistory();
@@ -49,12 +49,12 @@ function Register(props) {
     const [loading, setLoading] = useState(false);
 
     // States
-    const [email, setEmail] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordConfirm, setPasswordConfirm] = useState("");
-    
+    const [email, setEmail] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirm, setPasswordConfirm] = useState('');
+
     // Event Handlers
     const onEmailChange = (e) => {
         setEmail(e.target.value);
@@ -84,7 +84,7 @@ function Register(props) {
         // Check if passwords match
         if (password !== passwordConfirm) {
             // Show alert to user
-            alert("Passwords do not match.");
+            alert('Passwords do not match.');
             return;
         }
 
@@ -100,10 +100,10 @@ function Register(props) {
             const login = await userLogin(email, password);
             if (login) {
                 await updateUid();
-                history.push("/my-calendar");
+                history.push('/my-calendar');
                 return;
-            } 
-            alert("Error logging in.");
+            }
+            alert('Error logging in.');
             setLoading(false);
             return;
         }
@@ -113,9 +113,9 @@ function Register(props) {
 
     const { classes } = props;
 
-    if(!loading)
+    if (!loading)
         return (
-            <Grid container direction="column" style={{ padding: "2em 0 8em 0" }}>
+            <Grid container direction="column" style={{ padding: '0.5em 0 4.5em 0' }}>
                 <Grid item container direction="row" justify="center" alignItems="center">
                     <Grid item>
                         <Box className="registerBox">
@@ -131,7 +131,7 @@ function Register(props) {
                                             className: classes.input,
                                             disableUnderline: true,
                                         }}
-                                        style={{ marginTop: "3em" }}
+                                        style={{ marginTop: '3em' }}
                                         onChange={onEmailChange}
                                     />
                                     <TextField
@@ -182,9 +182,9 @@ function Register(props) {
                                         }}
                                         onChange={onPasswordConfirmChange}
                                     />
-                                    <p style={{ color: "white", margin: "0.5em" }}>
-                                        Already have an account?{" "}
-                                        <Link to="/login" style={{ color: "white" }}>
+                                    <p style={{ color: 'white', margin: '0.5em' }}>
+                                        Already have an account?{' '}
+                                        <Link to="/login" style={{ color: 'white' }}>
                                             Login
                                         </Link>
                                     </p>
@@ -203,10 +203,10 @@ function Register(props) {
                     </Grid>
 
                     <Grid item>
-                        <Typography style={{ fontWeight: "700", fontSize: "64px" }} variant="subtitle2">
+                        <Typography style={{ fontWeight: '700', fontSize: '64px' }} variant="subtitle2">
                             Register now
                         </Typography>
-                        <Typography variant="body1" style={{ width: "15em", fontSize: "24px" }}>
+                        <Typography variant="body1" style={{ width: '15em', fontSize: '24px' }}>
                             and start bringing people together the right way
                         </Typography>
                         <img src={registerCoverImage} alt="Register Cover" style={imageStyles} />
@@ -214,7 +214,7 @@ function Register(props) {
                 </Grid>
             </Grid>
         );
-    return <Loading loadingText="Creating your account"/>
+    return <Loading loadingText="Creating your account" />;
 }
 
 export default withStyles(textFieldTheme)(Register);

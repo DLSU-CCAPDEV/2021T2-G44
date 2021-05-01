@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { getInbox, getSent } from '../controllers/MailController';
 
-import './assets/styles.css';
+// import './assets/styles.css';
 
 import ViewMessage from './components/ViewMessage';
 import SendMessage from './components/SendMessage';
-import Loading from "./components/Loading";
+import Loading from './components/Loading';
 
 // Material-UI
 import {
@@ -92,15 +92,15 @@ export default function Mail(props) {
 
     useEffect(() => {
         const getData = async () => {
-            const start = page*50;
-            const end = 50 + (page*50);
+            const start = page * 50;
+            const end = 50 + page * 50;
             const inbox = await getInbox(start, end);
             const sentbox = await getSent(start, end);
-            setMail(inbox); setSent(sentbox);
+            setMail(inbox);
+            setSent(sentbox);
         };
 
         getData();
-
     }, [page]);
 
     const handleClick = (message) => {
@@ -120,53 +120,38 @@ export default function Mail(props) {
         setNewMessageDialogOpen(true);
     };
 
-    if (mail && sent) { 
+    if (mail && sent) {
         return (
-            <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
-                {dialogMessage && <ViewMessage
-                    dialogOpen={viewDialogOpen}
-                    setDialogOpen={setViewDialogOpen}
-                    message={dialogMessage}
-                    mailbox={mailbox}
-                />}
+            <Grid container direction="column" style={{ padding: '8em 0 8em 0' }}>
+                {dialogMessage && (
+                    <ViewMessage
+                        dialogOpen={viewDialogOpen}
+                        setDialogOpen={setViewDialogOpen}
+                        message={dialogMessage}
+                        mailbox={mailbox}
+                    />
+                )}
 
-                <SendMessage
-                    dialogOpen={newMessageDialogOpen}
-                    setDialogOpen={setNewMessageDialogOpen}
-                />
+                <SendMessage dialogOpen={newMessageDialogOpen} setDialogOpen={setNewMessageDialogOpen} />
 
                 <Grid item container direction="row" justify="center">
                     <Grid item container direction="row" xs={2}>
                         <img
                             src={mailbox === 0 ? mailBoxArt : sentBoxArt}
                             alt="My Appointments Art"
-                            style={{ height: "200px" }}
+                            style={{ height: '200px' }}
                         />
                     </Grid>
 
                     {/** Mail Title */}
-                    <Grid
-                        item
-                        container
-                        direction="column"
-                        justify="center"
-                        alignItems="flex-start"
-                        xs={3}
-                    >
-                        <Typography variant="h2" color="primary" style={{ fontWeight: "bold" }}>
-                            {mailbox === 0 ? "Inbox" : "Sent Mail"}
+                    <Grid item container direction="column" justify="center" alignItems="flex-start" xs={3}>
+                        <Typography variant="h2" color="primary" style={{ fontWeight: 'bold' }}>
+                            {mailbox === 0 ? 'Inbox' : 'Sent Mail'}
                         </Typography>
                     </Grid>
 
                     {/* Add Message Button */}
-                    <Grid
-                        item
-                        container
-                        direction="column"
-                        xs={2}
-                        justify="flex-end"
-                        alignItems="stretch"
-                    >
+                    <Grid item container direction="column" xs={2} justify="flex-end" alignItems="stretch">
                         <Fab
                             variant="extended"
                             size="medium"
@@ -174,23 +159,16 @@ export default function Mail(props) {
                             aria-label="add"
                             onClick={handleNewMessage}
                         >
-                            <NavigationIcon style={{ marginRight: "10px" }} />
+                            <NavigationIcon style={{ marginRight: '10px' }} />
                             New Message
                         </Fab>
                     </Grid>
 
                     {/* Input and Buttons */}
-                    <Grid
-                        item
-                        container
-                        direction="row"
-                        alignItems="flex-end"
-                        justify="flex-end"
-                        xs={2}
-                    >
+                    <Grid item container direction="row" alignItems="flex-end" justify="flex-end" xs={2}>
                         {/* Mail View */}
                         <FormControl component="fieldset">
-                            <FormLabel component="legend" style={{ textAlign: "right" }}>
+                            <FormLabel component="legend" style={{ textAlign: 'right' }}>
                                 Mail View
                             </FormLabel>
                             <RadioGroup aria-label="calendar View" name="calendarView" row>
@@ -219,7 +197,7 @@ export default function Mail(props) {
                                         />
                                     }
                                     label="Sent Mail"
-                                    style={{ marginRight: "0" }}
+                                    style={{ marginRight: '0' }}
                                 />
                             </RadioGroup>
                         </FormControl>
@@ -227,29 +205,17 @@ export default function Mail(props) {
 
                     <Grid item container direction="column" alignItems="center">
                         <Grid item container justify="center">
-                            <TableContainer
-                                component={Paper}
-                                style={{ width: "80%", marginTop: "1em" }}
-                            >
+                            <TableContainer component={Paper} style={{ width: '80%', marginTop: '1em' }}>
                                 <Table aria-label="Inbox Messages">
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell
-                                                style={styles.tableHeaders.from}
-                                                align="center"
-                                            >
-                                                {mailbox === 0 ? "From" : "To"}
+                                            <TableCell style={styles.tableHeaders.from} align="center">
+                                                {mailbox === 0 ? 'From' : 'To'}
                                             </TableCell>
-                                            <TableCell
-                                                style={styles.tableHeaders.subject}
-                                                align="center"
-                                            >
+                                            <TableCell style={styles.tableHeaders.subject} align="center">
                                                 Subject
                                             </TableCell>
-                                            <TableCell
-                                                style={styles.tableHeaders.date}
-                                                align="center"
-                                            >
+                                            <TableCell style={styles.tableHeaders.date} align="center">
                                                 Date
                                             </TableCell>
                                         </TableRow>
@@ -262,17 +228,13 @@ export default function Mail(props) {
                                                     className="pointerHover"
                                                     key={m._id}
                                                     onClick={() => handleClick(m)}
-                                                    style={
-                                                        i % 2 === 0
-                                                            ? styles.tableData.odd
-                                                            : styles.tableData.even
-                                                    }
+                                                    style={i % 2 === 0 ? styles.tableData.odd : styles.tableData.even}
                                                 >
                                                     <TableCell style={styles.tableData.td}>
                                                         <Typography
                                                             align="center"
                                                             variant="subtitle1"
-                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
+                                                            style={{ fontWeight: m.isRead ? '400' : '600' }}
                                                         >
                                                             {`${m.sender.firstName} ${m.sender.lastName}`}
                                                         </Typography>
@@ -281,7 +243,7 @@ export default function Mail(props) {
                                                         <Typography
                                                             align="center"
                                                             variant="subtitle1"
-                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
+                                                            style={{ fontWeight: m.isRead ? '400' : '600' }}
                                                         >
                                                             {m.subject}
                                                         </Typography>
@@ -290,7 +252,7 @@ export default function Mail(props) {
                                                         <Typography
                                                             align="center"
                                                             variant="subtitle1"
-                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
+                                                            style={{ fontWeight: m.isRead ? '400' : '600' }}
                                                         >
                                                             {m.sendTime}
                                                         </Typography>
@@ -304,33 +266,20 @@ export default function Mail(props) {
                                                     className="pointerHover"
                                                     key={m._id}
                                                     onClick={() => handleClick(m)}
-                                                    style={
-                                                        i % 2 === 0
-                                                            ? styles.tableData.odd
-                                                            : styles.tableData.even
-                                                    }
+                                                    style={i % 2 === 0 ? styles.tableData.odd : styles.tableData.even}
                                                 >
                                                     <TableCell style={styles.tableData.td}>
-                                                        <Typography
-                                                            align="center"
-                                                            variant="subtitle1"
-                                                        >
+                                                        <Typography align="center" variant="subtitle1">
                                                             {`${m.recepient.firstName} ${m.recepient.lastName}`}
                                                         </Typography>
                                                     </TableCell>
                                                     <TableCell style={styles.tableData.td}>
-                                                        <Typography
-                                                            align="center"
-                                                            variant="subtitle1"
-                                                        >
+                                                        <Typography align="center" variant="subtitle1">
                                                             {m.subject}
                                                         </Typography>
                                                     </TableCell>
                                                     <TableCell style={styles.tableData.td}>
-                                                        <Typography
-                                                            align="center"
-                                                            variant="subtitle1"
-                                                        >
+                                                        <Typography align="center" variant="subtitle1">
                                                             {m.sendTime}
                                                         </Typography>
                                                     </TableCell>

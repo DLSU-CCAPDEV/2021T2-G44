@@ -6,7 +6,25 @@ body {
     padding: 0px;
     margin: 0px;
 
+    overflow-y: auto;
+    /* overflow-x: auto; */
+
     font-family: Roboto;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #b8b5ff;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #7868e6;
 }
 
 /* HOMEPAGE ATTRIBUTES */
