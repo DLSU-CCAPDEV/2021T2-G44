@@ -1,4 +1,4 @@
-import eventsDB from '../placeholderData/events.json';
+import request from '../utils/AxiosConfig';
 
 export const getEvent = async (eventID, eventTitle) => {
     const response = await request.get('api/event', {
@@ -8,6 +8,6 @@ export const getEvent = async (eventID, eventTitle) => {
         },
     });
 
-    if (response.status === 201) return true;
+    if (response.success) return true;
     return response;
 };

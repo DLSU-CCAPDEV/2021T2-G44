@@ -20,61 +20,73 @@ export const GetHostsData = async (userEvents) => {
 };
 
 export const GetUserData = async (userID = '') => {
-    const response = await request.get('api/user/' + userID);
-    
-    if(response.status !== 200) {
-        return false;
+    try {
+        const response = await request.get("api/user/" + userID);
+        return response.data;
+    } catch (ex) {
+        console.error(ex);
+        return { success: false, msg: ex };
     }
-    return response.data;
 };
 
 export const RegisterUser = async (userData) => {
-    const response = await request.put('register', userData);
-
-    if (response.status === 201) return true;
-    return response;
+    try {
+        const response = await request.put("register", userData);
+        return response.data;
+    } catch (ex) {
+        console.error(ex);
+        return { success: false, msg: ex };
+    }
 };
 
 export const editUserInfo = async (userData) => {
-    const response = await request.post('api/user', userData);
-
-    if (response.status === 200) return true;
-    return response;
+    try {
+        const response = await request.post("api/user", userData);
+        return response.data;
+    } catch (ex) {
+        console.error(ex);
+        return { success: false, msg: ex };
+    }
 };
 
 export const changeAvatar = async (image) => {
-    // Upload files first
-    const filesData = new FormData();
-    filesData.append('file', image);
-    const fileUploadResponse = await request.post('api/file', filesData);
-    if(fileUploadResponse.status !== 200) {
-        return fileUploadResponse;
-    }
+    try {
+        // Upload files first
+        const filesData = new FormData();
+        filesData.append("file", image);
+        const fileUploadResponse = await request.put("api/file", filesData);
 
-    // Update the user's AVATAR property.
-    const updateStatus = await editUserInfo({
-        avatar: fileUploadResponse.data[0].id
-    });
-    if(updateStatus.status !== 200) {
-        return fileUploadResponse;
+        // Update the user's AVATAR property.
+        const updateStatus = await editUserInfo({
+            avatar: fileUploadResponse.data[0].id,
+        });
+        return updateStatus.data;
+    } catch (ex) {
+        console.error(ex);
+        return { success: false, msg: ex };
     }
-    return true;
 };
 
 export const changePassword = async (userData) => {
-    const response = await request.post('api/user/password', userData);
-
-    if (response.status === 200) return true;
-    return response;
+    try {
+        const response = await request.post("api/user/password", userData);
+        return response.data;
+    } catch (ex) {
+        console.error(ex);
+        return { success: false, msg: ex };
+    }
 };
 
 export const deleteUser = async (userData) => {
-    const response = await request.delete('api/user', {
-        data: userData
-    });
-
-    if (response.status === 200) return true;
-    return response;
+    try {
+        const response = await request.delete("api/user", {
+            data: userData,
+        });
+        return response.data;
+    } catch (ex) {
+        console.error(ex);
+        return { success: false, msg: ex };
+    }
 };
 
 export const renderAvatar = async (avatarID) => {

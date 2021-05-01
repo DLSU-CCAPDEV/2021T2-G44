@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 // Material-UI
-import { Grid, Box, Typography, TextField, withStyles, Fab } from "@material-ui/core";
+import { Snackbar, Grid, Box, Typography, TextField, withStyles, Fab } from "@material-ui/core";
 
 // Component Imports
 import registerCoverImage from "./assets/registerCover.svg";
@@ -45,8 +45,9 @@ function Register(props) {
     });
 
     const history = useHistory();
-    const { uid, updateUid } = useContext(GlobalContext);
+    const { updateUid } = useContext(GlobalContext);
     const [loading, setLoading] = useState(false);
+    const [snackbar, setSnackbar] = useState(null);
 
     // States
     const [email, setEmail] = useState("");
@@ -84,11 +85,13 @@ function Register(props) {
         // Check if passwords match
         if (password !== passwordConfirm) {
             // Show alert to user
-            alert("Passwords do not match.");
+            setLoading(false);
+            setSnackbar("Passwords do not match.");
+            setTimeout(() => setSnackbar(null), 5000);
             return;
         }
 
-        const res = await RegisterUser({
+        const response = await RegisterUser({
             email: email,
             firstName: firstName,
             lastName: lastName,
@@ -96,19 +99,21 @@ function Register(props) {
         });
 
         // Redirect the user
-        if (res === true) {
+        if (response.success) {
             const login = await userLogin(email, password);
             if (login) {
                 await updateUid();
                 history.push("/my-calendar");
                 return;
-            } 
-            alert("Error logging in.");
+            }
             setLoading(false);
-            return;
+            setSnackbar("Uh oh! Something went wrong. Your account was created, but login has failed. Please logging in through the login page.");
+            setTimeout(() => setSnackbar(null), 5000);
         }
-        alert(res.errors.map((err, i) => `${err}\n`));
         setLoading(false);
+        setSnackbar(response.errors[0].msg);
+        setTimeout(() => setSnackbar(null), 5000);
+        return;
     };
 
     const { classes } = props;
@@ -116,6 +121,13 @@ function Register(props) {
     if(!loading)
         return (
             <Grid container direction="column" style={{ padding: "2em 0 8em 0" }}>
+                <Snackbar
+                    open={snackbar ? true : false}
+                    onClose={() => setSnackbar(null)}
+                    message={snackbar}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    key={"topcenter"}
+                />
                 <Grid item container direction="row" justify="center" alignItems="center">
                     <Grid item>
                         <Box className="registerBox">

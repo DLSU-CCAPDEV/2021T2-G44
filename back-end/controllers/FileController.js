@@ -41,7 +41,10 @@ module.exports.uploadFiles = uploadFiles;
  * @param {*} res 
  */
 module.exports.handleUpload = async (req, res) => {
-    res.status(200).json(req.files || req.file);
+    res.status(200).json({
+        success: true,
+        file: req.files || req.file
+    });
 };
 
 /**
@@ -53,15 +56,28 @@ module.exports.getFile = async (req, res) => {
     try {
         const file = await gridFS.find({ _id: new mongoose.Types.ObjectId(req.params.fileID) });
         if(!file) {
-            res.status(404).send("File not found.")
+            res.status(400).json({
+                success: false,
+                errors: [{
+                    msg: "File not found."
+                }]
+            });
             return;
         }
     
-        res.status(200).json((await file.toArray())[0]);
+        res.status(200).json({
+            success: true,
+            file: (await file.toArray())[0]
+        });
 
     } catch(ex) {
         console.error(ex);
-        res.status(500).send(ex);
+        res.status(500).json({
+            success: false,
+            errors: [{
+                msg: ex
+            }]
+        });
     }
 };
 
@@ -80,6 +96,11 @@ module.exports.streamFile = async (req, res) => {
 
     } catch(ex) {
         console.error(ex);
-        res.status(500).send(ex);
+        res.status(500).json({
+            success: false,
+            errors: [{
+                msg: ex
+            }]
+        });
     }
 }

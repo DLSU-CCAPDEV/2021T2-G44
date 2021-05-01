@@ -4,7 +4,7 @@ import { Typography, Grid, Paper } from '@material-ui/core';
 import ToDoComponent from './components/ToDoList';
 import AddEventButton from './components/AddEvent';
 import DeleteEventButton from './components/DeleteEvent';
-import SearchEvent from "./components/SearchEvent";
+import SearchEvent from './components/SearchEvent';
 
 // React Scheduler Material UI
 import {
@@ -28,7 +28,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from "@material-ui/core/FormLabel";
+import FormLabel from '@material-ui/core/FormLabel';
 
 // Art
 import calendarArt from './assets/calendarArt.svg';
@@ -171,33 +171,19 @@ export default function MyCalendar() {
                 {/** Title and controls */}
                 <Grid item container direction="row" justify="space-between">
                     {/** Calendar Art */}
-                    <Grid item container direction="row" xs={2} style={{ marginLeft: "2%" }}>
+                    <Grid item container direction="row" xs={2} style={{ marginLeft: '2%' }}>
                         <img src={calendarArt} alt="Calendar Art" />
                     </Grid>
 
                     {/** Calendar Title */}
-                    <Grid
-                        item
-                        container
-                        direction="column"
-                        justify="center"
-                        alignItems="center"
-                        xs={3}
-                    >
+                    <Grid item container direction="column" justify="center" alignItems="center" xs={3}>
                         <Typography variant="h2" color="primary" className={classes.calendarTitle}>
                             My Calendar
                         </Typography>
                     </Grid>
 
                     {/* Add Event Button */}
-                    <Grid
-                        item
-                        container
-                        direction="column"
-                        xs={2}
-                        justify="flex-end"
-                        alignItems="stretch"
-                    >
+                    <Grid item container direction="column" xs={2} justify="flex-end" alignItems="stretch">
                         <AddEventButton />
                     </Grid>
 
@@ -209,15 +195,11 @@ export default function MyCalendar() {
                         alignItems="flex-end"
                         justify="flex-end"
                         xs={2}
-                        style={{ marginLeft: "0.5em" }}
+                        style={{ marginLeft: '0.5em' }}
                     >
                         {/* Calendar View Radio Buttons */}
                         <FormControl component="fieldset">
-                            <FormLabel
-                                component="legend"
-                                className={classes.radioLabel}
-                                style={{ textAlign: "right" }}
-                            >
+                            <FormLabel component="legend" className={classes.radioLabel} style={{ textAlign: 'right' }}>
                                 Calendar View
                             </FormLabel>
                             <RadioGroup
@@ -227,16 +209,12 @@ export default function MyCalendar() {
                                 onChange={handleChange}
                                 row
                             >
-                                <FormControlLabel
-                                    value="Month"
-                                    control={<Radio color="primary" />}
-                                    label="Month"
-                                />
+                                <FormControlLabel value="Month" control={<Radio color="primary" />} label="Month" />
                                 <FormControlLabel
                                     value="Week"
                                     control={<Radio color="primary" />}
                                     label="Week"
-                                    style={{ marginRight: "0" }}
+                                    style={{ marginRight: '0' }}
                                 />
                             </RadioGroup>
                         </FormControl>
