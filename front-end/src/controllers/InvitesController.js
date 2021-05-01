@@ -1,6 +1,6 @@
-import invitesDB from "../placeholderData/invites.json";
-import { GetUserData } from "../controllers/UserController";
-import { GetEventByID } from "../controllers/EventController";
+import invitesDB from '../placeholderData/invites.json';
+import { GetUserData } from '../controllers/UserController';
+import { getEvent } from '../controllers/EventController';
 
 export const GetInvites = async (userID, start = 0, end = 10) => {
     // Normally, we have our API call here
@@ -19,7 +19,7 @@ export const GetInvites = async (userID, start = 0, end = 10) => {
             .catch((err) => console.error(err));
 
         // Get Event Data
-        GetEventByID(invitation.eventID)
+        getEvent(invitation.eventID)
             .then((event) => (invitation.event = event))
             .catch((err) => console.error(err));
     });
