@@ -2,29 +2,36 @@ import request from "../utils/AxiosConfig";
 
 export async function userLogin(emailAddress, password) {
     // Using the given emailAddress and password, login to the API.
-    const reqBody = {
-        email: emailAddress,
-        password: password,
-    };
-
-    const response = await request.post("auth", reqBody);
-
-    if (response.status === 200) return true;
-    return response.data;
+    try {
+        const reqBody = {
+            email: emailAddress,
+            password: password,
+        };
+    
+        const response = await request.post("auth", reqBody);
+        return response.data;
+    } catch(ex) {
+        console.error(ex);
+        return { success: false, errors: [{msg: ex}]};
+    }
 }
 
 export async function getUID() {
-    const response = await request.get("auth");
-    
-    if (response.status === 200) return response.data.uid;
-    return false;
+    try {
+        const response = await request.get("auth");
+        return response.data;
+    } catch(ex) {
+        console.error(ex);
+        return { success: false, errors: [{msg: ex}]};
+    }
 }
 
 export async function logout() {
     try {
         const response = await request.delete("auth");
+        return response.data;
     } catch (ex) {
-        //console.error(ex);
-        return false;
+        console.error(ex);
+        return { success: false, errors: [{msg: ex}]};
     }
 }

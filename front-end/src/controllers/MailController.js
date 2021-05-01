@@ -2,6 +2,22 @@ import request from "../utils/AxiosConfig";
 
 import { GetUserData } from "./UserController";
 
+export const getMailCount = async () => {
+    // Make API Call
+    try {
+        const response = await request.get("api/mail/count");
+        return response.data;
+    } catch (ex) {
+        console.error(ex);
+        return {
+            success: false,
+            errors: [{
+                msg: ex
+            }]
+        };
+    }
+};
+
 export const getInbox = async (start = 0, limit = 50) => {
     // Make API Call
     try {
@@ -12,36 +28,37 @@ export const getInbox = async (start = 0, limit = 50) => {
             }
         });
 
-        if (response.status === 200) {
+        if (response.data.success) {
             // Add user data for sender & format dates
-            return await Promise.all(response.data.map(async m => new Promise(async (resolve) => {
-                m.sender = await GetUserData(m.senderID);
+            const allMail = await Promise.all(response.data.mail.map(async m => new Promise(async (resolve) => {
+                m.sender = (await GetUserData(m.senderID)).userData;
                 m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
 
                 // Process attachments
-                if(m.attachments.length > 0) {
+                if (m.attachments.length > 0) {
                     await Promise.all(m.attachments.map(async (attachment, i) => new Promise(async resolve => {
                         const fileInfo = await request.get("api/file/" + attachment);
-                        if(fileInfo.status !== 200) {
+                        if (!fileInfo.data.success) {
                             m.attachments[i] = { filename: "", fileID: attachment };
                             return resolve();
                         }
 
                         m.attachments[i] = {
-                            filename: fileInfo.data.filename,
-                            fileID : attachment
+                            filename: fileInfo.data.file.filename,
+                            fileID: attachment
                         };
                         return resolve();
                     })));
                 }
-                console.log(m);
                 return resolve(m);
             })));
+            if (allMail)
+                return { success: true, mail: allMail };
         }
-        return false;
+        return response.data;
     } catch (ex) {
         console.error(ex);
-        return false;
+        return { success: false, errors: [{msg: ex}] };
     }
 };
 
@@ -51,40 +68,55 @@ export const getSent = async (start = 0, limit = 50) => {
         const response = await request.get("api/mail/sentbox", {
             params: {
                 start: start,
-                limit: limit
-            }
+                limit: limit,
+            },
         });
 
-        if (response.status === 200) {
+        if (response.data.success) {
             // Add user data for sender & format dates
-            return await Promise.all(response.data.map(async m => new Promise(async (resolve) => {
-                m.recepient = await GetUserData(m.recepientID);
-                m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
+            const allMail = await Promise.all(
+                response.data.mail.map(
+                    async (m) =>
+                        new Promise(async (resolve) => {
+                            m.recepient = (await GetUserData(m.recepientID)).userData;
+                            m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
 
-                // Process attachments
-                if(m.attachments.length > 0) {
-                    await Promise.all(m.attachments.map(async (attachment, i) => new Promise(async resolve => {
-                        const fileInfo = await request.get("api/file/" + attachment);
-                        if(fileInfo.status !== 200) {
-                            m.attachments[i] = { filename: "", fileID: attachment };
-                            return resolve();
-                        }
+                            // Process attachments
+                            if (m.attachments.length > 0) {
+                                await Promise.all(
+                                    m.attachments.map(
+                                        async (attachment, i) =>
+                                            new Promise(async (resolve) => {
+                                                const fileInfo = await request.get(
+                                                    "api/file/" + attachment
+                                                );
+                                                if (!fileInfo.data.success) {
+                                                    m.attachments[i] = {
+                                                        filename: "",
+                                                        fileID: attachment,
+                                                    };
+                                                    return resolve();
+                                                }
 
-                        m.attachments[i] = {
-                            filename: fileInfo.data.filename,
-                            fileID : attachment
-                        };
-                        return resolve();
-                    })));
-                }
-                console.log(m);
-                return resolve(m);
-            })));
+                                                m.attachments[i] = {
+                                                    filename: fileInfo.data.file.filename,
+                                                    fileID: attachment,
+                                                };
+                                                return resolve();
+                                            })
+                                    )
+                                );
+                            }
+                            return resolve(m);
+                        })
+                )
+            );
+            if (allMail) return { success: true, mail: allMail };
         }
-        return false;
+        return response.data;
     } catch (ex) {
         console.error(ex);
-        return false;
+        return { success: false, errors: [{ msg: ex }] };
     }
 };
 
@@ -97,15 +129,15 @@ export const sendMessage = async (userEmail, messageContent) => {
             filesData.append('file', file);
         });
 
-        const fileUploadResponse = await request.post('api/file', filesData);
+        const fileUploadResponse = await request.put('api/file', filesData);
 
         messageContent.attachments = [];
-        if(fileUploadResponse.status === 200) {
-            fileUploadResponse.data.forEach(fileData => {
+        if(fileUploadResponse.data.success) {
+            fileUploadResponse.data.file.forEach(fileData => {
                 messageContent.attachments.push(fileData.id);
             });
         } else {
-            alert("Error processing attachments.");
+            return fileUploadResponse.data;
         }
 
         const response = await request.put("api/mail/send/" + userEmail, {
@@ -113,13 +145,11 @@ export const sendMessage = async (userEmail, messageContent) => {
             content: messageContent.content,
             attachments: messageContent.attachments
         });
-    
-        if(response.status === 201)
-            return true;
-        return false;
+        
+        return response.data;
     } catch(ex) {
         console.error(ex);
-        return false;
+        return { success: false, errors: [{ msg: ex }] };
     }
 };
 
