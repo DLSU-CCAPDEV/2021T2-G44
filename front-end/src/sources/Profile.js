@@ -1,5 +1,3 @@
-// import './assets/styles.css';
-
 import { DropzoneDialog } from 'material-ui-dropzone';
 
 import { useEffect, useState, React, useContext } from 'react';
@@ -407,16 +405,23 @@ export default function Profile() {
     if (!loading) {
         return (
             // entire main content page
-            <Grid container direction="column" alignItems="stretch" style={{ padding: '4em 0 5em 0' }}>
-                <Grid item container direction="row" alignItems="stretch">
+            <Grid container direction="column" justify="center" alignItems="center" style={{ padding: '4em 0 1em 0' }}>
+                <Snackbar
+                    open={snackbar ? true : false}
+                    onClose={() => setSnackbar(null)}
+                    message={snackbar}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    key={'topcenter'}
+                />
+                <Grid container direction="row" justify="center" alignItems="stretch">
                     {/* The LeftHand side */}
                     {/* 
-                            Todo: 
-                            Profile Pic
-                            Name
-                            Bio
-                            Change Bio Button 
-                        */}
+                    Todo: 
+                    Profile Pic
+                    Name
+                    Bio
+                    Change Bio Button 
+                */}
                     <Grid item direction="column" lg={4} className={classes.stretcher}>
                         <Paper variant="elevation" elevation={8} className={classes.profileGrid}>
                             {/* Grid Inside Paper */}
@@ -457,14 +462,6 @@ export default function Profile() {
                                         showPreviews={true}
                                         showFileNamesInPreview={true}
                                     />
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        startIcon={!lastNameEditable && <CreateIcon />}
-                                        onClick={handleLastNameChange}
-                                    >
-                                        {lastNameEditable ? 'Confirm' : 'Edit'}
-                                    </Button>
                                 </Grid>
 
                                 <Divider variant="middle"></Divider>
@@ -488,7 +485,7 @@ export default function Profile() {
                                         }}
                                         size="small"
                                         variant="outlined"
-                                        onChange={(e) => setFirstNameFieldVal(e.target.value)}
+                                        onChange={(e) => setBioFieldVal(e.target.value)}
                                     />
                                     <Button
                                         variant="contained"
@@ -546,118 +543,29 @@ export default function Profile() {
                                 >
                                     {firstNameEditable ? 'Confirm' : 'Edit'}
                                 </Button>
-                                <Dialog
-                                    open={changingPassword}
-                                    onClose={() => setChangingPassword(false)}
-                                    aria-labelledby="form-dialog-title"
-                                >
-                                    <DialogTitle id="form-dialog-title">Changing Your Password</DialogTitle>
-                                    <DialogContent>
-                                        <DialogContentText>
-                                            In order to Change your password please enter your current password, along
-                                            with your new password.
-                                        </DialogContentText>
-                                        <FormControl className={classes.passField} variant="filled">
-                                            <InputLabel htmlFor="filled-adornment-password">
-                                                Current Password
-                                            </InputLabel>
-                                            <FilledInput
-                                                id="currentPasswordField"
-                                                value={currentPassFieldVal}
-                                                type={showPassword ? 'text' : 'password'}
-                                                endAdornment={
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label="toggle password visibility"
-                                                            onClick={handleShowPassword}
-                                                            onMouseDown={handleShowPassword}
-                                                            edge="end"
-                                                        >
-                                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                }
-                                                onChange={(e) => setCurrentPassFieldVal(e.target.value)}
-                                            />
-                                        </FormControl>
+                            </Grid>
 
-                                        <Divider variant="middle" className={classes.dividingClass}></Divider>
-
-                                        <FormControl className={classes.passField} variant="filled">
-                                            <InputLabel htmlFor="filled-adornment-password">New Password</InputLabel>
-                                            <FilledInput
-                                                id="newPasswordField"
-                                                value={newPassFieldVal}
-                                                type={showPassword ? 'text' : 'password'}
-                                                endAdornment={
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label="toggle password visibility"
-                                                            onClick={handleShowPassword}
-                                                            onMouseDown={handleShowPassword}
-                                                            edge="end"
-                                                        >
-                                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                }
-                                                onChange={(e) => setNewPassFieldVal(e.target.value)}
-                                            />
-                                        </FormControl>
-                                        <FormControl
-                                            className={classes.passField}
-                                            variant="filled"
-                                            style={{ marginTop: '1em', marginBottom: '1em' }}
-                                        >
-                                            <InputLabel htmlFor="filled-adornment-password">
-                                                Confirm Password
-                                            </InputLabel>
-                                            <FilledInput
-                                                id="confirmNewPasswordField"
-                                                value={confirmPassFieldVal}
-                                                type={showPassword ? 'text' : 'password'}
-                                                endAdornment={
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label="toggle password visibility"
-                                                            onClick={handleShowPassword}
-                                                            onMouseDown={handleShowPassword}
-                                                            edge="end"
-                                                        >
-                                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                }
-                                                onChange={(e) => setConfirmPassFieldVal(e.target.value)}
-                                            />
-                                        </FormControl>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={() => setChangingPassword(false)} color="primary">
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            variant="contained"
-                                            onClick={handlePasswordChange}
-                                            color="primary"
-                                            startIcon={<LockIcon />}
-                                        >
-                                            Confirm Password
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
-
-                                <Grid item container direction="row" className={classes.textSpacer}>
-                                    <Typography variant="h4">Delete Account</Typography>
-                                </Grid>
-                                <ColorButton
+                            <Grid item container direction="row" alignItems="center">
+                                <TextField
+                                    id="lastNameTextBox"
+                                    label="Last Name"
+                                    value={lastNameFieldVal}
+                                    InputProps={{
+                                        readOnly: !lastNameEditable,
+                                    }}
+                                    className={classes.profileField}
+                                    size="small"
+                                    variant="filled"
+                                    onChange={(e) => setLastNameFieldVal(e.target.value)}
+                                />
+                                <Button
                                     variant="contained"
                                     color="primary"
                                     startIcon={!lastNameEditable && <CreateIcon />}
                                     onClick={handleLastNameChange}
                                 >
                                     {lastNameEditable ? 'Confirm' : 'Edit'}
-                                </ColorButton>
+                                </Button>
                             </Grid>
 
                             <Divider variant="middle"></Divider>
@@ -672,7 +580,9 @@ export default function Profile() {
                                     label="Address"
                                     value={emailFieldVal}
                                     className={classes.emailField}
-                                    InputProps={{ readOnly: !emailEditable }}
+                                    InputProps={{
+                                        readOnly: !emailEditable,
+                                    }}
                                     size="small"
                                     variant="filled"
                                     onChange={(e) => setEmailFieldVal(e.target.value)}
@@ -757,6 +667,31 @@ export default function Profile() {
                                             onChange={(e) => setNewPassFieldVal(e.target.value)}
                                         />
                                     </FormControl>
+                                    <FormControl
+                                        className={classes.passField}
+                                        variant="filled"
+                                        style={{ marginTop: '1em', marginBottom: '1em' }}
+                                    >
+                                        <InputLabel htmlFor="filled-adornment-password">Confirm Password</InputLabel>
+                                        <FilledInput
+                                            id="confirmNewPasswordField"
+                                            value={confirmPassFieldVal}
+                                            type={showPassword ? 'text' : 'password'}
+                                            endAdornment={
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={handleShowPassword}
+                                                        onMouseDown={handleShowPassword}
+                                                        edge="end"
+                                                    >
+                                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            }
+                                            onChange={(e) => setConfirmPassFieldVal(e.target.value)}
+                                        />
+                                    </FormControl>
                                 </DialogContent>
                                 <DialogActions>
                                     <Button onClick={() => setChangingPassword(false)} color="primary">
@@ -772,8 +707,6 @@ export default function Profile() {
                                     </Button>
                                 </DialogActions>
                             </Dialog>
-
-                            <Divider variant="middle"></Divider>
 
                             <Grid item container direction="row" className={classes.textSpacer}>
                                 <Typography variant="h4">Delete Account</Typography>
@@ -869,7 +802,7 @@ export default function Profile() {
             </Grid>
         );
     } else {
-        // Return loading screen heres
+        // Return loading screen here
         return <Loading loadingText="Loading Profile Page" />;
     }
 }

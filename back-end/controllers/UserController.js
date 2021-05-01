@@ -15,9 +15,11 @@ module.exports.createUser = async (req, res) => {
     if (exists) {
         res.status(400).json({
             success: false,
-            errors: [{
-                msg: "A user with that email already exists."
-            }]
+            errors: [
+                {
+                    msg: 'A user with that email already exists.',
+                },
+            ],
         });
         return;
     }
@@ -45,9 +47,11 @@ module.exports.createUser = async (req, res) => {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
             res.status(500).json({
                 success: false,
-                errors: [{
-                    msg: err
-                }]
+                errors: [
+                    {
+                        msg: err,
+                    },
+                ],
             });
         });
 };
@@ -66,16 +70,18 @@ module.exports.getCurrentUser = async (req, res) => {
     if (!userData) {
         res.status(400).json({
             success: false,
-            errors: [{
-                msg: "User not found."
-            }]
+            errors: [
+                {
+                    msg: 'User not found.',
+                },
+            ],
         });
     } else {
         // Remove password
         userData.password = undefined;
         res.status(200).json({
             success: true,
-            userData: userData
+            userData: userData,
         });
     }
 };
@@ -95,25 +101,25 @@ module.exports.getUser = async (req, res) => {
         if (!userData) {
             res.status(404).json({
                 success: false,
-                errors: [{
-                    msg: "User not found."
-                }]
+                errors: [
+                    {
+                        msg: 'User not found.',
+                    },
+                ],
             });
         } else {
             // Remove password
             userData.password = undefined;
             res.status(200).json({
                 success: true,
-                userData: userData
+                userData: userData,
             });
         }
-    } catch(ex) {
+    } catch (ex) {
         console.error(ex);
         res.status(500).json({
             success: false,
-            errors: [
-                { msg: ex }
-            ]
+            errors: [{ msg: ex }],
         });
     }
 };
@@ -133,8 +139,8 @@ module.exports.updateUser = async (req, res) => {
     delete userData.password;
 
     // Case the names properly (if there are)
-    if(userData.firstName) userData.firstName = titleCase(firstName);
-    if(userData.lastName) userData.lastName = titleCase(lastName);
+    if (userData.firstName) userData.firstName = titleCase(userData.firstName);
+    if (userData.lastName) userData.lastName = titleCase(userData.lastName);
 
     // Update user data
     UserModel.updateOne({ _id: userID }, userData)
@@ -149,9 +155,11 @@ module.exports.updateUser = async (req, res) => {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
             res.status(500).json({
                 success: false,
-                errors: [{
-                    msg: err
-                }]
+                errors: [
+                    {
+                        msg: err,
+                    },
+                ],
             });
         });
 };
@@ -170,9 +178,11 @@ module.exports.changePassword = async (req, res) => {
         if (!passwordValidation) {
             res.status(401).json({
                 success: false,
-                errors: [{
-                    msg: "The old password provided is invalid."
-                }]
+                errors: [
+                    {
+                        msg: 'The old password provided is invalid.',
+                    },
+                ],
             });
             return;
         }
@@ -183,15 +193,13 @@ module.exports.changePassword = async (req, res) => {
 
         await UserModel.updateOne({ _id: userID }, { password: newPasswordHash });
         res.status(200).json({
-            success: true
+            success: true,
         });
     } catch (ex) {
         console.error(ex);
         res.status(500).json({
             success: false,
-            errors: [
-                { msg: ex }
-            ]
+            errors: [{ msg: ex }],
         });
     }
 };
@@ -210,9 +218,11 @@ module.exports.deleteUser = async (req, res) => {
         if (!passwordValidation) {
             res.status(401).json({
                 success: false,
-                errors: [{
-                    msg: "The password provided is invalid."
-                }]
+                errors: [
+                    {
+                        msg: 'The password provided is invalid.',
+                    },
+                ],
             });
             return;
         }
@@ -225,18 +235,16 @@ module.exports.deleteUser = async (req, res) => {
         console.error(ex);
         res.status(500).json({
             success: false,
-            errors: [
-                { msg: ex }
-            ]
+            errors: [{ msg: ex }],
         });
     }
 };
 
 /**
  * This controller method searches a user by name.
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * @param {*} req
+ * @param {*} res
+ * @returns
  */
 module.exports.searchUserByName = async (req, res) => {
     // Get the query parameters
@@ -245,28 +253,26 @@ module.exports.searchUserByName = async (req, res) => {
     try {
         // Mongoose Query
         const result = await UserModel.aggregate([
-            {$project: { "name" : { $concat : [ "$firstName", " ", "$lastName" ] } }},
-            {$match: {"name": {$regex: '.*' + name + '.*', $options: 'i'}}}
+            { $project: { 'name': { $concat: ['$firstName', ' ', '$lastName'] } } },
+            { $match: { 'name': { $regex: '.*' + name + '.*', $options: 'i' } } },
         ]);
 
-        if(!result) {
+        if (!result) {
             res.status(200).json({
                 success: true,
-                results: []
+                results: [],
             });
         }
 
         res.status(200).json({
             success: true,
-            results: result
+            results: result,
         });
-    } catch(ex) {
+    } catch (ex) {
         console.error(ex);
         res.status(500).json({
             success: false,
-            errors: [
-                { msg: ex }
-            ]
+            errors: [{ msg: ex }],
         });
     }
 };
@@ -276,11 +282,11 @@ module.exports.searchUserByName = async (req, res) => {
 /**
  * This function properly cases a string as a title.
  * The first letter of each word will be capitalized.
- * @param {*} string 
+ * @param {*} string
  */
-const titleCase = string => {
+const titleCase = (string) => {
     const tokens = string.toLowerCase().split(' ');
-    for(let i = 0; i < tokens.length; i++) {
+    for (let i = 0; i < tokens.length; i++) {
         tokens[i] = tokens[i].charAt(0).toUpperCase() + tokens[i].substring(1);
     }
     return tokens.join(' ');

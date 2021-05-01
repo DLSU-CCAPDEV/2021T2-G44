@@ -37,7 +37,7 @@ const buttonStyles = {
 };
 
 function Login(props) {
-    const { uid, updateUid } = useContext(GlobalContext);
+    const { updateUid } = useContext(GlobalContext);
 
     useEffect(() => {
         document.title = 'Login - Sched-It';
@@ -80,7 +80,7 @@ function Login(props) {
     };
 
     return (
-        <Grid container direction="column" style={{ padding: '5.5em 0 2.5em 0' }}>
+        <Grid container direction="column" style={{ padding: '5em 0 8em 0' }}>
             <Snackbar
                 open={snackbar ? true : false}
                 onClose={() => setSnackbar(null)}
