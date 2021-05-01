@@ -30,7 +30,7 @@ export default function ViewMessage(props) {
 
     // Tag the message as read
     useEffect(() => {
-        if (!props.message.isRead) {
+        if (!props.message.isRead && props.message.sender) {
             props.message.isRead = true;
             toggleRead(props.message._id);
         }
@@ -89,7 +89,8 @@ export default function ViewMessage(props) {
                                 ))}
                             </Typography>
                             <br />
-                            <Typography>Attachments</Typography>
+                            {props.message.attachments.length > 0 && <Typography>Attachments</Typography>}
+                            {props.message.attachments.length === 0 && <Typography>No attachments</Typography>}
                             {props.message.attachments.map((attachment, i) => {
                                 return (
                                     <Button

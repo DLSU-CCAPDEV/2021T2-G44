@@ -9,6 +9,7 @@ import { DropzoneDialog } from 'material-ui-dropzone';
 // import "../assets/styles.css";
 
 import {
+    Snackbar,
     Grid,
     TextField,
     Button,
@@ -38,6 +39,7 @@ export default function SendMessage(props) {
     const [attachments, setAttachments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+    const [snackbar, setSnackbar] = useState(null);
 
     // Initialize message states if ever this is a reply
     useEffect(() => {
@@ -57,18 +59,22 @@ export default function SendMessage(props) {
         // Call send message
         props.setDialogOpen(false);
 
+        setSnackbar('Your message is being sent.');
         const sendStatus = await sendMessage(recepientEmail, {
             subject: messageSubject,
             content: messageContent,
             attachments: attachments,
         });
 
-        if (!sendStatus) {
-            alert('Message send failed.');
+        if (!sendStatus.success) {
+            console.log(sendStatus);
+            setSnackbar(sendStatus.errors[0].msg);
+            setTimeout(() => setSnackbar(null), 5000);
             return;
         }
 
-        alert('Message has been sent.');
+        setSnackbar('Message has been sent.');
+        setTimeout(() => setSnackbar(null), 5000);
     };
 
     // Dropzone Handlers
@@ -86,6 +92,13 @@ export default function SendMessage(props) {
 
     return (
         <div>
+            <Snackbar
+                open={snackbar ? true : false}
+                onClose={() => setSnackbar(null)}
+                message={snackbar}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                key={'topcenter'}
+            />
             <Dialog open={props.dialogOpen} TransitionComponent={Transition} onClose={handleClose}>
                 {loading && <Loading />}
                 {!loading && (

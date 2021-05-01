@@ -10,7 +10,7 @@ import { GlobalContext } from '../controllers/ContextController';
 import Loading from './components/Loading';
 
 // Component Imports
-import { Paper } from '@material-ui/core';
+import { Paper, Snackbar } from '@material-ui/core';
 import { Avatar } from '@material-ui/core';
 import { Typography, Grid, TextField } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
@@ -124,6 +124,7 @@ export default function Profile() {
 
     const history = useHistory();
     const { updateUid } = useContext(GlobalContext);
+    const [snackbar, setSnackbar] = useState(null);
 
     // State for User
     const [loading, setLoading] = useState(true);
@@ -149,30 +150,60 @@ export default function Profile() {
     const [showPassword, setShowPassword] = useState(false);
     const [currentPassFieldVal, setCurrentPassFieldVal] = useState('');
     const [newPassFieldVal, setNewPassFieldVal] = useState('');
+    const [confirmPassFieldVal, setConfirmPassFieldVal] = useState('');
 
     const [deleteAccConfirmation, setDeleteAccConfirmation] = useState(false);
     const [deleteAccount, setDeleteAccount] = useState(false);
     const [delPassFieldVal, setDelPassFieldVal] = useState('');
 
     useEffect(() => {
-        document.title = 'Profile - Sched-It';
+        const prepareComponent = async () => {
+            if (!loading) setLoading(true);
 
-        // Get user data
-        GetUserData()
-            .then((data) => {
-                setFirstName(data.firstName);
-                setLastName(data.lastName);
-                setBio(data.bio);
-                setEmail(data.email);
-                setAvatar(data.avatar);
+            // Query the API for the user data
+            const userData = await GetUserData();
 
-                setFirstNameFieldVal(data.firstName);
-                setLastNameFieldVal(data.lastName);
-                setBioFieldVal(data.bio);
-                setEmailFieldVal(data.email);
-            })
-            .then(() => setLoading(false))
-            .catch((err) => console.error(err));
+            // Check if the query is successful or not
+            if (!userData.success) {
+                setLoading(false);
+                setSnackbar(
+                    'There has been a problem loading your user data. Please try again later. Error code: LOAD_ERROR.'
+                );
+                setTimeout(() => {
+                    history.push('/my-calendar');
+                    setSnackbar(null);
+                }, 5000);
+                return;
+            }
+
+            const data = userData.userData;
+
+            setFirstName(data.firstName);
+            setLastName(data.lastName);
+            setBio(data.bio);
+            setEmail(data.email);
+            setAvatar(data.avatar);
+
+            setFirstNameFieldVal(data.firstName);
+            setLastNameFieldVal(data.lastName);
+            setBioFieldVal(data.bio);
+            setEmailFieldVal(data.email);
+
+            document.title = `${data.firstName} ${data.lastName} - Profile`;
+
+            setLoading(false);
+        };
+
+        prepareComponent().catch((err) => {
+            console.error(err);
+            setSnackbar(
+                'There has been a problem loading your user data. Please try again later. Error code: VIEW_ERROR.'
+            );
+            setTimeout(() => {
+                history.push('/my-calendar');
+                setSnackbar(null);
+            }, 5000);
+        });
     }, []);
 
     const handleBioChange = async (e) => {
@@ -180,16 +211,21 @@ export default function Profile() {
             setBioEditable(true);
         } else {
             setBioEditable(false);
+            setSnackbar('Updating your bio.');
             const bioEditStatus = await editUserInfo({
                 bio: bioFieldVal,
             });
-            if (bioEditStatus != true) {
-                alert(bioEditStatus);
-                setFirstName(bio);
-                console.log(bioEditStatus);
+            if (!bioEditStatus.success) {
+                setBioFieldVal(bio);
+                setSnackbar(null);
+                setSnackbar(bioEditStatus.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
                 return;
             }
-            setBio(bioFieldVal);
+            setBio(bioEditStatus.userData.bio);
+            setSnackbar(null);
+            setSnackbar('Your bio has been updated.');
+            setTimeout(() => setSnackbar(null), 5000);
         }
     };
 
@@ -198,16 +234,21 @@ export default function Profile() {
             setFirstNameEditable(true);
         } else {
             setFirstNameEditable(false);
-            const firstNameEditStatus = await editUserInfo({
-                firstname: firstNameFieldVal,
+            setSnackbar('Updating your first name.');
+            const firstNameResponse = await editUserInfo({
+                firstName: firstNameFieldVal,
             });
-            if (firstNameEditStatus != true) {
-                alert(firstNameEditStatus);
-                setFirstName(firstName);
-                console.log(firstNameEditStatus);
+            if (!firstNameResponse.success) {
+                setFirstNameFieldVal(firstName);
+                setSnackbar(null);
+                setSnackbar(firstNameResponse.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
                 return;
             }
-            setFirstName(firstNameFieldVal);
+            setFirstName(firstNameResponse.userData.firstName);
+            setSnackbar(null);
+            setSnackbar('Your first name has been updated.');
+            setTimeout(() => setSnackbar(null), 5000);
         }
     };
 
@@ -216,16 +257,21 @@ export default function Profile() {
             setLastNameEditable(true);
         } else {
             setLastNameEditable(false);
-            const lastNameEditStatus = await editUserInfo({
-                lastname: lastNameFieldVal,
+            setSnackbar('Updating your last name.');
+            const lastNameResponse = await editUserInfo({
+                lastName: lastNameFieldVal,
             });
-            if (lastNameEditStatus != true) {
-                alert(lastNameEditStatus);
-                setLastName(lastName);
-                console.log(lastNameEditStatus);
+            if (!lastNameResponse.success) {
+                setLastNameFieldVal(lastName);
+                setSnackbar(null);
+                setSnackbar(lastNameResponse.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
                 return;
             }
-            setLastName(lastNameFieldVal);
+            setLastName(lastNameResponse.userData.lastName);
+            setSnackbar(null);
+            setSnackbar('Your last name has been updated.');
+            setTimeout(() => setSnackbar(null), 5000);
         }
     };
 
@@ -234,16 +280,21 @@ export default function Profile() {
             setEmailEditable(true);
         } else {
             setEmailEditable(false);
-            const emailEditStatus = await editUserInfo({
+            setSnackbar('Updating your email address.');
+            const emailResponse = await editUserInfo({
                 email: emailFieldVal,
             });
-            if (emailEditStatus != true) {
-                alert(emailEditStatus);
-                setEmail(email);
-                console.log(emailEditStatus);
+            if (!emailResponse.success) {
+                setLastNameFieldVal(email);
+                setSnackbar(null);
+                setSnackbar(emailResponse.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
                 return;
             }
-            setEmail(emailFieldVal);
+            setEmail(emailResponse.userData.email);
+            setSnackbar(null);
+            setSnackbar('Your email address has been updated.');
+            setTimeout(() => setSnackbar(null), 5000);
         }
     };
 
@@ -251,17 +302,40 @@ export default function Profile() {
         if (!changingPassword) {
             setChangingPassword(true);
         } else {
+            // Check first if passwords match
+            if (newPassFieldVal !== confirmPassFieldVal) {
+                setCurrentPassFieldVal('');
+                setNewPassFieldVal('');
+                setConfirmPassFieldVal('');
+                setShowPassword(false);
+                setSnackbar(null);
+                setSnackbar('Passwords do not match.');
+                setTimeout(() => setSnackbar(null), 5000);
+                return;
+            }
             setChangingPassword(false);
-            const passwordChangeStatus = await changePassword({
+            setSnackbar('Updating your password.');
+            const passwordResponse = await changePassword({
                 oldPassword: currentPassFieldVal,
                 newPassword: newPassFieldVal,
             });
-            if (passwordChangeStatus != true) {
-                alert(passwordChangeStatus);
-                console.log(passwordChangeStatus);
+            if (!passwordResponse.success) {
+                setCurrentPassFieldVal('');
+                setNewPassFieldVal('');
+                setConfirmPassFieldVal('');
+                setShowPassword(false);
+                setSnackbar(null);
+                setSnackbar(passwordResponse.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
                 return;
             }
+            setCurrentPassFieldVal('');
+            setNewPassFieldVal('');
+            setConfirmPassFieldVal('');
             setShowPassword(false);
+            setSnackbar(null);
+            setSnackbar('Your password has been updated.');
+            setTimeout(() => setSnackbar(null), 5000);
         }
     };
 
@@ -288,12 +362,16 @@ export default function Profile() {
         } else {
             // Closes the second Dialog Box
             setDeleteAccount(false);
+            setSnackbar(null);
+            setSnackbar('Deleting your account.');
             const accDeleteStatus = await deleteUser({
                 password: delPassFieldVal,
             });
-            if (accDeleteStatus != true) {
-                alert(accDeleteStatus);
-                console.log(accDeleteStatus);
+            if (!accDeleteStatus.success) {
+                setDelPassFieldVal('');
+                setSnackbar(null);
+                setSnackbar(accDeleteStatus.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
                 return;
             }
 
@@ -379,6 +457,14 @@ export default function Profile() {
                                         showPreviews={true}
                                         showFileNamesInPreview={true}
                                     />
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        startIcon={!lastNameEditable && <CreateIcon />}
+                                        onClick={handleLastNameChange}
+                                    >
+                                        {lastNameEditable ? 'Confirm' : 'Edit'}
+                                    </Button>
                                 </Grid>
 
                                 <Divider variant="middle"></Divider>
@@ -460,29 +546,118 @@ export default function Profile() {
                                 >
                                     {firstNameEditable ? 'Confirm' : 'Edit'}
                                 </Button>
-                            </Grid>
+                                <Dialog
+                                    open={changingPassword}
+                                    onClose={() => setChangingPassword(false)}
+                                    aria-labelledby="form-dialog-title"
+                                >
+                                    <DialogTitle id="form-dialog-title">Changing Your Password</DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText>
+                                            In order to Change your password please enter your current password, along
+                                            with your new password.
+                                        </DialogContentText>
+                                        <FormControl className={classes.passField} variant="filled">
+                                            <InputLabel htmlFor="filled-adornment-password">
+                                                Current Password
+                                            </InputLabel>
+                                            <FilledInput
+                                                id="currentPasswordField"
+                                                value={currentPassFieldVal}
+                                                type={showPassword ? 'text' : 'password'}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleShowPassword}
+                                                            onMouseDown={handleShowPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                                onChange={(e) => setCurrentPassFieldVal(e.target.value)}
+                                            />
+                                        </FormControl>
 
-                            <Grid item container direction="row" alignItems="center">
-                                <TextField
-                                    id="lastNameTextBox"
-                                    label="Last Name"
-                                    value={lastNameFieldVal}
-                                    InputProps={{
-                                        readOnly: !lastNameEditable,
-                                    }}
-                                    className={classes.profileField}
-                                    size="small"
-                                    variant="filled"
-                                    onChange={(e) => setLastNameFieldVal(e.target.value)}
-                                />
-                                <Button
+                                        <Divider variant="middle" className={classes.dividingClass}></Divider>
+
+                                        <FormControl className={classes.passField} variant="filled">
+                                            <InputLabel htmlFor="filled-adornment-password">New Password</InputLabel>
+                                            <FilledInput
+                                                id="newPasswordField"
+                                                value={newPassFieldVal}
+                                                type={showPassword ? 'text' : 'password'}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleShowPassword}
+                                                            onMouseDown={handleShowPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                                onChange={(e) => setNewPassFieldVal(e.target.value)}
+                                            />
+                                        </FormControl>
+                                        <FormControl
+                                            className={classes.passField}
+                                            variant="filled"
+                                            style={{ marginTop: '1em', marginBottom: '1em' }}
+                                        >
+                                            <InputLabel htmlFor="filled-adornment-password">
+                                                Confirm Password
+                                            </InputLabel>
+                                            <FilledInput
+                                                id="confirmNewPasswordField"
+                                                value={confirmPassFieldVal}
+                                                type={showPassword ? 'text' : 'password'}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleShowPassword}
+                                                            onMouseDown={handleShowPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                                onChange={(e) => setConfirmPassFieldVal(e.target.value)}
+                                            />
+                                        </FormControl>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={() => setChangingPassword(false)} color="primary">
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            onClick={handlePasswordChange}
+                                            color="primary"
+                                            startIcon={<LockIcon />}
+                                        >
+                                            Confirm Password
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
+
+                                <Grid item container direction="row" className={classes.textSpacer}>
+                                    <Typography variant="h4">Delete Account</Typography>
+                                </Grid>
+                                <ColorButton
                                     variant="contained"
                                     color="primary"
                                     startIcon={!lastNameEditable && <CreateIcon />}
                                     onClick={handleLastNameChange}
                                 >
                                     {lastNameEditable ? 'Confirm' : 'Edit'}
-                                </Button>
+                                </ColorButton>
                             </Grid>
 
                             <Divider variant="middle"></Divider>

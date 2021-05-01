@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import ProtectedRoute from './sources/components/ProtectedRoute';
 
@@ -51,8 +51,11 @@ theme = responsiveFontSizes(theme);
 
 export default function Routes(props) {
     const [loading, setLoading] = useState(true);
-    const { updateUid } = useContext(GlobalContext);
-    updateUid().then(() => setLoading(false));
+    const { uid, updateUid } = useContext(GlobalContext);
+
+    useEffect(() => {
+        updateUid().then(() => setLoading(false));
+    }, [uid, updateUid]);
 
     if (!loading)
         return (

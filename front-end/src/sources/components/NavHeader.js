@@ -28,10 +28,11 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
 import { logout } from '../../controllers/AuthController';
 import { GlobalContext } from '../../controllers/ContextController';
-import Loading from './Loading';
+
+import logoSVG from '../assets/whiteLogo.svg';
 
 const barStyles = {
-    filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
+    filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))'
 };
 
 const brandingStyles = {
@@ -139,9 +140,7 @@ export default function NavigationHeader(props) {
                     <Grid container direction="row" spacing={3} alignItems="center">
                         <Grid item lg={8}>
                             <Link to="/" className="container" style={brandingStyles}>
-                                <img src={logo} className="logo" alt="Website Logo" />
-                                <div className="logoLine" />
-                                <h1 id="headerName">Sched-It</h1>
+                                <img src={logoSVG} className="logo" alt="Website Logo" />
                             </Link>
                         </Grid>
 
@@ -194,6 +193,7 @@ export default function NavigationHeader(props) {
     const handleLogout = () => {
         // Clear cookie
         setOpen(false);
+        console.log('reasfd');
         history.push('/loading');
         logout()
             .then(() => updateUid())
@@ -208,7 +208,7 @@ export default function NavigationHeader(props) {
 
     const loggedIn = () => {
         return (
-            <div className={classes.root}>
+            <div className={classes.root} style={ { marginBottom: "1em" } }>
                 <AppBar
                     position="fixed"
                     style={barStyles}
@@ -220,9 +220,7 @@ export default function NavigationHeader(props) {
                         <Grid container direction="row" spacing={3} alignItems="center">
                             <Grid item lg={8}>
                                 <Link to="/" className="container" style={brandingStyles} href="index.html">
-                                    <img src={logo} className="logo" alt="Website Logo" />
-                                    <div className="logoLine" />
-                                    <h1 id="headerName">Sched-It</h1>
+                                    <img src={logoSVG} className="logo" alt="Website Logo" />
                                 </Link>
                             </Grid>
                         </Grid>
