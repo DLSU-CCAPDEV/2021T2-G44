@@ -21,7 +21,7 @@ export const GetHostsData = async (userEvents) => {
 
 export const GetUserData = async (userID = '') => {
     try {
-        const response = await request.get("api/user/" + userID);
+        const response = await request.get('api/user/' + userID);
         return response.data;
     } catch (ex) {
         console.error(ex);
@@ -31,7 +31,7 @@ export const GetUserData = async (userID = '') => {
 
 export const RegisterUser = async (userData) => {
     try {
-        const response = await request.put("register", userData);
+        const response = await request.put('register', userData);
         return response.data;
     } catch (ex) {
         console.error(ex);
@@ -41,7 +41,7 @@ export const RegisterUser = async (userData) => {
 
 export const editUserInfo = async (userData) => {
     try {
-        const response = await request.post("api/user", userData);
+        const response = await request.post('api/user', userData);
         return response.data;
     } catch (ex) {
         console.error(ex);
@@ -53,8 +53,8 @@ export const changeAvatar = async (image) => {
     try {
         // Upload files first
         const filesData = new FormData();
-        filesData.append("file", image);
-        const fileUploadResponse = await request.put("api/file", filesData);
+        filesData.append('file', image);
+        const fileUploadResponse = await request.put('api/file', filesData);
 
         // Update the user's AVATAR property.
         const updateStatus = await editUserInfo({
@@ -69,7 +69,7 @@ export const changeAvatar = async (image) => {
 
 export const changePassword = async (userData) => {
     try {
-        const response = await request.post("api/user/password", userData);
+        const response = await request.post('api/user/password', userData);
         return response.data;
     } catch (ex) {
         console.error(ex);
@@ -79,7 +79,7 @@ export const changePassword = async (userData) => {
 
 export const deleteUser = async (userData) => {
     try {
-        const response = await request.delete("api/user", {
+        const response = await request.delete('api/user', {
             data: userData,
         });
         return response.data;
@@ -92,8 +92,7 @@ export const deleteUser = async (userData) => {
 export const renderAvatar = async (avatarID) => {
     try {
         // API Call to Stream
-        
-    } catch(ex) {
+    } catch (ex) {
         console.error(ex);
         return false;
     }

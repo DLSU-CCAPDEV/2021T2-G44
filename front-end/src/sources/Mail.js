@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { getInbox, getSent, getMailCount } from '../controllers/MailController';
 
-import './assets/styles.css';
+// import './assets/styles.css';
 
 import ViewMessage from './components/ViewMessage';
 import SendMessage from './components/SendMessage';
-import Loading from "./components/Loading";
+import Loading from './components/Loading';
 
 // Material-UI
 import {
@@ -20,7 +20,7 @@ import {
     TableHead,
     TableRow,
     Paper,
-    Button
+    Button,
 } from '@material-ui/core';
 
 import Radio from '@material-ui/core/Radio';
@@ -97,23 +97,24 @@ export default function Mail(props) {
     useEffect(() => {
         const getData = async () => {
             const mailCount = await getMailCount();
-            if(!mailCount.success) {
+            if (!mailCount.success) {
                 setSnackbar(mailCount.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
             }
-            const inbox = await getInbox(page*25, 25);
-            if(!inbox.success) {
+            const inbox = await getInbox(page * 25, 25);
+            if (!inbox.success) {
                 setSnackbar(inbox.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
             }
-            const sentbox = await getSent(page*25, 25);
-            if(!sentbox.success) {
+            const sentbox = await getSent(page * 25, 25);
+            if (!sentbox.success) {
                 setSnackbar(sentbox.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
             }
-            if(mailCount.success) setTotalMail({ inbox: mailCount.mailCount.inbox, sentbox: mailCount.mailCount.sentbox })
-            if(inbox.success) setMail(inbox.mail); 
-            if(sentbox.success) setSent(sentbox.mail);
+            if (mailCount.success)
+                setTotalMail({ inbox: mailCount.mailCount.inbox, sentbox: mailCount.mailCount.sentbox });
+            if (inbox.success) setMail(inbox.mail);
+            if (sentbox.success) setSent(sentbox.mail);
         };
 
         getData().catch((ex) => {
@@ -121,7 +122,6 @@ export default function Mail(props) {
             setSnackbar(ex);
             setTimeout(() => setSnackbar(null), 5000);
         });
-
     }, [page]);
 
     const handleClick = (message) => {
@@ -142,8 +142,7 @@ export default function Mail(props) {
     };
 
     const handlePreviousPage = () => {
-        if(page !== 0)
-            setPage(page - 1);
+        if (page !== 0) setPage(page - 1);
     };
 
     const handleNextPage = () => {
@@ -265,29 +264,17 @@ export default function Mail(props) {
                 { mail && sent &&
                     <Grid item container direction="column" alignItems="center">
                         <Grid item container justify="center">
-                            <TableContainer
-                                component={Paper}
-                                style={{ width: "80%", marginTop: "1em" }}
-                            >
+                            <TableContainer component={Paper} style={{ width: '80%', marginTop: '1em' }}>
                                 <Table aria-label="Inbox Messages">
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell
-                                                style={styles.tableHeaders.from}
-                                                align="center"
-                                            >
-                                                {mailbox === 0 ? "From" : "To"}
+                                            <TableCell style={styles.tableHeaders.from} align="center">
+                                                {mailbox === 0 ? 'From' : 'To'}
                                             </TableCell>
-                                            <TableCell
-                                                style={styles.tableHeaders.subject}
-                                                align="center"
-                                            >
+                                            <TableCell style={styles.tableHeaders.subject} align="center">
                                                 Subject
                                             </TableCell>
-                                            <TableCell
-                                                style={styles.tableHeaders.date}
-                                                align="center"
-                                            >
+                                            <TableCell style={styles.tableHeaders.date} align="center">
                                                 Date
                                             </TableCell>
                                         </TableRow>
@@ -300,17 +287,13 @@ export default function Mail(props) {
                                                     className="pointerHover"
                                                     key={m._id}
                                                     onClick={() => handleClick(m)}
-                                                    style={
-                                                        i % 2 === 0
-                                                            ? styles.tableData.odd
-                                                            : styles.tableData.even
-                                                    }
+                                                    style={i % 2 === 0 ? styles.tableData.odd : styles.tableData.even}
                                                 >
                                                     <TableCell style={styles.tableData.td}>
                                                         <Typography
                                                             align="center"
                                                             variant="subtitle1"
-                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
+                                                            style={{ fontWeight: m.isRead ? '400' : '600' }}
                                                         >
                                                             {`${m.sender.firstName} ${m.sender.lastName}`}
                                                         </Typography>
@@ -319,7 +302,7 @@ export default function Mail(props) {
                                                         <Typography
                                                             align="center"
                                                             variant="subtitle1"
-                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
+                                                            style={{ fontWeight: m.isRead ? '400' : '600' }}
                                                         >
                                                             {m.subject}
                                                         </Typography>
@@ -328,7 +311,7 @@ export default function Mail(props) {
                                                         <Typography
                                                             align="center"
                                                             variant="subtitle1"
-                                                            style={ {fontWeight: m.isRead ? "400" : "600" } }
+                                                            style={{ fontWeight: m.isRead ? '400' : '600' }}
                                                         >
                                                             {m.sendTime}
                                                         </Typography>
@@ -342,33 +325,20 @@ export default function Mail(props) {
                                                     className="pointerHover"
                                                     key={m._id}
                                                     onClick={() => handleClick(m)}
-                                                    style={
-                                                        i % 2 === 0
-                                                            ? styles.tableData.odd
-                                                            : styles.tableData.even
-                                                    }
+                                                    style={i % 2 === 0 ? styles.tableData.odd : styles.tableData.even}
                                                 >
                                                     <TableCell style={styles.tableData.td}>
-                                                        <Typography
-                                                            align="center"
-                                                            variant="subtitle1"
-                                                        >
+                                                        <Typography align="center" variant="subtitle1">
                                                             {`${m.recepient.firstName} ${m.recepient.lastName}`}
                                                         </Typography>
                                                     </TableCell>
                                                     <TableCell style={styles.tableData.td}>
-                                                        <Typography
-                                                            align="center"
-                                                            variant="subtitle1"
-                                                        >
+                                                        <Typography align="center" variant="subtitle1">
                                                             {m.subject}
                                                         </Typography>
                                                     </TableCell>
                                                     <TableCell style={styles.tableData.td}>
-                                                        <Typography
-                                                            align="center"
-                                                            variant="subtitle1"
-                                                        >
+                                                        <Typography align="center" variant="subtitle1">
                                                             {m.sendTime}
                                                         </Typography>
                                                     </TableCell>
@@ -378,12 +348,39 @@ export default function Mail(props) {
                                 </Table>
                             </TableContainer>
                         </Grid>
-                        <Grid container direction="row" alignItems="center" justify="flex-end" style={ { margin: "2em 0 0 0", width: "80%" } }>
-                            <Button color="primary" variant="contained" onClick={handlePreviousPage} disabled={page === 0}><ArrowLeftIcon /></Button>
-                            <Typography style={{ margin: "0 1em 0 1em" }} variant="h6">
-                                Page {page+1} of {mailbox === 0 ? Math.floor(1+ totalMail.inbox / 25) : Math.floor(1 + totalMail.sentbox / 25)}
-                                </Typography>
-                            <Button color="primary" variant="contained" onClick={handleNextPage} disabled={(mailbox === 0 ? Math.floor(totalMail.inbox / 25) : Math.floor(totalMail.sentbox / 25)) <= 1}><ArrowRightIcon /></Button>
+                        <Grid
+                            container
+                            direction="row"
+                            alignItems="center"
+                            justify="flex-end"
+                            style={{ margin: '2em 0 0 0', width: '80%' }}
+                        >
+                            <Button
+                                color="primary"
+                                variant="contained"
+                                onClick={handlePreviousPage}
+                                disabled={page === 0}
+                            >
+                                <ArrowLeftIcon />
+                            </Button>
+                            <Typography style={{ margin: '0 1em 0 1em' }} variant="h6">
+                                Page {page + 1} of{' '}
+                                {mailbox === 0
+                                    ? Math.floor(1 + totalMail.inbox / 25)
+                                    : Math.floor(1 + totalMail.sentbox / 25)}
+                            </Typography>
+                            <Button
+                                color="primary"
+                                variant="contained"
+                                onClick={handleNextPage}
+                                disabled={
+                                    (mailbox === 0
+                                        ? Math.floor(totalMail.inbox / 25)
+                                        : Math.floor(totalMail.sentbox / 25)) <= 1
+                                }
+                            >
+                                <ArrowRightIcon />
+                            </Button>
                         </Grid>
                     </Grid>
                 }
