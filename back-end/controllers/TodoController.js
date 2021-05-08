@@ -43,10 +43,10 @@ module.exports.addTodo = async (req, res) => {
             completed: false
         }
         const todoInstance = new TodoModel(todo);
-        await todoInstance.save();
+        const result = await todoInstance.save();
         res.status(201).json({
             success: true,
-            todo: todo
+            todo: result
         });
     } catch(ex) {
         console.error(ex);

@@ -52,7 +52,9 @@ export const toggleTodo = async (todoID) => {
 export const deleteTodo = async (todoID) => {
     try {
         const response = await request.delete('api/todo', {
-            todoID: todoID
+            data: {
+                todoID: todoID
+            }
         });
         return response.data;
     } catch(ex) {

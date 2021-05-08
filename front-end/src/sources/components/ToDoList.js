@@ -98,39 +98,49 @@ export default function TodoComponent(props) {
         }
 
         // Add task
-        setTasks([ addStatus.todo,, ...tasks ]);
+        setTasks([ addStatus.todo, ...tasks ]);
 
         setSnackbar(null);
     };
 
     const handleDeleteTask = async (todoID) => {
-        const deleteStatus = await deleteTodo();
+        const resultIndex = tasks.findIndex(val => val._id === todoID);
+        const todo = tasks[resultIndex];
+        tasks.splice(resultIndex, 1);
+        setTasks([ ...tasks ]);
+        const deleteStatus = await deleteTodo(todo._id);
         if(!deleteStatus.success) {
             setSnackbar(deleteStatus.errors[0].msg);
             setTimeout(() => setSnackbar(null), 5000);
+
+            // Undo delete
+            setTasks([ ...tasks, todo ]);
+
             return;
         }
     };
 
-    const handleTaskToggle = async (todoID) => {
-        const toggleStatus = await toggleTodo();
-        
+    const handleTaskToggle = async (todoID) => {        
         const resultIndex = tasks.findIndex(val => val.todoID === todoID);
         const todo = tasks[resultIndex];
         todo.completed = !todo.completed;
         tasks.splice(resultIndex, 1);
         setTasks([ ...tasks, todo ]);
 
+        const toggleStatus = await toggleTodo(todo._id);
         if(!toggleStatus.success) {
             setSnackbar(toggleStatus.errors[0].msg);
             setTimeout(() => setSnackbar(null), 5000);
 
             // Reset toggle
+            const resetIndex = tasks.findIndex(val => val.todoID === todoID);
+            todo.completed = !todo.completed;
+            tasks.splice(resetIndex, 1);
+            setTasks([ ...tasks, todo ]);
 
             return;
         }
     };
-
 
     if(!loading)
         return (
@@ -143,7 +153,7 @@ export default function TodoComponent(props) {
                         key={"topcenter"}
                     />
                 <header style={styles.header}>
-                    <TextField label="Add new task" onChange={e => setNewTask(e.target.value)} fullWidth={true} />
+                    <TextField label="Add new task" value={newTask} onChange={e => setNewTask(e.target.value)} fullWidth={true} />
                     <Button variant="raised" color="primary" disabled={newTask.length === 0} onClick={handleAddTask}>
                         Add
                     </Button>
@@ -152,23 +162,23 @@ export default function TodoComponent(props) {
                     <Card style={styles.card}>
                         <FormGroup>
                             {tasks.map((task, index) => (
-                                <div key={task.todoID} style={styles.todo}>
+                                <div key={task._id} style={styles.todo}>
                                     {index > 0 ? <Divider style={styles.divider} /> : ''}
                                     <FormControlLabel
                                         control={
                                             <Switch
                                                 color="primary"
                                                 checked={task.completed}
-                                                onChange={() => handleTaskToggle(task.todoID)}
+                                                onChange={() => handleTaskToggle(task._id)}
                                             />
                                         }
                                         label={task.title}
                                         style={task.completed ? styles.completed : styles.label}
-                                    />
+                                    />     
                                     <Tooltip title="Delete task" placement="top">
-                                        <IconButton aria-label="delete" onClick={() => handleDeleteTask(task.todoID)}>
-                                            <DeleteIcon />
-                                        </IconButton>
+                                    <IconButton aria-label="delete" onClick={() => handleDeleteTask(task._id)}>
+                                        <DeleteIcon />
+                                    </IconButton>
                                     </Tooltip>
                                 </div>
                             ))}
