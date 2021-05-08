@@ -121,7 +121,7 @@ export default function TodoComponent(props) {
     };
 
     const handleTaskToggle = async (todoID) => {        
-        const resultIndex = tasks.findIndex(val => val.todoID === todoID);
+        const resultIndex = tasks.findIndex(val => val._id === todoID);
         const todo = tasks[resultIndex];
         todo.completed = !todo.completed;
         tasks.splice(resultIndex, 1);
@@ -133,7 +133,7 @@ export default function TodoComponent(props) {
             setTimeout(() => setSnackbar(null), 5000);
 
             // Reset toggle
-            const resetIndex = tasks.findIndex(val => val.todoID === todoID);
+            const resetIndex = tasks.findIndex(val => val._id === todoID);
             todo.completed = !todo.completed;
             tasks.splice(resetIndex, 1);
             setTasks([ ...tasks, todo ]);

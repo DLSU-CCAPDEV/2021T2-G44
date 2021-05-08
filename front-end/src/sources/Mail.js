@@ -101,12 +101,12 @@ export default function Mail(props) {
                 setSnackbar(mailCount.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
             }
-            const inbox = await getInbox(page * 25, 25);
+            const inbox = await getInbox(page * 15, 15);
             if (!inbox.success) {
                 setSnackbar(inbox.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
             }
-            const sentbox = await getSent(page * 25, 25);
+            const sentbox = await getSent(page * 15, 15);
             if (!sentbox.success) {
                 setSnackbar(sentbox.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
@@ -366,8 +366,8 @@ export default function Mail(props) {
                             <Typography style={{ margin: '0 1em 0 1em' }} variant="h6">
                                 Page {page + 1} of{' '}
                                 {mailbox === 0
-                                    ? Math.floor(1 + totalMail.inbox / 25)
-                                    : Math.floor(1 + totalMail.sentbox / 25)}
+                                    ? Math.floor(1 + totalMail.inbox / 15)
+                                    : Math.floor(1 + totalMail.sentbox / 15)}
                             </Typography>
                             <Button
                                 color="primary"
@@ -375,8 +375,8 @@ export default function Mail(props) {
                                 onClick={handleNextPage}
                                 disabled={
                                     (mailbox === 0
-                                        ? Math.floor(totalMail.inbox / 25)
-                                        : Math.floor(totalMail.sentbox / 25)) <= 1
+                                        ? totalMail.inbox / 15
+                                        : totalMail.sentbox / 15) <= 1
                                 }
                             >
                                 <ArrowRightIcon />
