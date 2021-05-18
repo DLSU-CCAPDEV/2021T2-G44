@@ -180,7 +180,7 @@ export default function Profile() {
             setLastName(data.lastName);
             setBio(data.bio);
             setEmail(data.email);
-            setAvatar(data.avatar);
+            setAvatar(data.avatar ? `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${data.avatar}` : undefined);
 
             setFirstNameFieldVal(data.firstName);
             setLastNameFieldVal(data.lastName);
@@ -394,12 +394,17 @@ export default function Profile() {
     const handleSaveAvatar = async ([file]) => {
         setUploadAvatar(false);
         const status = await changeAvatar(file);
-        if (status !== true) {
-            alert(status);
+        if(!status.success) {
+            setSnackbar(status.errors[0].msg);
+            setTimeout(() => setSnackbar(null), 5000);
             return;
         }
 
-        alert('Avatar changed successfully.');
+        setSnackbar("Avatar Changed Successfully");
+        setTimeout(() => setSnackbar(null), 5000);
+
+        // Load new image
+        setAvatar(`${process.env.REACT_APP_BACK_END_API}/api/file/stream/${status.userData.avatar}`);
     };
 
     if (!loading) {

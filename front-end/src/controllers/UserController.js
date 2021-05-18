@@ -55,12 +55,12 @@ export const changeAvatar = async (image) => {
         const filesData = new FormData();
         filesData.append('file', image);
         const fileUploadResponse = await request.put('api/file', filesData);
-
+        
         // Update the user's AVATAR property.
         const updateStatus = await editUserInfo({
-            avatar: fileUploadResponse.data[0].id,
+            avatar: fileUploadResponse.data.file[0].id,
         });
-        return updateStatus.data;
+        return updateStatus;
     } catch (ex) {
         console.error(ex);
         return { success: false, msg: ex };

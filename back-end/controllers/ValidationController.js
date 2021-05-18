@@ -53,7 +53,7 @@ module.exports.validateInputs = (req, res, next) => {
                 body("firstName", "Please provide a first name.").optional().isString(),
                 body("lastName", "Please provide a last name.").optional().isString(),
                 body("bio").optional().isString(),
-                body("avatar").optional().isURL(),
+                body("avatar").optional().isString(),
             ];
         }
         case 'changePassword': {
