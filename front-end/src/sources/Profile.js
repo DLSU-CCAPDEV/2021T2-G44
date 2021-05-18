@@ -180,7 +180,7 @@ export default function Profile() {
             setLastName(data.lastName);
             setBio(data.bio);
             setEmail(data.email);
-            setAvatar(data.avatar ? `${process.env.REACT_APP_BACK_END_API.replace("//", "/")}/api/file/stream/${data.avatar}` : undefined);
+            setAvatar(data.avatar ? `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${data.avatar}` : undefined);
 
             setFirstNameFieldVal(data.firstName);
             setLastNameFieldVal(data.lastName);
