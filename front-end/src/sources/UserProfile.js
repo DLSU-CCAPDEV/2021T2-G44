@@ -84,12 +84,12 @@ export default function UserProfile(props) {
         // Get the user data by userID
         const prepareComponent = async () => {
             const userData = await GetUserData(userID);
-            if (userData === false) {
+            if (userData.success === false) {
                 setSnackbar("There was a problem loading this user's account: " + userData);
                 setTimeout(() => history.push('/my-calendar'), 5000);
                 return;
             }
-            setUserProfile(userData);
+            setUserProfile(userData.userData);
         };
 
         setLoading(true);
@@ -134,7 +134,7 @@ export default function UserProfile(props) {
                                         >
                                             <Avatar
                                                 alt="profilePicture"
-                                                src={userProfile.avatar || profilePic}
+                                                src={`${process.env.REACT_APP_BACK_END_API}/api/file/stream/${userProfile.avatar}` || profilePic}
                                                 className={classes.profileShowcase}
                                             />
                                         </Grid>

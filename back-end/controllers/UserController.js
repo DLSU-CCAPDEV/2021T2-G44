@@ -30,8 +30,8 @@ module.exports.createUser = async (req, res) => {
     userData.password = passwordHash;
 
     // Case the names properly
-    userData.firstName = titleCase(firstName);
-    userData.lastName = titleCase(lastName);
+    userData.firstName = titleCase(userData.firstName);
+    userData.lastName = titleCase(userData.lastName);
 
     // Save user data
     const user = new UserModel(userData);

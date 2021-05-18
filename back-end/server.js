@@ -12,7 +12,6 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const mongoose = require("mongoose");
 const methodOverride = require('method-override');
-const { request } = require("express");
 const MongoStore = require("connect-mongo")(session);
 require("dotenv").config();
 

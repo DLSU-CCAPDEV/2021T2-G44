@@ -53,7 +53,7 @@ module.exports.validateInputs = (req, res, next) => {
                 body("firstName", "Please provide a first name.").optional().isString(),
                 body("lastName", "Please provide a last name.").optional().isString(),
                 body("bio").optional().isString(),
-                body("avatar").optional().isURL(),
+                body("avatar").optional().isString(),
             ];
         }
         case 'changePassword': {
@@ -181,6 +181,31 @@ module.exports.validateInputs = (req, res, next) => {
                     return true;
                 }),
             ];
+        }
+    }
+};
+
+/**
+ *
+ * @param {*} method
+ * @returns
+ */
+ module.exports.validateTodo = (method) => {
+    switch (method) {
+        case 'create': {
+            return [
+                body('title','Please insert a title.').exists().isString()
+            ]
+        }
+        case 'toggleComplete': {
+            return [
+                body('todoID','Please provide a to-do list item ID.').exists().isString()
+            ]
+        }
+        case 'delete': {
+            return [
+                body('todoID','Please provide a to-do list item ID.').exists().isString()
+            ]
         }
     }
 };

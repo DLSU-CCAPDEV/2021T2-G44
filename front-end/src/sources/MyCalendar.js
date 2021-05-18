@@ -38,8 +38,8 @@ import calendarArt from './assets/calendarArt.svg';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
-        position: 'relative',
-        marginTop: '4em',
+        marginTop: '6em',
+        marginBottom: "1em"
     },
     calendarTitle: {
         fontWeight: 'bold',

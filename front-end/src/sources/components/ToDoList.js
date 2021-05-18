@@ -1,4 +1,5 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
+import Snackbar from '@material-ui/core/Snackbar';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/icons/Delete';
@@ -10,8 +11,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
+// Controller & Loading Import
+import { getTodo, addTodo, toggleTodo, deleteTodo } from '../../controllers/TodoController';
+import Loading from './Loading';
+
 const styles = {
-    done: {
+    completed: {
         textDecoration: 'line-through',
         opacity: '.5',
         display: 'flex',
@@ -52,42 +57,104 @@ const styles = {
     },
 };
 
-class TodoComponent extends React.Component {
-    state = {
-        tasks: [],
-        newTask: '',
+export default function TodoComponent(props) {
+    const [tasks, setTasks] = useState([]);
+    const [newTask, setNewTask] = useState('');
+
+    const [snackbar, setSnackbar] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    // Load data
+    useEffect(() => {
+        const prepareComponent = async () => {
+            setLoading(true);
+            const data = await getTodo();
+            if(!data.success) {
+                setSnackbar(data.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
+                return;
+            }
+
+            setTasks(data.todos);
+            setLoading(false);
+        };
+
+        prepareComponent().catch(err => {
+            console.error(err);
+            setSnackbar(err);
+            setTimeout(() => setSnackbar(null), 5000);
+        });
+    }, []);
+
+    // Event Handlers
+    const handleAddTask = async () => {
+        setSnackbar("Adding to-do list item");
+        setNewTask("");
+        const addStatus = await addTodo(newTask);
+        if(!addStatus.success) {
+            setSnackbar(addStatus.errors[0].msg);
+            setTimeout(() => setSnackbar(null), 5000);
+            return;
+        }
+
+        // Add task
+        setTasks([ addStatus.todo, ...tasks ]);
+
+        setSnackbar(null);
     };
 
-    onTextUpdate = (e) => {
-        this.setState({ newTask: e.target.value });
+    const handleDeleteTask = async (todoID) => {
+        const resultIndex = tasks.findIndex(val => val._id === todoID);
+        const todo = tasks[resultIndex];
+        tasks.splice(resultIndex, 1);
+        setTasks([ ...tasks ]);
+        const deleteStatus = await deleteTodo(todo._id);
+        if(!deleteStatus.success) {
+            setSnackbar(deleteStatus.errors[0].msg);
+            setTimeout(() => setSnackbar(null), 5000);
+
+            // Undo delete
+            setTasks([ ...tasks, todo ]);
+
+            return;
+        }
     };
 
-    addTask = () => {
-        let { tasks, newTask } = this.state;
-        tasks.push({ text: newTask, done: false });
-        this.setState({ tasks: tasks, newTask: '' });
+    const handleTaskToggle = async (todoID) => {        
+        const resultIndex = tasks.findIndex(val => val._id === todoID);
+        const todo = tasks[resultIndex];
+        todo.completed = !todo.completed;
+        tasks.splice(resultIndex, 1);
+        setTasks([ ...tasks, todo ]);
+
+        const toggleStatus = await toggleTodo(todo._id);
+        if(!toggleStatus.success) {
+            setSnackbar(toggleStatus.errors[0].msg);
+            setTimeout(() => setSnackbar(null), 5000);
+
+            // Reset toggle
+            const resetIndex = tasks.findIndex(val => val._id === todoID);
+            todo.completed = !todo.completed;
+            tasks.splice(resetIndex, 1);
+            setTasks([ ...tasks, todo ]);
+
+            return;
+        }
     };
 
-    deleteTask = (task) => {
-        let { tasks } = this.state;
-        tasks.splice(tasks.indexOf(task), 1);
-        this.setState({ tasks: tasks, newTask: '' });
-    };
-
-    toggle = (task) => {
-        let { tasks } = this.state;
-        tasks[tasks.indexOf(task)].done = !tasks[tasks.indexOf(task)].done;
-        this.setState({ tasks: tasks, newTask: '' });
-    };
-
-    render() {
-        const { tasks, newTask } = this.state;
-
+    if(!loading)
         return (
             <div id="main" style={styles.main}>
+                <Snackbar
+                        open={snackbar ? true : false}
+                        onClose={() => setSnackbar(null)}
+                        message={snackbar}
+                        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                        key={"topcenter"}
+                    />
                 <header style={styles.header}>
-                    <TextField label="Add new task" value={newTask} onChange={this.onTextUpdate} fullWidth={true} />
-                    <Button variant="raised" color="primary" disabled={!newTask} onClick={this.addTask}>
+                    <TextField label="Add new task" value={newTask} onChange={e => setNewTask(e.target.value)} fullWidth={true} />
+                    <Button variant="raised" color="primary" disabled={newTask.length === 0} onClick={handleAddTask}>
                         Add
                     </Button>
                 </header>
@@ -95,23 +162,23 @@ class TodoComponent extends React.Component {
                     <Card style={styles.card}>
                         <FormGroup>
                             {tasks.map((task, index) => (
-                                <div key={index} style={styles.todo}>
+                                <div key={task._id} style={styles.todo}>
                                     {index > 0 ? <Divider style={styles.divider} /> : ''}
                                     <FormControlLabel
                                         control={
                                             <Switch
                                                 color="primary"
-                                                checked={!task.done}
-                                                onChange={() => this.toggle(task)}
+                                                checked={task.completed}
+                                                onChange={() => handleTaskToggle(task._id)}
                                             />
                                         }
-                                        label={task.text}
-                                        style={task.done ? styles.done : styles.label}
-                                    />
+                                        label={task.title}
+                                        style={task.completed ? styles.completed : styles.label}
+                                    />     
                                     <Tooltip title="Delete task" placement="top">
-                                        <IconButton aria-label="delete" onClick={() => this.deleteTask(task)}>
-                                            <DeleteIcon />
-                                        </IconButton>
+                                    <IconButton aria-label="delete" onClick={() => handleDeleteTask(task._id)}>
+                                        <DeleteIcon />
+                                    </IconButton>
                                     </Tooltip>
                                 </div>
                             ))}
@@ -119,8 +186,6 @@ class TodoComponent extends React.Component {
                     </Card>
                 )}
             </div>
-        );
-    }
-}
-
-export default TodoComponent;
+        ); 
+    return <Loading loadingText="Loading your to-do list"/>
+};

@@ -212,7 +212,7 @@ function Icon(props) {
                     }}
                 ></a.path>
             </svg>
-            <h1>{props.loadingText || ''}</h1>
+            <h2 align="center">{props.loadingText || ""}</h2>
         </Grid>
     );
 }
