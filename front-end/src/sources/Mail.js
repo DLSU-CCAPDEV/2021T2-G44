@@ -142,10 +142,14 @@ export default function Mail(props) {
     };
 
     const handlePreviousPage = () => {
+        setMail(null);
+        setSent(null);
         if (page !== 0) setPage(page - 1);
     };
 
     const handleNextPage = () => {
+        setMail(null);
+        setSent(null);
         setPage(page + 1);
     };
 
@@ -374,9 +378,9 @@ export default function Mail(props) {
                                 variant="contained"
                                 onClick={handleNextPage}
                                 disabled={
-                                    (mailbox === 0
-                                        ? totalMail.inbox / 15
-                                        : totalMail.sentbox / 15) <= 1
+                                    mailbox === 0
+                                        ? page === Math.floor(totalMail.inbox / 15)
+                                        : page === Math.floor(totalMail.sentbox / 15)
                                 }
                             >
                                 <ArrowRightIcon />

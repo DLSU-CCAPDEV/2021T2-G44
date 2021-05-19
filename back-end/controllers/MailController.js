@@ -11,7 +11,7 @@ const { mailTransporter } = require("./SmtpController");
 module.exports.getInbox = async (req, res) => {
     const userID = req.session.uid;
     const start = Number(req.query.start) || 0;
-    const limit = Number(req.query.limit) || 10;
+    const limit = Number(req.query.limit) || 15;
 
     try {
         const mail = await MailModel.find({ recepientID: userID })
@@ -47,7 +47,7 @@ module.exports.getInbox = async (req, res) => {
 module.exports.getSentBox = async (req, res) => {
     const userID = req.session.uid;
     const start = req.params.start || 0;
-    const limit = req.params.limit || 10;
+    const limit = req.params.limit || 15;
 
     try {
         const mail = await MailModel.find({ senderID: userID })
