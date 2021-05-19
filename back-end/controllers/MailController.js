@@ -14,19 +14,25 @@ module.exports.getInbox = async (req, res) => {
     const limit = Number(req.query.limit) || 15;
 
     try {
+        // Fetch Mail Data
         const mail = await MailModel.find({ recepientID: userID })
+            .sort({ _id: -1 })
             .skip(start)
-            .limit(limit);
-        mail.sort((x,y) => {
-            const xDate = new Date(x.sendTime);
-            const yDate = new Date(y.sendTime);
-            if(xDate === yDate) return 0;
-            if(xDate > yDate) return -1;
-            if(xDate < yDate) return 1;
-        });
+            .limit(limit)
+            .lean();
+
+        // Fetch Sender Data
+        const processedMail = await Promise.all(mail.map(m => new Promise(async resolve => {
+            m.sender = await UserModel.findOne({ _id: m.senderID }, ["email","firstName","lastName","avatar"]);
+            m.recepient = await UserModel.findOne({ _id: m.recepientID }, ["email","firstName","lastName","avatar"]);
+            m.senderID = undefined;
+            m.recepientID = undefined;
+            return resolve(m);
+        })));
+
         res.status(200).json({
             success: true,
-            mail: mail
+            mail: processedMail
         });
     } catch (ex) {
         console.error(ex);
@@ -50,19 +56,25 @@ module.exports.getSentBox = async (req, res) => {
     const limit = req.params.limit || 15;
 
     try {
+        // Fetch Mail Data
         const mail = await MailModel.find({ senderID: userID })
+            .sort({ _id: -1 })
             .skip(start)
-            .limit(limit);
-        mail.sort((x,y) => {
-            const xDate = new Date(x.sendTime);
-            const yDate = new Date(y.sendTime);
-            if(xDate === yDate) return 0;
-            if(xDate > yDate) return -1;
-            if(xDate < yDate) return 1;
-        });
+            .limit(limit)
+            .lean();
+
+        // Fetch Sender Data
+        const processedMail = await Promise.all(mail.map(m => new Promise(async resolve => {
+            m.sender = await UserModel.findOne({ _id: m.senderID }, ["email","firstName","lastName","avatar"]);
+            m.recepient = await UserModel.findOne({ _id: m.recepientID }, ["email","firstName","lastName","avatar"]);
+            m.senderID = undefined;
+            m.recepientID = undefined;
+            return resolve(m);
+        })));
+
         res.status(200).json({
             success: true,
-            mail: mail
+            mail: processedMail
         });
     } catch (ex) {
         console.error(ex);
