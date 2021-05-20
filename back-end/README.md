@@ -18,7 +18,11 @@ The back-end for this web-appication is written in JavaScript using the **Node.j
     MONGO_URI=              # [Required] Define your MongoDB instance connection string
     ENABLE_LOGGER=          # [Optional] Define a boolean value (0 or 1) to enable or disable the request logger (default 0)
     CORS_WHITELIST=         # [Required] Define a JSON array containing the hostnames of the cors-whitelist i.e. ["http://localhost"]
-    PRODUCTION=             # [Required] Define a boolean value (0 or 1) to configure appropriate cookie security
+    SMTP_HOST=              # [Required] Define the SMTP Host For Outgoing Emails
+    SMTP_PORT=              # [Required] Define the SMTP Port for Outgoing Emails (default 587)
+    SMTP_USER=              # [Required] Define the SMTP User Credentials for Outgoing Emails
+    SMTP_PASS=              # [Required] Define the SMTP Password Paired with User Credentials
+    NODE_ENV=               # [Optional] Define environment the server is running on [development, production] (default 'development')
     ```
 
 ## Running the Application
