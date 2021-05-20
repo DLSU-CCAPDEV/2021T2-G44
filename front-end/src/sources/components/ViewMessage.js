@@ -126,8 +126,8 @@ export default function ViewMessage(props) {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleDelete}>Delete Mail</Button>
-                        {props.mailbox === 0 && <Button onClick={handleReply}>Reply</Button>}
                         {props.mailbox === 0 && <Button onClick={handleMarkAsUnread}>Mark as Unread</Button>}
+                        {props.mailbox === 0 && <Button onClick={handleReply}>Reply</Button>}
                         <Button onClick={handleClose}>Close</Button>
                     </DialogActions>
                 </Dialog>
