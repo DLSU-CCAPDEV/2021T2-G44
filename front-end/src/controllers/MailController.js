@@ -1,7 +1,5 @@
 import request from "../utils/AxiosConfig";
 
-import { GetUserData } from "./UserController";
-
 export const getMailCount = async () => {
     // Make API Call
     try {
@@ -18,7 +16,7 @@ export const getMailCount = async () => {
     }
 };
 
-export const getInbox = async (start = 0, limit = 50) => {
+export const getInbox = async (start = 0, limit = 15) => {
     // Make API Call
     try {
         const response = await request.get("api/mail/inbox", {
@@ -28,33 +26,19 @@ export const getInbox = async (start = 0, limit = 50) => {
             }
         });
 
-        if (response.data.success) {
-            // Add user data for sender & format dates
-            const allMail = await Promise.all(response.data.mail.map(async m => new Promise(async (resolve) => {
-                m.sender = (await GetUserData(m.senderID)).userData;
+        // Make Date Object
+        if(response.data.success) {
+            const dataWithDate = response.data.mail.map(m => {
                 m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
-
-                // Process attachments
-                if (m.attachments.length > 0) {
-                    await Promise.all(m.attachments.map(async (attachment, i) => new Promise(async resolve => {
-                        const fileInfo = await request.get("api/file/" + attachment);
-                        if (!fileInfo.data.success) {
-                            m.attachments[i] = { filename: "", fileID: attachment };
-                            return resolve();
-                        }
-
-                        m.attachments[i] = {
-                            filename: fileInfo.data.file.filename,
-                            fileID: attachment
-                        };
-                        return resolve();
-                    })));
-                }
-                return resolve(m);
-            })));
-            if (allMail)
-                return { success: true, mail: allMail };
+                return m;
+            });
+            console.log(dataWithDate);
+            return { 
+                success: true,
+                mail: dataWithDate
+            }
         }
+
         return response.data;
     } catch (ex) {
         console.error(ex);
@@ -62,61 +46,33 @@ export const getInbox = async (start = 0, limit = 50) => {
     }
 };
 
-export const getSent = async (start = 0, limit = 50) => {
+export const getSent = async (start = 0, limit = 15) => {
     // Make API Call
     try {
         const response = await request.get("api/mail/sentbox", {
             params: {
                 start: start,
-                limit: limit,
-            },
+                limit: limit
+            }
         });
 
-        if (response.data.success) {
-            // Add user data for sender & format dates
-            const allMail = await Promise.all(
-                response.data.mail.map(
-                    async (m) =>
-                        new Promise(async (resolve) => {
-                            m.recepient = (await GetUserData(m.recepientID)).userData;
-                            m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
-
-                            // Process attachments
-                            if (m.attachments.length > 0) {
-                                await Promise.all(
-                                    m.attachments.map(
-                                        async (attachment, i) =>
-                                            new Promise(async (resolve) => {
-                                                const fileInfo = await request.get(
-                                                    "api/file/" + attachment
-                                                );
-                                                if (!fileInfo.data.success) {
-                                                    m.attachments[i] = {
-                                                        filename: "",
-                                                        fileID: attachment,
-                                                    };
-                                                    return resolve();
-                                                }
-
-                                                m.attachments[i] = {
-                                                    filename: fileInfo.data.file.filename,
-                                                    fileID: attachment,
-                                                };
-                                                return resolve();
-                                            })
-                                    )
-                                );
-                            }
-                            return resolve(m);
-                        })
-                )
-            );
-            if (allMail) return { success: true, mail: allMail };
+        // Make Date Object
+        if(response.data.success) {
+            const dataWithDate = response.data.mail.map(m => {
+                m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
+                return m;
+            });
+            console.log(dataWithDate);
+            return { 
+                success: true,
+                mail: dataWithDate
+            }
         }
+
         return response.data;
     } catch (ex) {
         console.error(ex);
-        return { success: false, errors: [{ msg: ex }] };
+        return { success: false, errors: [{msg: ex}] };
     }
 };
 
@@ -174,7 +130,7 @@ export const streamFile = async (file) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', file.filename);
+        link.setAttribute('download', file.fileInfo.fileName);
         document.body.appendChild(link);
         link.click();
     } catch(ex) {

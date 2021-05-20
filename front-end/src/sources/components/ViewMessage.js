@@ -30,7 +30,7 @@ export default function ViewMessage(props) {
 
     // Tag the message as read
     useEffect(() => {
-        if (!props.message.isRead && props.message.sender) {
+        if (!props.message.isRead && props.mailbox === 0) {
             props.message.isRead = true;
             toggleRead(props.message._id);
         }
@@ -55,7 +55,7 @@ export default function ViewMessage(props) {
         setSnackbar('Preparing your file for download.');
         streamFile(file);
     };
-
+    
     if (props.message != null)
         return (
             <div>
@@ -91,12 +91,12 @@ export default function ViewMessage(props) {
                             <br />
                             {props.message.attachments.length > 0 && <Typography>Attachments</Typography>}
                             {props.message.attachments.length === 0 && <Typography>No attachments</Typography>}
-                            {props.message.attachments.map((attachment, i) => {
+                            {props.message.attachments.map((file, i) => {
                                 return (
                                     <Button
-                                        onClick={() => handleFileDownload(attachment)}
+                                        onClick={() => handleFileDownload(file)}
                                         style={{ marginLeft: '1em' }}
-                                        key={attachment}
+                                        key={file}
                                     >
                                         Attachment #{i + 1}
                                     </Button>
@@ -105,8 +105,8 @@ export default function ViewMessage(props) {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        {props.message.sender && <Button onClick={handleReply}>Reply</Button>}
-                        {props.message.sender && <Button onClick={handleMarkAsUnread}>Mark as Unread</Button>}
+                        {props.mailbox === 0 && <Button onClick={handleReply}>Reply</Button>}
+                        {props.mailbox === 0 && <Button onClick={handleMarkAsUnread}>Mark as Unread</Button>}
                         <Button onClick={handleClose}>Close</Button>
                     </DialogActions>
                 </Dialog>
@@ -123,6 +123,7 @@ export default function ViewMessage(props) {
                             props.message.content +
                             '\n---------------------------------------------------------\n'
                         }
+                        reRender={props.reRender}
                     />
                 )}
             </div>

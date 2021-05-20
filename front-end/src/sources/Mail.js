@@ -32,6 +32,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import ReplayIcon from '@material-ui/icons/Replay';
 
 // ART
 import mailBoxArt from './assets/mailBox.svg';
@@ -73,10 +74,11 @@ const styles = {
 };
 
 export default function Mail(props) {
-    // Temp
-    const [page, setPage] = useState(0);
+    const [inboxPage, setInboxPage] = useState(0);
+    const [sentPage, setSentPage] = useState(0);
     const [totalMail, setTotalMail] = useState(0);
     const [snackbar, setSnackbar] = useState(null);
+    const rerender = useState(false);
 
     const [mail, setMail] = useState(null);
     const [sent, setSent] = useState(null);
@@ -101,12 +103,12 @@ export default function Mail(props) {
                 setSnackbar(mailCount.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
             }
-            const inbox = await getInbox(page * 15, 15);
+            const inbox = await getInbox(inboxPage * 15, 15);
             if (!inbox.success) {
                 setSnackbar(inbox.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
             }
-            const sentbox = await getSent(page * 15, 15);
+            const sentbox = await getSent(sentPage * 15, 15);
             if (!sentbox.success) {
                 setSnackbar(sentbox.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
@@ -122,7 +124,7 @@ export default function Mail(props) {
             setSnackbar(ex);
             setTimeout(() => setSnackbar(null), 5000);
         });
-    }, [page]);
+    }, [inboxPage, sentPage, rerender[0]]);
 
     const handleClick = (message) => {
         // Render dialog box here
@@ -142,15 +144,23 @@ export default function Mail(props) {
     };
 
     const handlePreviousPage = () => {
-        setMail(null);
-        setSent(null);
-        if (page !== 0) setPage(page - 1);
+        if(mailbox === 0) {
+            setMail(null);
+            if (inboxPage !== 0) setInboxPage(inboxPage - 1);
+        } else {
+            setSent(null);
+            if (sentPage !== 0) setSentPage(sentPage - 1);
+        }
     };
 
     const handleNextPage = () => {
-        setMail(null);
-        setSent(null);
-        setPage(page + 1);
+        if(mailbox === 0) {
+            setMail(null);
+            setInboxPage(inboxPage + 1);
+        } else {
+            setSent(null);
+            setSentPage(sentPage + 1);
+        }
     };
 
     return (
@@ -167,11 +177,13 @@ export default function Mail(props) {
                 setDialogOpen={setViewDialogOpen}
                 message={dialogMessage}
                 mailbox={mailbox}
+                reRender={rerender}
             />}
 
             <SendMessage
                 dialogOpen={newMessageDialogOpen}
                 setDialogOpen={setNewMessageDialogOpen}
+                reRender={rerender}
             />
 
             <Grid item container direction="row" justify="center">
@@ -363,12 +375,12 @@ export default function Mail(props) {
                                 color="primary"
                                 variant="contained"
                                 onClick={handlePreviousPage}
-                                disabled={page === 0}
+                                disabled={mailbox === 0 ? inboxPage === 0 : sentPage === 0}
                             >
                                 <ArrowLeftIcon />
                             </Button>
                             <Typography style={{ margin: '0 1em 0 1em' }} variant="h6">
-                                Page {page + 1} of{' '}
+                                Page {(mailbox === 0 ? inboxPage : sentPage) + 1} of{' '}
                                 {mailbox === 0
                                     ? Math.floor(1 + totalMail.inbox / 15)
                                     : Math.floor(1 + totalMail.sentbox / 15)}
@@ -379,8 +391,8 @@ export default function Mail(props) {
                                 onClick={handleNextPage}
                                 disabled={
                                     mailbox === 0
-                                        ? page === Math.floor(totalMail.inbox / 15)
-                                        : page === Math.floor(totalMail.sentbox / 15)
+                                        ? inboxPage === Math.floor(totalMail.inbox / 15)
+                                        : sentPage === Math.floor(totalMail.sentbox / 15)
                                 }
                             >
                                 <ArrowRightIcon />

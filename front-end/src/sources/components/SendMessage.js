@@ -33,7 +33,7 @@ const textFieldStyles = {
 
 export default function SendMessage(props) {
     // Field change handlers
-    const [recepientEmail, setRecepientEmail] = useState(null);
+    const [recepientEmail, setRecepientEmail] = useState('');
     const [messageSubject, setMessageSubject] = useState('');
     const [messageContent, setMessageContent] = useState('');
     const [attachments, setAttachments] = useState([]);
@@ -73,8 +73,18 @@ export default function SendMessage(props) {
             return;
         }
 
+        // Clearall SendMessage Fields
+        setRecepientEmail('');
+        setMessageSubject('');
+        setMessageContent('');
+        setAttachments([]);
+
         setSnackbar('Message has been sent.');
         setTimeout(() => setSnackbar(null), 5000);
+
+        // Refresh the mail list
+        const [render, doRerender] = props.reRender;
+        doRerender(!render);
     };
 
     // Dropzone Handlers

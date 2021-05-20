@@ -2,6 +2,7 @@ const MailModel = require("../models/Mail");
 const UserModel = require("../models/User");
 
 const { mailTransporter } = require("./SmtpController");
+const { findFile } = require("./FileController");
 
 /**
  * This controller method returns the logged in user's inbox based on optional start and end bounds.
@@ -21,12 +22,26 @@ module.exports.getInbox = async (req, res) => {
             .limit(limit)
             .lean();
 
-        // Fetch Sender Data
+        // Fetch Sender Data & Process Attachment File Information
         const processedMail = await Promise.all(mail.map(m => new Promise(async resolve => {
             m.sender = await UserModel.findOne({ _id: m.senderID }, ["email","firstName","lastName","avatar"]);
             m.recepient = await UserModel.findOne({ _id: m.recepientID }, ["email","firstName","lastName","avatar"]);
             m.senderID = undefined;
             m.recepientID = undefined;
+
+            m.attachments = await Promise.all(m.attachments.map(a => new Promise(async resolve => {
+                const fileArray  = await findFile(a); 
+                const fileInfo = (await fileArray.toArray())[0];
+                const file = {
+                    fileID: a,
+                    fileInfo: {
+                        fileName: fileInfo.filename,
+                        length: fileInfo.length
+                    }
+                };
+                return resolve(file);
+            })));
+
             return resolve(m);
         })));
 
@@ -52,9 +67,8 @@ module.exports.getInbox = async (req, res) => {
  */
 module.exports.getSentBox = async (req, res) => {
     const userID = req.session.uid;
-    const start = req.params.start || 0;
-    const limit = req.params.limit || 15;
-
+    const start = Number(req.query.start) || 0;
+    const limit = Number(req.query.limit) || 15;
     try {
         // Fetch Mail Data
         const mail = await MailModel.find({ senderID: userID })
@@ -69,6 +83,20 @@ module.exports.getSentBox = async (req, res) => {
             m.recepient = await UserModel.findOne({ _id: m.recepientID }, ["email","firstName","lastName","avatar"]);
             m.senderID = undefined;
             m.recepientID = undefined;
+
+            m.attachments = await Promise.all(m.attachments.map(a => new Promise(async resolve => {
+                const fileArray  = await findFile(a); 
+                const fileInfo = (await fileArray.toArray())[0];
+                const file = {
+                    fileID: a,
+                    fileInfo: {
+                        fileName: fileInfo.filename,
+                        length: fileInfo.length
+                    }
+                };
+                return resolve(file);
+            })));
+
             return resolve(m);
         })));
 
