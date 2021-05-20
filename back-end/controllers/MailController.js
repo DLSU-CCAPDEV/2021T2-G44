@@ -1,8 +1,7 @@
-const MailModel = require("../models/Mail");
-const UserModel = require("../models/User");
+const MailModel = require('../models/Mail');
+const UserModel = require('../models/User');
 
-const { mailTransporter } = require("./SmtpController");
-const { findFile } = require("./FileController");
+const { sendEmail } = require('./SmtpController');
 
 /**
  * This controller method returns the logged in user's inbox based on optional start and end bounds.
@@ -53,9 +52,11 @@ module.exports.getInbox = async (req, res) => {
         console.error(ex);
         res.status(500).json({
             success: false,
-            errors: [{
-                msg: ex
-            }]
+            errors: [
+                {
+                    msg: ex,
+                },
+            ],
         });
     }
 };
@@ -108,9 +109,11 @@ module.exports.getSentBox = async (req, res) => {
         console.error(ex);
         res.status(500).json({
             success: false,
-            errors: [{
-                msg: ex
-            }]
+            errors: [
+                {
+                    msg: ex,
+                },
+            ],
         });
     }
 };
@@ -132,9 +135,11 @@ module.exports.getMailByID = async (req, res) => {
         if (mail.senderID !== userID && mail.recepientID !== userID) {
             res.status(403).json({
                 success: false,
-                errors: [{
-                    msg: "You are you not the sender or recepient of this mail."
-                }]
+                errors: [
+                    {
+                        msg: 'You are you not the sender or recepient of this mail.',
+                    },
+                ],
             });
             return;
         }
@@ -143,33 +148,37 @@ module.exports.getMailByID = async (req, res) => {
         if (!mail) {
             res.status(400).json({
                 success: false,
-                errors: [{
-                    msg: `Mail with ID <${mailID}> not found.`
-                }]
+                errors: [
+                    {
+                        msg: `Mail with ID <${mailID}> not found.`,
+                    },
+                ],
             });
             return;
         }
 
         res.status(200).json({
             success: true,
-            mail: mail
+            mail: mail,
         });
     } catch (ex) {
         console.error(ex);
         res.status(500).json({
             success: false,
-            errors: [{
-                msg: ex
-            }]
+            errors: [
+                {
+                    msg: ex,
+                },
+            ],
         });
     }
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
  */
 module.exports.sendMail = async (req, res) => {
     const userID = req.session.uid;
@@ -184,9 +193,11 @@ module.exports.sendMail = async (req, res) => {
         if (!recepientData) {
             res.status(400).json({
                 success: false,
-                errors: [{
-                    msg: "Cannot find recepient with that email address."
-                }]
+                errors: [
+                    {
+                        msg: 'Cannot find recepient with that email address.',
+                    },
+                ],
             });
             return;
         }
@@ -201,29 +212,22 @@ module.exports.sendMail = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            mail: mailData
+            mail: mailData,
         });
 
         // Send email notification to the recepient
         const userData = await UserModel.findOne({ _id: userID });
-        await mailTransporter.sendMail({
-            from: "Sched-It Mailer <no-reply@sched-it-front.herokuapp.com>",
-            to: recepientData.email,
-            subject: `${userData.firstName} ${userData.lastName} has sent you a message on Sched-It`,
-            html: `
-                <h2>${mailData.subject}</h2>
-                <hr />
-                <p>${mailData.content}</p>
-                <br />
-                <p>${mailData.attachments.length} attachments.</p>
-                <hr />
-                <a href="https://sched-it-front.herokuapp.com/mail">View on Sched-It</a>
-                <br />
-                <img src="https://sched-it-front.herokuapp.com/footer.svg" />
-            `
-        }, (error, result) => {
-            if(error) return console.error(`[${new Date().toISOString()}] SMTP Error: ${error}`);
-            return console.log(`[${new Date().toISOString()}] SMTP: Sent New Mail Notification: ${result.messageId}`);
+
+        sendEmail({
+            recipientEmail: recepientData.email,
+            subject: mailData.subject,
+            content: mailData.content,
+            attachments: mailData.attachments,
+
+            sender: {
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+            },
         });
 
         return;
@@ -231,9 +235,11 @@ module.exports.sendMail = async (req, res) => {
         console.error(ex);
         res.status(500).json({
             success: false,
-            errors: [{
-                msg: ex
-            }]
+            errors: [
+                {
+                    msg: ex,
+                },
+            ],
         });
     }
 };
@@ -269,28 +275,32 @@ module.exports.toggleRead = async (req, res) => {
         const message = await MailModel.findOne({ _id: messageID });
 
         // User must be the recepient of this message
-        if(message.recepientID !== userID) {
+        if (message.recepientID !== userID) {
             res.status(403).json({
                 success: false,
-                errors: [{
-                    msg: "You are not the recepient of this message."
-                }]
+                errors: [
+                    {
+                        msg: 'You are not the recepient of this message.',
+                    },
+                ],
             });
             return;
         }
 
         // Toggle message read
-        await MailModel.updateOne({ _id: messageID }, { isRead: !(message.isRead) });
+        await MailModel.updateOne({ _id: messageID }, { isRead: !message.isRead });
         res.status(200).json({
             success: true,
-            msg: "Read status updated."
+            msg: 'Read status updated.',
         });
-    } catch(ex) {
+    } catch (ex) {
         res.status(500).json({
             success: false,
-            errors: [{
-                msg: ex
-            }]
+            errors: [
+                {
+                    msg: ex,
+                },
+            ],
         });
     }
 };
@@ -306,14 +316,14 @@ module.exports.totalMail = async (req, res) => {
             success: true,
             mailCount: {
                 inbox: inboxCount,
-                sentbox: sentboxCount
-            }
-        })
-    } catch(ex) {
+                sentbox: sentboxCount,
+            },
+        });
+    } catch (ex) {
         console.error(ex);
         res.status(500).json({
             success: false,
-            errors: [{ msg: ex }]
-        })
+            errors: [{ msg: ex }],
+        });
     }
 };
