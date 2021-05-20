@@ -2,6 +2,7 @@ const MailModel = require('../models/Mail');
 const UserModel = require('../models/User');
 
 const { sendEmail } = require('./SmtpController');
+const { findFile } = require("./FileController");
 
 /**
  * This controller method returns the logged in user's inbox based on optional start and end bounds.
