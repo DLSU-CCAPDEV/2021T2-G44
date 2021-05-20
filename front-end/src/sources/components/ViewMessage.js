@@ -16,7 +16,7 @@ import {
 
 import SendMessage from './SendMessage';
 
-import { toggleRead, streamFile } from '../../controllers/MailController';
+import { toggleRead, streamFile, deleteMessage } from '../../controllers/MailController';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -53,8 +53,28 @@ export default function ViewMessage(props) {
 
     const handleFileDownload = async (file) => {
         setSnackbar('Preparing your file for download.');
+        setTimeout(() => setSnackbar(null), 5000);
         streamFile(file);
     };
+
+    const handleDelete = async () => {
+        const status = await deleteMessage(props.message._id);
+        console.log(status);
+        if(!status.success) {
+            setSnackbar(status.errors[0].msg);
+            setTimeout(() => setSnackbar(null), 5000);
+            handleClose();
+            return;
+        }
+
+        setSnackbar("Message Deleted.");
+        setTimeout(() => setSnackbar(null), 5000);
+        handleClose();
+        
+        // Refresh the mail list
+        const [render, doRerender] = props.reRender;
+        doRerender(!render);
+    }
     
     if (props.message != null)
         return (
@@ -105,6 +125,7 @@ export default function ViewMessage(props) {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
+                        <Button onClick={handleDelete}>Delete Mail</Button>
                         {props.mailbox === 0 && <Button onClick={handleReply}>Reply</Button>}
                         {props.mailbox === 0 && <Button onClick={handleMarkAsUnread}>Mark as Unread</Button>}
                         <Button onClick={handleClose}>Close</Button>

@@ -202,11 +202,28 @@ export default function Mail(props) {
                     direction="column"
                     justify="center"
                     alignItems="flex-start"
-                    xs={3}
+                    xs={2}
                 >
                     <Typography variant="h2" color="primary" style={{ fontWeight: "bold" }}>
                         {mailbox === 0 ? "Inbox" : "Sent Mail"}
                     </Typography>
+                </Grid>
+
+                {/* Reload Button */}
+                <Grid
+                    item
+                    container
+                    direction="column"
+                    xs={1}
+                    justify="flex-end"
+                    alignItems="stretch"
+                    style={ { marginRight: "2em" } }
+                >
+                    <Button
+                        onClick={() => rerender[1](!rerender[0])}
+                    >
+                        <ReplayIcon />
+                    </Button>
                 </Grid>
 
                 {/* Add Message Button */}

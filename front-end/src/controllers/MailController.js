@@ -121,6 +121,23 @@ export const toggleRead = async (messageID) => {
     }
 };
 
+export const deleteMessage = async (messageID) => {
+    try {
+        const response = await request.delete("api/mail/" + messageID);
+        return response.data;
+    } catch(ex) {
+        console.error(ex);
+        return { 
+            success: false,
+            errors: [
+                {
+                    msg: ex
+                }
+            ]
+        }
+    }
+};
+
 export const streamFile = async (file) => {
     try {
         console.log(file);

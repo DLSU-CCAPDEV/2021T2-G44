@@ -238,6 +238,27 @@ module.exports.sendMail = async (req, res) => {
     }
 };
 
+module.exports.deleteMail = async (req, res) => {
+    const mailID = req.params.mailID;
+
+    try {
+        const mail = await MailModel.deleteOne({ _id: mailID });
+
+        res.json({
+            success: true,
+            mail: mail
+        });
+
+    } catch(ex) {
+        res.status(500).json({
+            success: false,
+            errors: [{
+                msg: ex
+            }]
+        });
+    }
+};
+
 module.exports.toggleRead = async (req, res) => {
     // Get the message ID
     const messageID = req.params.messageID;

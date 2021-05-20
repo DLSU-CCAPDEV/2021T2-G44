@@ -91,6 +91,7 @@ appRouter.put(
     ValidationController.validateInputs,
     MailController.sendMail
 );
+appRouter.delete('/api/mail/:mailID', MailController.deleteMail);
 
 // Todo-list Operations
 appRouter.get('/api/todo', TodoController.getAllTodo);
