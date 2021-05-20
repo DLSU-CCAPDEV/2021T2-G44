@@ -1,4 +1,6 @@
-const appRouter = require('express').Router();
+const express = require('express');
+const appRouter = express.Router();
+const path = require("path");
 
 // Routes
 const ValidationController = require('./controllers/ValidationController');
@@ -11,6 +13,9 @@ const FileController = require('./controllers/FileController');
 const TodoController = require('./controllers/TodoController');
 
 // Set up Routes
+
+// Serve Static Assets
+appRouter.use("/static", express.static(path.join(__dirname, "public-assets")));
 
 // Test Route
 appRouter.get('/test', (req, res) => res.status(200).send('Test Successful'));
@@ -86,6 +91,7 @@ appRouter.put(
     ValidationController.validateInputs,
     MailController.sendMail
 );
+appRouter.delete('/api/mail/:mailID', MailController.deleteMail);
 
 // Todo-list Operations
 appRouter.get('/api/todo', TodoController.getAllTodo);

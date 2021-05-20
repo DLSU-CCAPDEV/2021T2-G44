@@ -16,7 +16,7 @@ import {
 
 import SendMessage from './SendMessage';
 
-import { toggleRead, streamFile } from '../../controllers/MailController';
+import { toggleRead, streamFile, deleteMessage } from '../../controllers/MailController';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -30,7 +30,7 @@ export default function ViewMessage(props) {
 
     // Tag the message as read
     useEffect(() => {
-        if (!props.message.isRead && props.message.sender) {
+        if (!props.message.isRead && props.mailbox === 0) {
             props.message.isRead = true;
             toggleRead(props.message._id);
         }
@@ -53,9 +53,29 @@ export default function ViewMessage(props) {
 
     const handleFileDownload = async (file) => {
         setSnackbar('Preparing your file for download.');
+        setTimeout(() => setSnackbar(null), 5000);
         streamFile(file);
     };
 
+    const handleDelete = async () => {
+        const status = await deleteMessage(props.message._id);
+        console.log(status);
+        if(!status.success) {
+            setSnackbar(status.errors[0].msg);
+            setTimeout(() => setSnackbar(null), 5000);
+            handleClose();
+            return;
+        }
+
+        setSnackbar("Message Deleted.");
+        setTimeout(() => setSnackbar(null), 5000);
+        handleClose();
+        
+        // Refresh the mail list
+        const [render, doRerender] = props.reRender;
+        doRerender(!render);
+    }
+    
     if (props.message != null)
         return (
             <div>
@@ -91,12 +111,12 @@ export default function ViewMessage(props) {
                             <br />
                             {props.message.attachments.length > 0 && <Typography>Attachments</Typography>}
                             {props.message.attachments.length === 0 && <Typography>No attachments</Typography>}
-                            {props.message.attachments.map((attachment, i) => {
+                            {props.message.attachments.map((file, i) => {
                                 return (
                                     <Button
-                                        onClick={() => handleFileDownload(attachment)}
+                                        onClick={() => handleFileDownload(file)}
                                         style={{ marginLeft: '1em' }}
-                                        key={attachment}
+                                        key={file}
                                     >
                                         Attachment #{i + 1}
                                     </Button>
@@ -105,8 +125,9 @@ export default function ViewMessage(props) {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        {props.message.sender && <Button onClick={handleReply}>Reply</Button>}
-                        {props.message.sender && <Button onClick={handleMarkAsUnread}>Mark as Unread</Button>}
+                        <Button onClick={handleDelete}>Delete Mail</Button>
+                        {props.mailbox === 0 && <Button onClick={handleReply}>Reply</Button>}
+                        {props.mailbox === 0 && <Button onClick={handleMarkAsUnread}>Mark as Unread</Button>}
                         <Button onClick={handleClose}>Close</Button>
                     </DialogActions>
                 </Dialog>
@@ -123,6 +144,7 @@ export default function ViewMessage(props) {
                             props.message.content +
                             '\n---------------------------------------------------------\n'
                         }
+                        reRender={props.reRender}
                     />
                 )}
             </div>

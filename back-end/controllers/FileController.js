@@ -104,3 +104,11 @@ module.exports.streamFile = async (req, res) => {
         });
     }
 }
+
+module.exports.findFile = async (fileID) => {
+    try {
+        return await gridFS.find({ _id: new mongoose.Types.ObjectId(fileID) });
+    } catch(ex) {
+        console.error(ex);
+    }
+}

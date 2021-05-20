@@ -13,8 +13,6 @@ import profilePic from './assets/heheAna.png';
 // Component Imports
 import Loading from './components/Loading';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';

@@ -11,20 +11,42 @@ const { sendEmail } = require('./SmtpController');
 module.exports.getInbox = async (req, res) => {
     const userID = req.session.uid;
     const start = Number(req.query.start) || 0;
-    const limit = Number(req.query.limit) || 10;
+    const limit = Number(req.query.limit) || 15;
 
     try {
-        const mail = await MailModel.find({ recepientID: userID }).skip(start).limit(limit);
-        mail.sort((x, y) => {
-            const xDate = new Date(x.sendTime);
-            const yDate = new Date(y.sendTime);
-            if (xDate === yDate) return 0;
-            if (xDate > yDate) return -1;
-            if (xDate < yDate) return 1;
-        });
+        // Fetch Mail Data
+        const mail = await MailModel.find({ recepientID: userID })
+            .sort({ _id: -1 })
+            .skip(start)
+            .limit(limit)
+            .lean();
+
+        // Fetch Sender Data & Process Attachment File Information
+        const processedMail = await Promise.all(mail.map(m => new Promise(async resolve => {
+            m.sender = await UserModel.findOne({ _id: m.senderID }, ["email","firstName","lastName","avatar"]);
+            m.recepient = await UserModel.findOne({ _id: m.recepientID }, ["email","firstName","lastName","avatar"]);
+            m.senderID = undefined;
+            m.recepientID = undefined;
+
+            m.attachments = await Promise.all(m.attachments.map(a => new Promise(async resolve => {
+                const fileArray  = await findFile(a); 
+                const fileInfo = (await fileArray.toArray())[0];
+                const file = {
+                    fileID: a,
+                    fileInfo: {
+                        fileName: fileInfo.filename,
+                        length: fileInfo.length
+                    }
+                };
+                return resolve(file);
+            })));
+
+            return resolve(m);
+        })));
+
         res.status(200).json({
             success: true,
-            mail: mail,
+            mail: processedMail
         });
     } catch (ex) {
         console.error(ex);
@@ -46,21 +68,42 @@ module.exports.getInbox = async (req, res) => {
  */
 module.exports.getSentBox = async (req, res) => {
     const userID = req.session.uid;
-    const start = req.params.start || 0;
-    const limit = req.params.limit || 10;
-
+    const start = Number(req.query.start) || 0;
+    const limit = Number(req.query.limit) || 15;
     try {
-        const mail = await MailModel.find({ senderID: userID }).skip(start).limit(limit);
-        mail.sort((x, y) => {
-            const xDate = new Date(x.sendTime);
-            const yDate = new Date(y.sendTime);
-            if (xDate === yDate) return 0;
-            if (xDate > yDate) return -1;
-            if (xDate < yDate) return 1;
-        });
+        // Fetch Mail Data
+        const mail = await MailModel.find({ senderID: userID })
+            .sort({ _id: -1 })
+            .skip(start)
+            .limit(limit)
+            .lean();
+
+        // Fetch Sender Data
+        const processedMail = await Promise.all(mail.map(m => new Promise(async resolve => {
+            m.sender = await UserModel.findOne({ _id: m.senderID }, ["email","firstName","lastName","avatar"]);
+            m.recepient = await UserModel.findOne({ _id: m.recepientID }, ["email","firstName","lastName","avatar"]);
+            m.senderID = undefined;
+            m.recepientID = undefined;
+
+            m.attachments = await Promise.all(m.attachments.map(a => new Promise(async resolve => {
+                const fileArray  = await findFile(a); 
+                const fileInfo = (await fileArray.toArray())[0];
+                const file = {
+                    fileID: a,
+                    fileInfo: {
+                        fileName: fileInfo.filename,
+                        length: fileInfo.length
+                    }
+                };
+                return resolve(file);
+            })));
+
+            return resolve(m);
+        })));
+
         res.status(200).json({
             success: true,
-            mail: mail,
+            mail: processedMail
         });
     } catch (ex) {
         console.error(ex);
@@ -197,6 +240,27 @@ module.exports.sendMail = async (req, res) => {
                     msg: ex,
                 },
             ],
+        });
+    }
+};
+
+module.exports.deleteMail = async (req, res) => {
+    const mailID = req.params.mailID;
+
+    try {
+        const mail = await MailModel.deleteOne({ _id: mailID });
+
+        res.json({
+            success: true,
+            mail: mail
+        });
+
+    } catch(ex) {
+        res.status(500).json({
+            success: false,
+            errors: [{
+                msg: ex
+            }]
         });
     }
 };
