@@ -19,6 +19,7 @@ import UserProfile from './sources/UserProfile';
 import MyAppointments from './sources/MyAppointments';
 import Mail from './sources/Mail';
 import Invites from './sources/Invites';
+import EventPage from './sources/EventPage';
 
 // Context
 import { GlobalContext } from './controllers/ContextController';
@@ -78,6 +79,7 @@ export default function Routes(props) {
                         <ProtectedRoute path="/user/:userID" component={UserProfile} protected={true} />
                         <ProtectedRoute path="/mail" component={Mail} protected={true} />
                         <ProtectedRoute path="/invites" component={Invites} protected={true} />
+                        <ProtectedRoute path="/view-event/:eventID" component={EventPage} protected={true} />
 
                         {/* Error */}
                         <Route render={(props) => <ErrorPage {...props} errorType={404} />} />

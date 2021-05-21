@@ -1,6 +1,6 @@
 const { Aggregate } = require('mongoose');
 const EventModel = require('../models/Event');
-
+const UserModel = require('../models/User');
 /**
  *
  * @param {*} req
@@ -16,14 +16,14 @@ module.exports.createEvent = async (req, res) => {
         await event.save();
         res.status(201).json({
             success: true,
-            eventData: data
+            eventData: event,
         });
         return;
     } catch (err) {
         console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
         res.status(500).json({
             success: false,
-            errors: [{ msg: err }]
+            errors: [{ msg: err }],
         });
         return;
     }
@@ -37,22 +37,29 @@ module.exports.createEvent = async (req, res) => {
  */
 module.exports.getEvent = async (req, res) => {
     const eventTitle = req.query.title;
-    const eventID = req.query.id;
+    const eventID = req.query.eid;
 
     // Find event by title
     if (eventTitle) {
         try {
-            const eData = await EventModel.findOne({ title: eventTitle });
+            const eData = await EventModel.findOne({ _id: eventID }).lean();
+            const processedComments = await Promise.all(eData.comments.map(async (comment) => {
+                comment.name = await UserModel.findOne({_id: comment.author}, ["firstName", "lastName"]);
+                return comment;
+            }));
+
+            eData.comments = processedComments;
+
             res.status(200).json({
                 success: true,
-                eventData: eData
+                eventData: eData,
             });
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
             res.status(500).json({
                 success: false,
-                errors: [{ msg: err }]
+                errors: [{ msg: err }],
             });
             return;
         }
@@ -61,17 +68,24 @@ module.exports.getEvent = async (req, res) => {
     // Find event by event ID
     if (eventID) {
         try {
-            const eData = await EventModel.findOne({ _id: eventID });
+            const eData = await EventModel.findOne({ _id: eventID }).lean();
+            const processedComments = await Promise.all(eData.comments.map(async (comment) => {
+                comment.name = await UserModel.findOne({_id: comment.author}, ["firstName", "lastName"]);
+                return comment;
+            }));
+
+            eData.comments = processedComments;
+            
             res.status(200).json({
                 success: true,
-                eventData: eData
+                eventData: eData,
             });
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
             res.status(500).json({
                 success: false,
-                errors: [{ msg: err }]
+                errors: [{ msg: err }],
             });
             return;
         }
@@ -83,14 +97,14 @@ module.exports.getEvent = async (req, res) => {
             const eData = await EventModel.find({});
             res.status(200).json({
                 success: true,
-                eventData: eData
+                eventData: eData,
             });
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
             res.status(500).json({
                 success: false,
-                errors: [{ msg: err }]
+                errors: [{ msg: err }],
             });
             return;
         }
@@ -104,7 +118,7 @@ module.exports.getEvent = async (req, res) => {
  * @returns
  */
 module.exports.updateEvent = async (req, res) => {
-    const eventID = req.params.id;
+    const eventID = req.body._id;
     const eventData = req.body;
 
     // Find the event and update document
@@ -112,16 +126,44 @@ module.exports.updateEvent = async (req, res) => {
         const eData = await EventModel.updateOne({ _id: eventID }, eventData);
         res.status(200).json({
             success: true,
-            eventData: eData
+            eventData: eData,
         });
         return;
     } catch (err) {
         console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
-            errors: [{ msg: err }]
+            errors: [{ msg: err }],
+        });
+    }
+};
+
+/**
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+ module.exports.addComment = async (req, res) => {
+    const eventID = req.body.eventID;
+    const eventData = req.body;
+
+    console.log(eventData);
+
+    // Find the event and update document
+    try {
+        const eData = await EventModel.updateOne({ _id: eventID }, {"$push": {comments: eventData.comments}});
+        res.status(200).json({
+            success: true,
+            eventData: eData,
         });
         return;
+    } catch (err) {
+        console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
+        return res.status(500).json({
+            success: false,
+            errors: [{ msg: err }],
+        });
     }
 };
 
@@ -139,14 +181,14 @@ module.exports.deleteEvent = async (req, res) => {
         const eData = await EventModel.deleteOne({ _id: eventID });
         res.status(200).json({
             success: true,
-            eventData: eData
+            eventData: eData,
         });
         return;
     } catch (err) {
         console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
         res.status(500).json({
             success: false,
-            errors: [{ msg: err }]
+            errors: [{ msg: err }],
         });
         return;
     }
