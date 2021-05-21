@@ -43,10 +43,12 @@ module.exports.getEvent = async (req, res) => {
     if (eventTitle) {
         try {
             const eData = await EventModel.findOne({ _id: eventID }).lean();
-            const processedComments = await Promise.all(eData.comments.map(async (comment) => {
-                comment.name = await UserModel.findOne({_id: comment.author}, ["firstName", "lastName"]);
-                return comment;
-            }));
+            const processedComments = await Promise.all(
+                eData.comments.map(async (comment) => {
+                    comment.name = await UserModel.findOne({ _id: comment.author }, ['firstName', 'lastName']);
+                    return comment;
+                })
+            );
 
             eData.comments = processedComments;
 
@@ -69,13 +71,15 @@ module.exports.getEvent = async (req, res) => {
     if (eventID) {
         try {
             const eData = await EventModel.findOne({ _id: eventID }).lean();
-            const processedComments = await Promise.all(eData.comments.map(async (comment) => {
-                comment.name = await UserModel.findOne({_id: comment.author}, ["firstName", "lastName"]);
-                return comment;
-            }));
+            const processedComments = await Promise.all(
+                eData.comments.map(async (comment) => {
+                    comment.name = await UserModel.findOne({ _id: comment.author }, ['firstName', 'lastName']);
+                    return comment;
+                })
+            );
 
             eData.comments = processedComments;
-            
+
             res.status(200).json({
                 success: true,
                 eventData: eData,
@@ -144,7 +148,7 @@ module.exports.updateEvent = async (req, res) => {
  * @param {*} res
  * @returns
  */
- module.exports.addComment = async (req, res) => {
+module.exports.addComment = async (req, res) => {
     const eventID = req.body.eventID;
     const eventData = req.body;
 
@@ -152,7 +156,7 @@ module.exports.updateEvent = async (req, res) => {
 
     // Find the event and update document
     try {
-        const eData = await EventModel.updateOne({ _id: eventID }, {"$push": {comments: eventData.comments}});
+        const eData = await EventModel.updateOne({ _id: eventID }, { '$push': { comments: eventData.comments } });
         res.status(200).json({
             success: true,
             eventData: eData,
@@ -191,5 +195,39 @@ module.exports.deleteEvent = async (req, res) => {
             errors: [{ msg: err }],
         });
         return;
+    }
+};
+
+module.exports.getPublicEvents = async (req, res) => {
+    const start = Number(req.query.start) || 0;
+    const limit = Number(req.query.limit) || 7;
+
+    try {
+        const events = await EventModel.find(
+            {
+                isPrivate: false,
+                endDate: { '$gte': new Date() },
+            },
+            ['title', 'startDate', 'endDate', 'startTime', 'endTime', 'allDay', 'numParticipants']
+        )
+            .sort({ startDate: 1 })
+            .skip(start)
+            .limit(limit)
+            .lean();
+
+        res.status(200).json({
+            success: true,
+            events: events,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: err,
+                },
+            ],
+        });
     }
 };
