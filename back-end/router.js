@@ -1,4 +1,6 @@
-const appRouter = require('express').Router();
+const express = require('express');
+const appRouter = express.Router();
+const path = require("path");
 
 // Routes
 const ValidationController = require('./controllers/ValidationController');
@@ -8,8 +10,12 @@ const EventController = require('./controllers/EventController');
 const AppointmentController = require('./controllers/AppointmentController');
 const MailController = require('./controllers/MailController');
 const FileController = require('./controllers/FileController');
+const TodoController = require('./controllers/TodoController');
 
 // Set up Routes
+
+// Serve Static Assets
+appRouter.use("/static", express.static(path.join(__dirname, "public-assets")));
 
 // Test Route
 appRouter.get('/test', (req, res) => res.status(200).send('Test Successful'));
@@ -101,6 +107,13 @@ appRouter.put(
     ValidationController.validateInputs,
     MailController.sendMail
 );
+appRouter.delete('/api/mail/:mailID', MailController.deleteMail);
+
+// Todo-list Operations
+appRouter.get('/api/todo', TodoController.getAllTodo);
+appRouter.put('/api/todo', ValidationController.validateTodo('create'), ValidationController.validateInputs, TodoController.addTodo);
+appRouter.post('/api/todo', ValidationController.validateTodo('toggleComplete'), ValidationController.validateInputs, TodoController.toggleCompleted);
+appRouter.delete('/api/todo', ValidationController.validateTodo('delete'), ValidationController.validateInputs, TodoController.deleteTodo);
 
 // File Operations
 appRouter.put('/api/file', FileController.uploadFiles.array('file'), FileController.handleUpload);

@@ -37,6 +37,14 @@ app.use(compression());
 
 // Cross-Origin Resource Sharing
 app.set("trust proxy", 1);
+
+// Force requests to use https in production
+app.use((req, res, next) => {
+    if(String(process.env.NODE_ENV) === 'production' && !req.secure)
+        return res.redirect("https://" + req.headers.host + req.url);
+    next();
+})
+
 const corsOptions = {
     origin: JSON.parse(process.env.CORS_WHITELIST || '["*"]'),
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],

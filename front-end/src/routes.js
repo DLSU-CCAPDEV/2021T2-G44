@@ -56,7 +56,7 @@ export default function Routes(props) {
 
     useEffect(() => {
         updateUid().then(() => setLoading(false));
-    }, [uid]);
+    }, [uid, updateUid]);
 
     if (!loading)
         return (
@@ -79,13 +79,11 @@ export default function Routes(props) {
                         <ProtectedRoute path="/user/:userID" component={UserProfile} protected={true} />
                         <ProtectedRoute path="/mail" component={Mail} protected={true} />
                         <ProtectedRoute path="/invites" component={Invites} protected={true} />
-
                         <ProtectedRoute path="/view-event/:eventID" component={EventPage} protected={true} />
 
                         {/* Error */}
                         <Route render={(props) => <ErrorPage {...props} errorType={404} />} />
                     </Switch>
-
                     <Footer />
                 </Router>
             </ThemeProvider>

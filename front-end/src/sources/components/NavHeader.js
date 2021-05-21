@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import '../assets/styles.css';
+// import '../assets/styles.css';
 import logo from '../assets/logo.svg';
 import { Link, useHistory } from 'react-router-dom';
 
@@ -26,11 +26,13 @@ import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
-import { logout } from "../../controllers/AuthController";
+import { logout } from '../../controllers/AuthController';
 import { GlobalContext } from '../../controllers/ContextController';
 
+import logoSVG from '../assets/whiteLogo.svg';
+
 const barStyles = {
-    filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
+    filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))'
 };
 
 const brandingStyles = {
@@ -43,10 +45,10 @@ const linkStyles = {
 };
 
 const options = [
-    { text: "My Calendar", icon: EventIcon, link: "/my-calendar", index: 0 },
-    { text: "My Appointments", icon: CheckBoxIcon, link: "/my-appointments", index: 1 },
-    { text: "Mail", icon: MailIcon, link: "/mail", index: 2 },
-    { text: "Invites", icon: SendIcon, link: "/invites", index: 3 },
+    { text: 'My Calendar', icon: EventIcon, link: '/my-calendar', index: 0 },
+    { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments', index: 1 },
+    { text: 'Mail', icon: MailIcon, link: '/mail', index: 2 },
+    { text: 'Invites', icon: SendIcon, link: '/invites', index: 3 },
 ];
 
 const drawerWidth = 300;
@@ -126,7 +128,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NavigationHeader(props) {
     // Check logged in
-    const {uid, updateUid} = useContext(GlobalContext);
+    const { uid, updateUid } = useContext(GlobalContext);
 
     // Extract the Context
     const history = useHistory();
@@ -138,9 +140,7 @@ export default function NavigationHeader(props) {
                     <Grid container direction="row" spacing={3} alignItems="center">
                         <Grid item lg={8}>
                             <Link to="/" className="container" style={brandingStyles}>
-                                <img src={logo} className="logo" alt="Website Logo" />
-                                <div className="logoLine" />
-                                <h1 id="headerName">Sched-It</h1>
+                                <img src={logoSVG} className="logo" alt="Website Logo" />
                             </Link>
                         </Grid>
 
@@ -198,7 +198,7 @@ export default function NavigationHeader(props) {
         logout()
             .then(() => updateUid())
             .then(() => history.push('/login'))
-            .catch(err => console.error(err));
+            .catch((err) => console.error(err));
     };
 
     const handleProfile = () => {
@@ -208,7 +208,7 @@ export default function NavigationHeader(props) {
 
     const loggedIn = () => {
         return (
-            <div className={classes.root}>
+            <div className={classes.root} style={ { marginBottom: "1em" } }>
                 <AppBar
                     position="fixed"
                     style={barStyles}
@@ -220,9 +220,7 @@ export default function NavigationHeader(props) {
                         <Grid container direction="row" spacing={3} alignItems="center">
                             <Grid item lg={8}>
                                 <Link to="/" className="container" style={brandingStyles} href="index.html">
-                                    <img src={logo} className="logo" alt="Website Logo" />
-                                    <div className="logoLine" />
-                                    <h1 id="headerName">Sched-It</h1>
+                                    <img src={logoSVG} className="logo" alt="Website Logo" />
                                 </Link>
                             </Grid>
                         </Grid>
