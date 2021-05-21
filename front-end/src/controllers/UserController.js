@@ -29,6 +29,16 @@ export const GetUserData = async (userID = '') => {
     }
 };
 
+export const GetUserID = async () => {
+    try {
+        const response = await request.get("auth");
+        return response.data;
+    } catch (err) {
+        console.error(err);
+        return { success: false, msg: err };
+    }
+}
+
 export const RegisterUser = async (userData) => {
     try {
         const response = await request.put("register", userData);

@@ -28,3 +28,13 @@ export const updateEvent = async (eventData) => {
         return { success: false, msg: err };
     }
 };
+
+export const addComment = async (commentData) => {
+    try {
+        const response = await request.put('api/event/comment', commentData);
+        return response.data;
+    } catch (err) {
+        console.error(err);
+        return { success: false, msg: err };
+    }
+};

@@ -123,7 +123,7 @@ module.exports.validateEventData = (method) => {
                 }),
                 body('startDate', 'Start Date must be after the current date.').isAfter(new Date().toString()),
             ];
-        }
+    }
         case 'updateEvent': {
             return [
                 body('title', 'Please provide a title.').exists(),
@@ -148,6 +148,9 @@ module.exports.validateEventData = (method) => {
                 body('startDate', 'Start Date must be after the current date!').isAfter(new Date().toString()),
             ];
         }
+        // case 'addComment': {
+        //     return true;
+        // }
     }
 };
 

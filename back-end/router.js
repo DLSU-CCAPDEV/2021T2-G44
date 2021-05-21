@@ -65,6 +65,12 @@ appRouter.post(
     ValidationController.validateInputs,
     EventController.updateEvent
 );
+appRouter.put(
+    '/api/event/comment',
+    // ValidationController.validateEventData('addComment'),
+    // ValidationController.validateInputs,
+    EventController.addComment
+);
 appRouter.delete('/api/event/:id', EventController.deleteEvent);
 
 // Appointment Operations

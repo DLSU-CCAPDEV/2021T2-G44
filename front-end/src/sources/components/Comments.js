@@ -8,6 +8,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import SendIcon from '@material-ui/icons/Send';
 import ClearIcon from '@material-ui/icons/Clear';
 
+// Controllers
+import { GetUserData, GetUserID } from '../../controllers/UserController';
+import { addComment } from '../../controllers/EventController';
+import Loading from './Loading';
+
 const customStyles = makeStyles((theme) => ({
     title: {
         fontWeight: 'bold',
@@ -38,78 +43,98 @@ const customStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Comments() {
+export default function Comments(props) {
     const classes = customStyles();
 
-    const dummyData = [
-        { author: 'Lorenzo Querol', content: 'I love Horimiya!' },
-        { author: 'Gian Madrid', content: 'Ram ranch really rocks!' },
-        { author: 'Adi Amogus', content: 'I need new headphones' },
-    ];
+    // const dummyData = [
+    //     { author: 'Lorenzo Querol', content: 'I love Horimiya!' },
+    //     { author: 'Gian Madrid', content: 'Ram ranch really rocks!' },
+    //     { author: 'Adi Amogus', content: 'I need new headphones' },
+    // ];
 
     const [newComment, setNewComment] = useState('');
-    const [comments, setComments] = useState(dummyData);
+    const comments = props.comments;
+    const setComments = props.setComments;
+    const eventID = props.eventID;
 
     const onTextUpdate = (event) => {
         setNewComment(event.target.value);
     };
 
-    const addComment = (task) => {
-        comments.push({ author: '$AUTHOR_NAME', content: newComment });
-        setComments(comments);
+    const handleAddComment = async (task) => {
+        const response = await GetUserID();
+        const uid = response.uid;
+
+        const commentData = {
+            author: uid,
+            content: newComment,
+        }
+
+        const eventResponse = addComment ({eventID: eventID, comments: commentData });
+        const uData = await GetUserData();
+        commentData.name = {
+            firstName: uData.userData.firstName,
+            lastName: uData.userData.lastName,
+        }
+        
+        setComments([...comments, commentData]);
         setNewComment('');
     };
 
-    return (
-        <Paper elevation={5} className={classes.comments}>
-            <div className={classes.content}>
-                <Typography variant="h4" className={classes.title}>
-                    Comments
-                </Typography>
-                <TextField
-                    id="outlined-full-width"
-                    style={{ margin: 8 }}
-                    placeholder="Write a comment!"
-                    value={newComment}
-                    onChange={onTextUpdate}
-                    fullWidth
-                    multiline
-                    rows={4}
-                    margin="normal"
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    variant="outlined"
-                />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    endIcon={<SendIcon />}
-                    style={{ 'marginBottom': '1em' }}
-                    onClick={addComment}
-                >
-                    Enter Comment
-                </Button>
+    if (props.comments) {
 
-                <Divider />
-
-                <Grid container direction="column">
-                    {comments.map((comment) => (
-                        <Paper className={classes.commentBox}>
-                            <Grid item container direction="column">
-                                <Grid item container direction="row" alignItems="center">
-                                    <Avatar></Avatar>
-                                    <Typography className={classes.commentAuthor}>{comment.author}</Typography>
+        return (
+            <Paper elevation={5} className={classes.comments}>
+                <div className={classes.content}>
+                    <Typography variant="h4" className={classes.title}>
+                        Comments
+                    </Typography>
+                    <TextField
+                        id="outlined-full-width"
+                        style={{ margin: 8 }}
+                        placeholder="Write a comment!"
+                        value={newComment}
+                        onChange={onTextUpdate}
+                        fullWidth
+                        multiline
+                        rows={4}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        variant="outlined"
+                    />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        endIcon={<SendIcon />}
+                        style={{ 'marginBottom': '1em' }}
+                        onClick={handleAddComment}
+                    >
+                        Enter Comment
+                    </Button>
+    
+                    <Divider />
+    
+                    <Grid container direction="column">
+                        {comments.map((comment, index) => (
+                            <Paper className={classes.commentBox} key={index}>
+                                <Grid item container direction="column">
+                                    <Grid item container direction="row" alignItems="center">
+                                        <Avatar></Avatar>
+                                        <Typography className={classes.commentAuthor}>{`${comment.name.firstName} ${comment.name.lastName}`}</Typography>
+                                    </Grid>
+                                    <Grid item container direction="row" alignItems="center">
+                                        <Typography className={classes.commentContent}>{comment.content}</Typography>
+                                    </Grid>
                                 </Grid>
-                                <Grid item container direction="row" alignItems="center">
-                                    <Typography className={classes.commentContent}>{comment.content}</Typography>
-                                </Grid>
-                            </Grid>
-                        </Paper>
-                    ))}
-                </Grid>
-            </div>
-        </Paper>
-    );
+                            </Paper>
+                        ))}
+                    </Grid>
+                </div>
+            </Paper>
+        );
+    }
+    return <Loading loadingText="Loading Comments"/>
 }

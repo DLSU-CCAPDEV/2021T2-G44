@@ -28,7 +28,7 @@ import coverPhoto from './assets/coverPhoto.png';
 
 // Controllers
 import { getEvent, updateEvent } from '../controllers/EventController';
-import { GetUserData } from '../controllers/UserController';
+import { GetUserData, GetUserID } from '../controllers/UserController';
 
 // Markdown Parser
 const marked = require('marked');
@@ -72,6 +72,7 @@ export default function EventPage() {
 
     // Get event ID
     const { eventID } = useParams();
+
     // States for Event
     const [loading, setLoading] = useState(true);
     const [hostID, setHostID] = useState(null);
@@ -87,6 +88,7 @@ export default function EventPage() {
     const [endTime, setEndTime] = useState(null);
     const [timeLimit, setTimeLimit] = useState(null);
     const [description, setDescription] = useState(null);
+    const [comments, setComments] = useState(null);
 
     // States for editing event
     const [editable, setEditable] = useState(false);
@@ -194,7 +196,7 @@ export default function EventPage() {
             appointmentIDs: appointmentIDs,
             timeLimit: timeLimit,
             description: description,
-            comments: [],
+            comments: comments,
         };
 
         const response = await updateEvent(tempEventData);
@@ -241,6 +243,7 @@ export default function EventPage() {
             setEndTime(eData.endTime);
             setTimeLimit(eData.timeLimit);
             setDescription(eData.description);
+            setComments(eData.comments);
 
             document.title = `${eData.title} - Sched-it`;
 
@@ -459,8 +462,8 @@ export default function EventPage() {
                                             </Typography>
                                         ) : (
                                             <Typography variant="body1" style={{ 'fontWeight': 'bold' }}>
-                                                {`${new Date(startDate).toLocaleString().split(',')[1]} - 
-                                                ${new Date(endDate).toLocaleString().split(',')[1]}`}
+                                                {`${new Date(startTime).toLocaleString().split(',')[1]} - 
+                                                ${new Date(endTime).toLocaleString().split(',')[1]}`}
                                             </Typography>
                                         )}
                                     </Grid>
@@ -620,7 +623,7 @@ export default function EventPage() {
                         </Grid>
                         {/* Comments section */}
                         <Grid item>
-                            <Comments />
+                            <Comments comments={comments} setComments={setComments} eventID={eventID}/>
                         </Grid>
                     </Grid>
                 </div>
