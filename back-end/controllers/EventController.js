@@ -37,7 +37,7 @@ module.exports.createEvent = async (req, res) => {
  */
 module.exports.getEvent = async (req, res) => {
     const eventTitle = req.query.title;
-    const eventID = req.query.id;
+    const eventID = req.query.eid;
 
     // Find event by title
     if (eventTitle) {
@@ -104,9 +104,11 @@ module.exports.getEvent = async (req, res) => {
  * @returns
  */
 module.exports.updateEvent = async (req, res) => {
-    const eventID = req.params.id;
+    const eventID = req.body._id;
     const eventData = req.body;
 
+    console.log(eventID);
+    console.log(req.body);
     // Find the event and update document
     try {
         const eData = await EventModel.updateOne({ _id: eventID }, eventData);
@@ -117,11 +119,10 @@ module.exports.updateEvent = async (req, res) => {
         return;
     } catch (err) {
         console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             errors: [{ msg: err }],
         });
-        return;
     }
 };
 

@@ -52,9 +52,19 @@ appRouter.delete(
 );
 
 // Event Operations
-appRouter.put('/api/event', ValidationController.validateEventData('createEvent'), ValidationController.validateInputs, EventController.createEvent);
+appRouter.put(
+    '/api/event',
+    ValidationController.validateEventData('createEvent'),
+    ValidationController.validateInputs,
+    EventController.createEvent
+);
 appRouter.get('/api/event', EventController.getEvent);
-appRouter.post('/api/event/:id', ValidationController.validateEventData('updateEvent'), ValidationController.validateInputs, EventController.updateEvent);
+appRouter.post(
+    '/api/event',
+    ValidationController.validateEventData('updateEvent'),
+    ValidationController.validateInputs,
+    EventController.updateEvent
+);
 appRouter.delete('/api/event/:id', EventController.deleteEvent);
 
 // Appointment Operations
@@ -87,8 +97,8 @@ appRouter.put(
 );
 
 // File Operations
-appRouter.put("/api/file", FileController.uploadFiles.array("file"), FileController.handleUpload);
-appRouter.get("/api/file/:fileID", FileController.getFile);
-appRouter.get("/api/file/stream/:fileID", FileController.streamFile);
+appRouter.put('/api/file', FileController.uploadFiles.array('file'), FileController.handleUpload);
+appRouter.get('/api/file/:fileID', FileController.getFile);
+appRouter.get('/api/file/stream/:fileID', FileController.streamFile);
 
 module.exports = appRouter;

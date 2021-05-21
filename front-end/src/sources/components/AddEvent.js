@@ -243,7 +243,7 @@ export default function AddEvent() {
                                     color="primary"
                                 />
                             }
-                            label="Whole Day Event"
+                            label="All Day Event"
                         />
                     </FormGroup>
 
