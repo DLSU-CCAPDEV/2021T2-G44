@@ -1,4 +1,7 @@
 const InvitesModel = require("../models/Invite");
+const AppointmentModel = require("../models/Appointment");
+const EventModel = require("../models/Event");
+const UserModel = require("../models/User");
 
 /**
  * 
@@ -66,6 +69,67 @@ module.exports.createInvitation = async (req, res) => {
         res.json({ 
             success: true,
             invitation: findResult
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.json({
+            success: false,
+            errors: [{ msg: err }]
+        })
+    }
+};
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+ module.exports.getAllInvitations = async (req, res) => {
+    const uid = req.session.uid;
+    const mode = req.query.mode || 'incoming';
+    const start = Number(req.query.start) || 0;
+    const limit = Number(req.query.limit) || 7;
+
+    try {
+        var findResult = null;
+        if(mode === 'incoming')
+            findResult = await InvitesModel.find({ inviteeID: uid })
+                .sort({datefield: 1})
+                .skip(start)
+                .limit(limit)
+                .lean();
+        else
+            findResult = await InvitesModel.find({ inviterID: uid })
+                .sort({datefield: 1})
+                .skip(start)
+                .limit(limit)
+                .lean();
+
+        // Populate all field information
+        const processed = await Promise.all(findResult.map(async invite => {
+            // Get Appointment
+            invite.appointment = await AppointmentModel.findOne({ _id: invite.appointmentID });
+            invite.appointmentID = undefined;
+
+            // Get Event
+            invite.event = await EventModel.findOne({ _id: invite.eventID }, ["title"]);
+            invite.eventID = undefined;
+
+            // Get Invitee
+            invite.invitee = await UserModel.findOne({ _id: invite.inviteeID }, ["firstName","lastName"]);
+            invite.inviteeID = undefined;
+
+            // Get Inviter
+            invite.inviter = await UserModel.findOne({ _id: invite.inviterID }, ["firstName","lastName"]);
+            invite.inviterID = undefined;
+
+            return invite;
+        }));
+
+        res.json({ 
+            success: true,
+            invitations: processed
         });
 
     } catch (err) {

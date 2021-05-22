@@ -106,6 +106,10 @@ appRouter.post(
     InvitesController.updateInvitation
 );
 appRouter.get(
+    '/api/invite',
+    InvitesController.getAllInvitations  
+);
+appRouter.get(
     '/api/invite/:inviteID',
     ValidationController.validateInvite('read'),
     ValidationController.validateInputs,

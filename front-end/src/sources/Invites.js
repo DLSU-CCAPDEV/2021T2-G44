@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GetInvites } from '../controllers/InvitesController';
-
-// import "./assets/styles.css";
+import { getIncomingInvitations, getOutgoingInvitations } from '../controllers/InvitesController';
 
 import {
     Grid,
@@ -19,9 +17,6 @@ import ViewInvite from './components/ViewInvite';
 
 // ART
 import mailBoxArt from './assets/mailBox.svg';
-
-// Temporary
-import { useCookies } from 'react-cookie';
 
 // Custom Styles
 const styles = {
@@ -59,25 +54,54 @@ const styles = {
 };
 
 export default function Invites(props) {
-    // Temp
-    const [cookies] = useCookies(['uid']);
-
-    const [invitations, setInvitations] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [incomingPage, setIncomingPage] = useState(0);
+    const [outgoingPage, setOutgoingPage] = useState(0);
+    const [outgoingInvites, setOutgoingInvites] = useState(null);
+    const [incomingInvites, setIncomingInvites] = useState(null);
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [selectedInvitation, setSelectedInvitation] = useState(null);
 
-    useEffect(() => {
-        document.title = 'Invitations - Sched-It';
-    }, []);
+    document.title = 'Invitations - Sched-It';
 
     useEffect(() => {
-        GetInvites(cookies.uid)
-            .then((invites) => {
-                setInvitations(invites);
-            })
-            .catch((err) => console.error(err));
-    }, [cookies.uid]);
+        // Incoming Invites
+        const prepareIncomingInvites = async () => {
+            const invitesStatus = await getIncomingInvitations(incomingPage * 7, 7);
+            if(!invitesStatus.success) {
+                console.log(invitesStatus.errors);
+                // Snackbar error logging
+            }
+            setIncomingInvites(invitesStatus.invitations);
+        };
+
+        setLoading(true);
+        prepareIncomingInvites().then(() => setLoading(false)).catch(err => {
+            console.error(err);
+            // Snackbar error display
+            setLoading(false);
+        });
+    }, [incomingPage]);
+
+    useEffect(() => {
+        // Outgoing Invites
+        const prepareIncomingInvites = async () => {
+            const invitesStatus = await getOutgoingInvitations(outgoingPage * 7, 7);
+            if(!invitesStatus.success) {
+                console.log(invitesStatus.errors);
+                // Snackbar error logging
+            }
+            setIncomingInvites(invitesStatus.invitations);
+        };
+
+        setLoading(true);
+        prepareIncomingInvites().then(() => setLoading(false)).catch(err => {
+            console.error(err);
+            // Snackbar error display
+            setLoading(false);
+        });
+    }, [outgoingPage]);
 
     const handleClick = (invitation) => {
         setSelectedInvitation(invitation);
@@ -122,8 +146,8 @@ export default function Invites(props) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {invitations &&
-                                        invitations.map((m, i) => (
+                                    {incomingInvites &&
+                                        incomingInvites.map((m, i) => (
                                             <TableRow
                                                 className="pointerHover"
                                                 key={m.id}

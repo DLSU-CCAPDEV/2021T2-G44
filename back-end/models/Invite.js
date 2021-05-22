@@ -4,7 +4,8 @@ const InviteSchema = new mongoose.Schema({
     appointmentID: String,
     eventID: String,
     inviterID: String,
-    inviteeID: String
+    inviteeID: String,
+    inviteDate: Date
 });
 
 module.exports = mongoose.model("Invite", InviteSchema);
