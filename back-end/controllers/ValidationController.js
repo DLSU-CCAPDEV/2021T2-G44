@@ -208,3 +208,35 @@ module.exports.validateAppointmentData = (method) => {
         }
     }
 };
+
+module.exports.validateInvite = method => {
+    switch(method) {
+        case 'create': {
+            return [
+                body('appointmentID','Please provide an appointmentID.').exists().isString(),
+                body('eventID', 'Please provide an eventID.').exists().isString(),
+                body('inviterID', 'Please provide an inviterID.').exists().isString(),
+                body('inviteeID', 'Please provide an inviteeID.').exists().isString()
+            ]
+        }
+        case 'update': {
+            return [
+                param('inviteID', 'Please provide an invite ID.').exists().isString(),
+                body('appointmentID','Please provide an appointmentID.').optional().isString(),
+                body('eventID', 'Please provide an eventID.').optional().isString(),
+                body('inviterID', 'Please provide an inviterID.').optional().isString(),
+                body('inviteeID', 'Please provide an inviteeID.').optional().isString()
+            ]
+        }
+        case 'read': {
+            return [
+                param('inviteID', 'Please provide an invite ID.').exists().isString()
+            ]
+        }
+        case 'delete': {
+            return [
+                param('inviteID', 'Please provide an invite ID.').exists().isString()
+            ]
+        }
+    }
+}

@@ -11,6 +11,7 @@ const AppointmentController = require('./controllers/AppointmentController');
 const MailController = require('./controllers/MailController');
 const FileController = require('./controllers/FileController');
 const TodoController = require('./controllers/TodoController');
+const InvitesController = require('./controllers/InvitesController');
 
 // Set up Routes
 
@@ -90,6 +91,32 @@ appRouter.put(
 appRouter.get('/api/appointment/:id', AppointmentController.getAppointment);
 appRouter.post('/api/appointment/:aid', AppointmentController.updateAppointment);
 appRouter.delete('/api/appointment/:id', AppointmentController.deleteAppointment);
+
+// Invitation Operations
+appRouter.put(
+    '/api/invite', 
+    ValidationController.validateInvite('create'),
+    ValidationController.validateInputs,
+    InvitesController.createInvitation
+);
+appRouter.post(
+    '/api/invite/:inviteID',
+    ValidationController.validateInvite('update'),
+    ValidationController.validateInputs,
+    InvitesController.updateInvitation
+);
+appRouter.get(
+    '/api/invite/:inviteID',
+    ValidationController.validateInvite('read'),
+    ValidationController.validateInputs,
+    InvitesController.getInvitation
+);
+appRouter.delete(
+    '/api/invite/:inviteID',
+    ValidationController.validateInvite('delete'),
+    ValidationController.validateInputs,
+    InvitesController.deleteInvitation 
+);
 
 // Mail Operations
 appRouter.get('/api/mail/count', MailController.totalMail);
