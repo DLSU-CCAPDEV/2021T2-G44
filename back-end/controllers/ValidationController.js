@@ -47,11 +47,11 @@ module.exports.validateUserData = (method) => {
         }
         case 'updateUser': {
             return [
-                body("email", "Missing or Invalid Email Address.").optional().isEmail(),
-                body("firstName", "Please provide a first name.").optional().isString(),
-                body("lastName", "Please provide a last name.").optional().isString(),
-                body("bio").optional().isString(),
-                body("avatar").optional().isString(),
+                body('email', 'Missing or Invalid Email Address.').optional().isEmail(),
+                body('firstName', 'Please provide a first name.').optional().isString(),
+                body('lastName', 'Please provide a last name.').optional().isString(),
+                body('bio').optional().isString(),
+                body('avatar').optional().isString(),
             ];
         }
         case 'changePassword': {
@@ -102,31 +102,31 @@ module.exports.validateEventData = (method) => {
     switch (method) {
         case 'createEvent': {
             return [
-                body('title', 'Please provide a title.').exists(),
-                body('numParticipants', 'Please provide a valid number.')
+                body('title', 'Please provide a title!').exists({ checkFalsy: true }),
+                body('numParticipants', 'Please provide a valid number of participants!')
                     .exists()
                     .isInt()
                     .custom((value) => {
                         return value > 0;
                     }),
-                body('timeLimit', 'Please provide a valid number.')
+                body('timeLimit', 'Time limit must be between 5 minutes and 480 minutes!')
                     .exists()
                     .isInt()
                     .custom((value) => {
-                        return value >= 300 && value <= 28800;
+                        return value >= 5 && value <= 480;
                     }),
                 body('endDate').custom((value, { req }) => {
                     if (new Date(value) <= new Date(req.body.startDate)) {
-                        throw new Error('End Date must be after Start Date.');
+                        throw new Error('End Date must be after Start Date!');
                     }
                     return true;
                 }),
-                body('startDate', 'Start Date must be after the current date.').isAfter(new Date().toString()),
+                body('startDate', 'Start Date must be after the current date!').isAfter(new Date().toString()),
             ];
-    }
+        }
         case 'updateEvent': {
             return [
-                body('title', 'Please provide a title.').exists(),
+                body('title', 'Please provide a title!').exists({ checkFalsy: true }),
                 body('numParticipants', 'Please provide a valid number for number of participants!')
                     .exists()
                     .isInt()
@@ -163,9 +163,21 @@ module.exports.validateAppointmentData = (method) => {
     switch (method) {
         case 'createAppointment': {
             return [
+                body('startTime').custom((value, { req }) => {
+                    if (new Date(value) >= new Date(req.body.endTime)) {
+                        throw new Error('Start Time must be before End Time!');
+                    }
+                    return true;
+                }),
                 body('endTime').custom((value, { req }) => {
                     if (new Date(value) <= new Date(req.body.startTime)) {
-                        throw new Error('End Time must be after Start Time.');
+                        throw new Error('End Time must be after Start Time!');
+                    }
+                    return true;
+                }),
+                body('timeLimit').custom((value, { req }) => {
+                    if ((new Date(req.body.endTime) - new Date(req.body.startTime)) / 60000 !== Number(value)) {
+                        throw new Error('Please provide an appointment equal to the time limit!');
                     }
                     return true;
                 }),
@@ -173,9 +185,21 @@ module.exports.validateAppointmentData = (method) => {
         }
         case 'updateAppointment': {
             return [
+                body('startTime').custom((value, { req }) => {
+                    if (new Date(value) >= new Date(req.body.endTime)) {
+                        throw new Error('Start Time must be before End Time!');
+                    }
+                    return true;
+                }),
                 body('endTime').custom((value, { req }) => {
                     if (new Date(value) <= new Date(req.body.startTime)) {
-                        throw new Error('End Time must be after Start Time.');
+                        throw new Error('End Time must be after Start Time!');
+                    }
+                    return true;
+                }),
+                body('timeLimit').custom((value, { req }) => {
+                    if ((new Date(req.body.endTime) - new Date(req.body.startTime)) / 60000 !== value) {
+                        throw new Error('Please provide an appointment equal to the time limit!');
                     }
                     return true;
                 }),
@@ -189,22 +213,16 @@ module.exports.validateAppointmentData = (method) => {
  * @param {*} method
  * @returns
  */
- module.exports.validateTodo = (method) => {
+module.exports.validateTodo = (method) => {
     switch (method) {
         case 'create': {
-            return [
-                body('title','Please insert a title.').exists().isString()
-            ]
+            return [body('title', 'Please insert a title.').exists().isString()];
         }
         case 'toggleComplete': {
-            return [
-                body('todoID','Please provide a to-do list item ID.').exists().isString()
-            ]
+            return [body('todoID', 'Please provide a to-do list item ID.').exists().isString()];
         }
         case 'delete': {
-            return [
-                body('todoID','Please provide a to-do list item ID.').exists().isString()
-            ]
+            return [body('todoID', 'Please provide a to-do list item ID.').exists().isString()];
         }
     }
 };

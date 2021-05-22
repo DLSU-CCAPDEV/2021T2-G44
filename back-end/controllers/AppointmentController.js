@@ -15,14 +15,14 @@ module.exports.createAppointment = async (req, res) => {
         await appointment.save();
         res.status(201).json({
             success: true,
-            appointment: appointment
+            appointment: appointment,
         });
         return;
     } catch (err) {
         console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
         res.status(500).json({
             success: false,
-            errors: [{ msg: err }]
+            errors: [{ msg: err }],
         });
         return;
     }
@@ -45,15 +45,15 @@ module.exports.getAppointment = async (req, res) => {
             const aData = await AppointmentModel.find({ participantID: userID });
             res.status(200).json({
                 success: true,
-                appointments: aData
+                appointments: aData,
             });
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
             res.status(500).json({
                 success: false,
-                errors: [{ msg: err }]
-            }); 
+                errors: [{ msg: err }],
+            });
             return;
         }
     }
@@ -64,15 +64,15 @@ module.exports.getAppointment = async (req, res) => {
             const aData = await AppointmentModel.find({ participantID: userID });
             res.status(200).json({
                 success: true,
-                appointments: aData
+                appointments: aData,
             });
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
             res.status(500).json({
                 success: false,
-                errors: [{ msg: err }]
-            }); 
+                errors: [{ msg: err }],
+            });
             return;
         }
     }
@@ -80,7 +80,7 @@ module.exports.getAppointment = async (req, res) => {
     // If userID is undefined
     return res.status(400).json({
         success: false,
-        errors: [{ msg: 'UserID is undefined.' }]
+        errors: [{ msg: 'UserID is undefined.' }],
     });
 };
 
@@ -101,15 +101,15 @@ module.exports.updateAppointment = async (req, res) => {
             const aData = await AppointmentModel.updateOne({ _id: appointmentID }, appointmentData);
             res.status(200).json({
                 success: true,
-                appointment: appointmentData
+                appointment: appointmentData,
             });
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
             res.status(500).json({
                 success: false,
-                errors: [{ msg: err }]
-            }); 
+                errors: [{ msg: err }],
+            });
             return;
         }
     }
@@ -117,7 +117,7 @@ module.exports.updateAppointment = async (req, res) => {
     // If appointmentID is undefined
     return res.status(400).json({
         success: false,
-        errors: [{ msg: 'appointmentID is undefined.' }]
+        errors: [{ msg: 'appointmentID is undefined.' }],
     });
 };
 
@@ -138,14 +138,14 @@ module.exports.deleteAppointment = async (req, res) => {
     if (userID && appointmentID) {
         try {
             const aData = await AppointmentModel.deleteOne({ _id: appointmentID });
-            res.status(200).json({ success: true, aData: aData});
+            res.status(200).json({ success: true, aData: aData });
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
             res.status(500).json({
                 success: false,
-                errors: [{ msg: err }]
-            }); 
+                errors: [{ msg: err }],
+            });
             return;
         }
     }
@@ -154,14 +154,14 @@ module.exports.deleteAppointment = async (req, res) => {
     if (userID && !appointmentID) {
         try {
             const aData = await AppointmentModel.deleteMany({ participantID: userID });
-            res.status(200).json({ success: true, aData: aData});
+            res.status(200).json({ success: true, aData: aData });
             return;
         } catch (err) {
             console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
             res.status(500).json({
                 success: false,
-                errors: [{ msg: err }]
-            }); 
+                errors: [{ msg: err }],
+            });
             return;
         }
     }
@@ -169,6 +169,6 @@ module.exports.deleteAppointment = async (req, res) => {
     // If userID is undefined
     return res.status(400).json({
         success: false,
-        errors: [{ msg: 'UserID is undefined.' }]
+        errors: [{ msg: 'UserID is undefined.' }],
     });
 };

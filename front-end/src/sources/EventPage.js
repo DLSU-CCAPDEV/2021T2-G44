@@ -22,6 +22,7 @@ import PersonIcon from '@material-ui/icons/Person';
 // Custom components
 import CreateAppointment from './components/CreateAppointment';
 import Comments from './components/Comments';
+import AppointmentButtons from './components/AppointmentButtons';
 
 // Assets
 import coverPhoto from './assets/coverPhoto.png';
@@ -89,6 +90,9 @@ export default function EventPage() {
     const [timeLimit, setTimeLimit] = useState(null);
     const [description, setDescription] = useState(null);
     const [comments, setComments] = useState(null);
+
+    // Event Data
+    const [eventDetails, setEventDetails] = useState(null);
 
     // States for editing event
     const [editable, setEditable] = useState(false);
@@ -160,11 +164,15 @@ export default function EventPage() {
     };
 
     const handleStartTimeEdit = (date) => {
-        setStartTime(date);
+        const tempDate = startDate;
+        tempDate.setHours(date.getHours(), date.getMinutes());
+        setStartTime(tempDate);
     };
 
     const handleEndTimeEdit = (date) => {
-        setEndTime(date);
+        const tempDate = endDate;
+        tempDate.setHours(date.getHours(), date.getMinutes());
+        setEndTime(tempDate);
     };
 
     const handleTimeLimitEdit = (event) => {
@@ -245,6 +253,8 @@ export default function EventPage() {
             setDescription(eData.description);
             setComments(eData.comments);
 
+            setEventDetails(eData);
+
             document.title = `${eData.title} - Sched-it`;
 
             setLoading(false);
@@ -300,6 +310,7 @@ export default function EventPage() {
                                                 {title}
                                             </Typography>
                                         )}
+                                        <AppointmentButtons data={eventDetails} eventID={eventID} />
                                     </Grid>
 
                                     {/* Event Type */}
@@ -623,7 +634,7 @@ export default function EventPage() {
                         </Grid>
                         {/* Comments section */}
                         <Grid item>
-                            <Comments comments={comments} setComments={setComments} eventID={eventID}/>
+                            <Comments comments={comments} setComments={setComments} eventID={eventID} />
                         </Grid>
                     </Grid>
                 </div>

@@ -2,11 +2,14 @@ import userController from './UserController';
 import request from '../utils/AxiosConfig';
 
 export const createNewAppointment = async (appointmentData) => {
-    const response = await request.put('api/appointment', appointmentData);
-
-    if (response.status === 201) return true;
-
-    return response;
+    console.log(appointmentData);
+    try {
+        const response = await request.put('api/appointment', appointmentData);
+        return response.data;
+    } catch (err) {
+        console.error(err);
+        return { success: false, msg: err };
+    }
 };
 
 export const getUserAppointment = async (userID, appointmentID) => {
