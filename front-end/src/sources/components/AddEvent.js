@@ -21,47 +21,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 // Controller
 import { addEvent } from '../../controllers/EventController';
-
-/* Time Picker Component */
-const TimeFrameEvent = () => {
-    const [selectedStartDate, setSelectedStartDate] = React.useState(new Date());
-    const handleStartDateChange = (date) => {
-        setSelectedStartDate(date);
-    };
-
-    const [selectedEndDate, setSelectedEndDate] = React.useState(new Date());
-    const handleEndDateChange = (date) => {
-        setSelectedEndDate(date);
-    };
-    return (
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Grid container justify="space-between">
-                <KeyboardTimePicker
-                    margin="normal"
-                    id="start-time-picker"
-                    label="Start Time"
-                    value={selectedStartDate}
-                    onChange={handleStartDateChange}
-                    KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                    }}
-                />
-
-                <KeyboardTimePicker
-                    margin="normal"
-                    id="end-time-picker"
-                    label="End Time"
-                    value={selectedEndDate}
-                    onChange={handleEndDateChange}
-                    KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                    }}
-                />
-            </Grid>
-            <DialogContentText>Specify the start and end time of your event</DialogContentText>
-        </MuiPickersUtilsProvider>
-    );
-};
+import { GetUserID } from '../../controllers/UserController';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -78,43 +38,79 @@ export default function AddEvent() {
         setOpen(false);
     };
 
-    const [eventAddedSnackbar, setEventAddedSnackbar] = React.useState({
+    const [eventAddSuccess, setEventAddSuccess] = React.useState({
         open: false,
         vertical: 'top',
         horizontal: 'center',
     });
-    const { vertical, horizontal, openEventAddedSnackbar } = eventAddedSnackbar;
+
+    const [eventAddError, setEventAddError] = React.useState({
+        open: false,
+        vertical: 'top',
+        horizontal: 'center',
+    });
+
+    const { successVert, successHorizon, openEventAddSuccess } = eventAddSuccess;
+    const { errorVert, errorHorizon, openEventAddError } = eventAddError;
 
     const [title, setTitle] = useState('');
     const [allDay, setAllDay] = React.useState({ isAllDay: true });
+
     const [selectedStartDate, setSelectedStartDate] = useState(new Date());
     const [selectedEndDate, setSelectedEndDate] = useState(new Date());
-    const [privateEvent, setPrivateEvent] = useState({ isPrivate: false });
+    const [startTime, setStartTime] = useState(new Date());
+    const [endTime, setEndTime] = useState(new Date());
+
+    const [privateEvent, setPrivateEvent] = useState({ isPrivate: null });
     const [numParticipants, setNumParticipants] = useState(null);
     const [timeLimit, setTimeLimit] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
 
-    const handleConfirmEvent = (newState) => () => {
-        setEventAddedSnackbar({ openEventAddedSnackbar: true, ...newState });
-        setOpen(false);
+    const handleConfirmEvent = async (newState) => {
+        const userResponse = await GetUserID();
+        const uid = userResponse.uid;
 
         const tempEventModel = {
+            hostID: uid,
             title: title,
             allDay: Boolean(allDay),
             startDate: selectedStartDate,
             endDate: selectedEndDate,
-            isPrivate: Boolean(privateEvent),
+            startTime: startTime,
+            endTime: endTime,
+            isPrivate: Boolean(privateEvent.isPrivate),
             numParticipants: Number(numParticipants),
             participantIDs: [],
             appointmentIDs: [],
             timeLimit: Number(timeLimit),
             description: '',
+            comments: [],
         };
 
-        addEvent(tempEventModel);
+        const response = await addEvent(tempEventModel);
+
+        if (response.success !== true) {
+            handleErrorMsg(response.errors[0].msg);
+            setEventAddError({ openEventAddError: true, ...newState });
+            setOpen(false);
+        }
+
+        if (response.success === true) {
+            setEventAddSuccess({ openEventAddSuccess: true, ...newState });
+            setOpen(false);
+        }
     };
 
-    const handleEventAddedDialogClose = () => {
-        setEventAddedSnackbar({ ...eventAddedSnackbar, openEventAddedSnackbar: false });
+    const handleEventAddSuccessClose = () => {
+        setEventAddSuccess({ ...eventAddSuccess, openEventAddSuccess: false });
+    };
+
+    const handleEventAddErrorClose = () => {
+        setEventAddError({ ...eventAddError, openEventAddError: false });
+    };
+
+    const handleErrorMsg = (msg) => {
+        setErrorMsg(msg);
     };
 
     const handleTitleChange = (event) => {
@@ -131,6 +127,18 @@ export default function AddEvent() {
 
     const handleEndDateChange = (date) => {
         setSelectedEndDate(date);
+    };
+
+    const handleStartTimeChange = (date) => {
+        const tempDate = selectedStartDate;
+        tempDate.setHours(date.getHours(), date.getMinutes());
+        setStartTime(tempDate);
+    };
+
+    const handleEndTimeChange = (date) => {
+        const tempDate = selectedEndDate;
+        tempDate.setHours(date.getHours(), date.getMinutes());
+        setEndTime(tempDate);
     };
 
     const handlePrivateEvent = (event) => {
@@ -247,11 +255,42 @@ export default function AddEvent() {
                         />
                     </FormGroup>
 
-                    {allDay.isAllDay === false ? <TimeFrameEvent /> : null}
+                    {allDay.isAllDay === false ? (
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <Grid container justify="space-between">
+                                <KeyboardTimePicker
+                                    margin="normal"
+                                    id="start-time-picker"
+                                    label="Start Time"
+                                    value={startTime}
+                                    onChange={handleStartTimeChange}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change time',
+                                    }}
+                                />
+
+                                <KeyboardTimePicker
+                                    margin="normal"
+                                    id="end-time-picker"
+                                    label="End Time"
+                                    value={endTime}
+                                    onChange={handleEndTimeChange}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change time',
+                                    }}
+                                />
+                            </Grid>
+                            <DialogContentText>Specify the start and end time of your event</DialogContentText>
+                        </MuiPickersUtilsProvider>
+                    ) : null}
 
                     <FormControlLabel
                         control={
-                            <Switch checked={privateEvent.isPrivate} onChange={handlePrivateEvent} name="isPrivate" />
+                            <Switch
+                                checked={privateEvent.isPrivate}
+                                onChange={(e) => handlePrivateEvent(e)}
+                                name="isPrivate"
+                            />
                         }
                         label="Set as Private Event"
                     />
@@ -261,20 +300,37 @@ export default function AddEvent() {
                     <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleConfirmEvent({ vertical: 'top', horizontal: 'center' })} color="primary">
+                    <Button
+                        onClick={(e) => handleConfirmEvent({ vertical: 'top', horizontal: 'center' })}
+                        color="primary"
+                    >
                         Add Event
                     </Button>
                 </DialogActions>
             </Dialog>
+            {/* EVENT ADD SUCCESS */}
             <Snackbar
-                anchorOrigin={{ vertical, horizontal }}
-                open={openEventAddedSnackbar}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                open={openEventAddSuccess}
                 autoHideDuration={6000}
-                onClose={handleEventAddedDialogClose}
-                key={vertical + horizontal}
+                onClose={handleEventAddSuccessClose}
+                key={successVert + successHorizon}
             >
-                <Alert onClose={handleEventAddedDialogClose} severity="success">
+                <Alert onClose={handleEventAddSuccessClose} severity="success">
                     Event has been added!
+                </Alert>
+            </Snackbar>
+
+            {/* EVENT ADD ERROR */}
+            <Snackbar
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                open={openEventAddError}
+                autoHideDuration={6000}
+                onClose={handleEventAddErrorClose}
+                key={errorVert + errorHorizon}
+            >
+                <Alert onClose={handleEventAddErrorClose} severity="error">
+                    {errorMsg}
                 </Alert>
             </Snackbar>
         </div>
