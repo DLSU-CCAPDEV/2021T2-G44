@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Loading from './components/Loading';
 
 import { getPublicEvents } from '../controllers/EventController.js';
+import PublicEventSearch from './components/PublicEventSearch';
 
 import {
     Snackbar,
@@ -17,13 +18,25 @@ import {
     Paper,
     Button,
 } from '@material-ui/core';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { Link } from 'react-router-dom';
+import publicEventsArt from './assets/publicEventsArt.svg';
 
 // ART
 
 // helpers
+const useStyles = makeStyles((theme) => ({
+    margin: {
+        margin: theme.spacing(1),
+    },
+    extendedIcon: {
+        marginRight: theme.spacing(1),
+    },
+}));
 
 // Custom Styles
 const styles = {
@@ -62,15 +75,18 @@ const styles = {
 
 export default function PublicEvents(props) {
     const [page, setPage] = useState(0);
+    const [search, setSearch] = useState('');
 
     const [events, setEvents] = useState(null);
     const [snackbar, setSnackbar] = useState(null);
+
+    const classes = useStyles();
 
     document.title = 'Public Events - Sched-It';
 
     useEffect(() => {
         const getData = async () => {
-            const publicEvents = await getPublicEvents(7 * page, 7);
+            const publicEvents = await getPublicEvents(search, 7 * page, 7);
 
             if (!publicEvents.success) {
                 setSnackbar(publicEvents.errors[0].msg);
@@ -80,11 +96,11 @@ export default function PublicEvents(props) {
             setEvents(publicEvents.events);
         };
         getData().catch((err) => {
-            setSnackbar(err);
+            setSnackbar(String(err));
             setTimeout(() => setSnackbar(null), 5000);
             return;
         });
-    }, [page]);
+    }, [page, search]);
 
     return (
         <Grid container direction="column" style={{ padding: '8em 0 8em 0' }}>
@@ -98,7 +114,7 @@ export default function PublicEvents(props) {
 
             <Grid item container direction="row" justify="center">
                 <Grid item container direction="row" xs={2}>
-                    {/* <img src={publicEventsArt} alt="Public Events Art" style={{ height: '200px' }} /> */}
+                    <img src={publicEventsArt} alt="Public Events Art" style={{ height: '200px' }} />
                 </Grid>
 
                 {/** Mail Title */}
@@ -106,6 +122,7 @@ export default function PublicEvents(props) {
                     <Typography variant="h2" color="primary" style={{ fontWeight: 'bold' }}>
                         Public Events
                     </Typography>
+                    <PublicEventSearch setSearch={setSearch} />
                 </Grid>
 
                 {!events && <Loading loadingText="Loading Public Events" />}
@@ -171,11 +188,22 @@ export default function PublicEvents(props) {
                                                             variant="subtitle1"
                                                             style={{ fontWeight: m.isRead ? '400' : '600' }}
                                                         >
-                                                            {m.numParticipants + ' slots'}
+                                                            {String(m.numParticipants - m.participantIDs.length) +
+                                                                ' slots'}
                                                         </Typography>
                                                     </TableCell>
                                                     <TableCell style={styles.tableData.td}>
                                                         {/* PUT BUTTON THAT REDIRECTS TO EVENT HERE */}
+                                                        <Fab
+                                                            size="medium"
+                                                            color="primary"
+                                                            aria-label="add"
+                                                            className={classes.margin}
+                                                            component={Link}
+                                                            to={'/view-event/' + m._id}
+                                                        >
+                                                            <KeyboardArrowRightIcon />
+                                                        </Fab>
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
@@ -199,7 +227,7 @@ export default function PublicEvents(props) {
                                 <ArrowLeftIcon />
                             </Button>
                             <Typography style={{ margin: '0 1em 0 1em' }} variant="h6">
-                                Page {page + 1} of{' '}
+                                Page {page + 1}
                             </Typography>
                             <Button
                                 color="primary"

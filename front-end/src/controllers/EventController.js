@@ -39,12 +39,13 @@ export const addComment = async (commentData) => {
     }
 };
 
-export const getPublicEvents = async (start = 0, limit = 7) => {
+export const getPublicEvents = async (title = '', start = 0, limit = 7) => {
     try {
         const response = await request.get('api/event/public', {
             params: {
                 start: start,
                 limit: limit,
+                title: title,
             },
         });
         return response.data;

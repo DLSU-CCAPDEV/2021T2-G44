@@ -34,7 +34,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import LockIcon from '@material-ui/icons/Lock';
 
-import profilePic from './assets/heheAna.png';
+import profilePic from './assets/stockAvatar.png';
 
 import { GetUserData, editUserInfo, changePassword, deleteUser, changeAvatar } from '../controllers/UserController';
 
@@ -394,13 +394,13 @@ export default function Profile() {
     const handleSaveAvatar = async ([file]) => {
         setUploadAvatar(false);
         const status = await changeAvatar(file);
-        if(!status.success) {
+        if (!status.success) {
             setSnackbar(status.errors[0].msg);
             setTimeout(() => setSnackbar(null), 5000);
             return;
         }
 
-        setSnackbar("Avatar Changed Successfully");
+        setSnackbar('Avatar Changed Successfully');
         setTimeout(() => setSnackbar(null), 5000);
 
         // Load new image

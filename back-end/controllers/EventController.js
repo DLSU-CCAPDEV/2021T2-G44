@@ -42,15 +42,36 @@ module.exports.getEvent = async (req, res) => {
     // Find event by title
     if (eventTitle) {
         try {
-            const eData = await EventModel.findOne({ _id: eventID }).lean();
-            const processedComments = await Promise.all(
-                eData.comments.map(async (comment) => {
-                    comment.name = await UserModel.findOne({ _id: comment.author }, ['firstName', 'lastName']);
-                    return comment;
-                })
-            );
+            // Mongoose Query
+            const eData = await EventModel.aggregate([
+                {
+                    $project: {
+                        'title': 1,
+                        '_id': 1,
+                        'startDate': 1,
+                        'endDate': 1,
+                        'startTime': 1,
+                        'endTime': 1,
+                        'allDay': 1,
+                        'isPrivate': 1,
+                    },
+                },
+                {
+                    $match: {
+                        'title': { $regex: '.*' + eventTitle + '.*', $options: 'i' },
+                        'isPrivate': { '$eq': false },
+                    },
+                },
+            ]);
 
-            eData.comments = processedComments;
+            // const processedComments = await Promise.all(
+            //     eData.comments.map(async (comment) => {
+            //         comment.name = await UserModel.findOne({ _id: comment.author }, ['firstName', 'lastName']);
+            //         return comment;
+            //     })
+            // );
+
+            // eData.comments = processedComments;
 
             res.status(200).json({
                 success: true,
@@ -201,19 +222,41 @@ module.exports.deleteEvent = async (req, res) => {
 module.exports.getPublicEvents = async (req, res) => {
     const start = Number(req.query.start) || 0;
     const limit = Number(req.query.limit) || 7;
+    const eventTitle = req.query.title || '';
+    // console.log(eventTitle);
 
     try {
-        const events = await EventModel.find(
+        // Mongoose Query
+        const events = await EventModel.aggregate([
             {
-                isPrivate: false,
-                endDate: { '$gte': new Date() },
+                $project: {
+                    'title': 1,
+                    '_id': 1,
+                    'startDate': 1,
+                    'endDate': 1,
+                    'startTime': 1,
+                    'endTime': 1,
+                    'allDay': 1,
+                    'isPrivate': 1,
+                    'numParticipants': 1,
+                    'participantIDs': 1,
+                },
             },
-            ['title', 'startDate', 'endDate', 'startTime', 'endTime', 'allDay', 'numParticipants']
-        )
-            .sort({ startDate: 1 })
-            .skip(start)
-            .limit(limit)
-            .lean();
+            {
+                $match: {
+                    'title': { $regex: '.*' + eventTitle + '.*', $options: 'i' },
+                    'isPrivate': { '$eq': false },
+                    'endDate': { '$gte': new Date() },
+                },
+            },
+            {
+                $sort: {
+                    startDate: 1,
+                },
+            },
+            { $skip: start },
+            { $limit: limit },
+        ]);
 
         res.status(200).json({
             success: true,
