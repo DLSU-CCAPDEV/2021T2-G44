@@ -2,15 +2,9 @@
  * This component takes a callback upon where to update the selected event.
  */
 
-import React, { useState } from 'react';
-
 import { TextField } from '@material-ui/core';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
-import { Autocomplete } from '@material-ui/lab';
-
-// Import the Search Controller
-import { SearchEvent as SearchAnEvent } from '../../controllers/SearchController';
 
 const useStyles = makeStyles((theme) => ({
     search: {
@@ -48,35 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SearchEvent(props) {
-    const [eventList, setEventList] = useState([]);
-
-    const handleInputChange = async (event, value, reason) => {
-        if (value.length < 1) {
-            setEventList([]);
-            return;
-        }
-        const eventsData = await SearchAnEvent(value);
-        if (reason === 'input') {
-            setEventList(eventsData.eventData);
-        }
-    };
-
-    return (
-        <div>
-            <Autocomplete
-                freeSolo
-                renderInput={(params) => <SearchBox {...params} />}
-                onInputChange={handleInputChange}
-                options={eventList}
-                getOptionLabel={(event) => event.title}
-                // filter={(s, k) => true}
-            />
-        </div>
-    );
-}
-
-const SearchBox = (props) => {
+export default (props) => {
     const classes = useStyles();
 
     return (
@@ -86,6 +52,9 @@ const SearchBox = (props) => {
             </div>
             <TextField
                 {...props}
+                onChange={(e) => {
+                    props.setSearch(e.target.value);
+                }}
                 placeholder="Search Event"
                 classes={{
                     root: classes.inputRoot,

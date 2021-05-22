@@ -42,13 +42,36 @@ module.exports.getEvent = async (req, res) => {
     // Find event by title
     if (eventTitle) {
         try {
-            const eData = await EventModel.findOne({ _id: eventID }).lean();
-            const processedComments = await Promise.all(eData.comments.map(async (comment) => {
-                comment.name = await UserModel.findOne({_id: comment.author}, ["firstName", "lastName"]);
-                return comment;
-            }));
+            // Mongoose Query
+            const eData = await EventModel.aggregate([
+                {
+                    $project: {
+                        'title': 1,
+                        '_id': 1,
+                        'startDate': 1,
+                        'endDate': 1,
+                        'startTime': 1,
+                        'endTime': 1,
+                        'allDay': 1,
+                        'isPrivate': 1,
+                    },
+                },
+                {
+                    $match: {
+                        'title': { $regex: '.*' + eventTitle + '.*', $options: 'i' },
+                        'isPrivate': { '$eq': false },
+                    },
+                },
+            ]);
 
-            eData.comments = processedComments;
+            // const processedComments = await Promise.all(
+            //     eData.comments.map(async (comment) => {
+            //         comment.name = await UserModel.findOne({ _id: comment.author }, ['firstName', 'lastName']);
+            //         return comment;
+            //     })
+            // );
+
+            // eData.comments = processedComments;
 
             res.status(200).json({
                 success: true,
@@ -69,13 +92,15 @@ module.exports.getEvent = async (req, res) => {
     if (eventID) {
         try {
             const eData = await EventModel.findOne({ _id: eventID }).lean();
-            const processedComments = await Promise.all(eData.comments.map(async (comment) => {
-                comment.name = await UserModel.findOne({_id: comment.author}, ["firstName", "lastName"]);
-                return comment;
-            }));
+            const processedComments = await Promise.all(
+                eData.comments.map(async (comment) => {
+                    comment.name = await UserModel.findOne({ _id: comment.author }, ['firstName', 'lastName']);
+                    return comment;
+                })
+            );
 
             eData.comments = processedComments;
-            
+
             res.status(200).json({
                 success: true,
                 eventData: eData,
@@ -144,7 +169,7 @@ module.exports.updateEvent = async (req, res) => {
  * @param {*} res
  * @returns
  */
- module.exports.addComment = async (req, res) => {
+module.exports.addComment = async (req, res) => {
     const eventID = req.body.eventID;
     const eventData = req.body;
 
@@ -152,7 +177,7 @@ module.exports.updateEvent = async (req, res) => {
 
     // Find the event and update document
     try {
-        const eData = await EventModel.updateOne({ _id: eventID }, {"$push": {comments: eventData.comments}});
+        const eData = await EventModel.updateOne({ _id: eventID }, { '$push': { comments: eventData.comments } });
         res.status(200).json({
             success: true,
             eventData: eData,
@@ -191,5 +216,61 @@ module.exports.deleteEvent = async (req, res) => {
             errors: [{ msg: err }],
         });
         return;
+    }
+};
+
+module.exports.getPublicEvents = async (req, res) => {
+    const start = Number(req.query.start) || 0;
+    const limit = Number(req.query.limit) || 7;
+    const eventTitle = req.query.title || '';
+    // console.log(eventTitle);
+
+    try {
+        // Mongoose Query
+        const events = await EventModel.aggregate([
+            {
+                $project: {
+                    'title': 1,
+                    '_id': 1,
+                    'startDate': 1,
+                    'endDate': 1,
+                    'startTime': 1,
+                    'endTime': 1,
+                    'allDay': 1,
+                    'isPrivate': 1,
+                    'numParticipants': 1,
+                    'participantIDs': 1,
+                },
+            },
+            {
+                $match: {
+                    'title': { $regex: '.*' + eventTitle + '.*', $options: 'i' },
+                    'isPrivate': { '$eq': false },
+                    'endDate': { '$gte': new Date() },
+                },
+            },
+            {
+                $sort: {
+                    startDate: 1,
+                },
+            },
+            { $skip: start },
+            { $limit: limit },
+        ]);
+
+        res.status(200).json({
+            success: true,
+            events: events,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: err,
+                },
+            ],
+        });
     }
 };

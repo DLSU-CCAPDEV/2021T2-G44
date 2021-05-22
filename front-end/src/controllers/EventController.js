@@ -38,3 +38,19 @@ export const addComment = async (commentData) => {
         return { success: false, msg: err };
     }
 };
+
+export const getPublicEvents = async (title = '', start = 0, limit = 7) => {
+    try {
+        const response = await request.get('api/event/public', {
+            params: {
+                start: start,
+                limit: limit,
+                title: title,
+            },
+        });
+        return response.data;
+    } catch (err) {
+        console.error(err);
+        return { success: false, msg: err };
+    }
+};
