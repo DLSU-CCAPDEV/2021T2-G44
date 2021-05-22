@@ -1,6 +1,6 @@
 const express = require('express');
 const appRouter = express.Router();
-const path = require("path");
+const path = require('path');
 
 // Routes
 const ValidationController = require('./controllers/ValidationController');
@@ -15,7 +15,7 @@ const TodoController = require('./controllers/TodoController');
 // Set up Routes
 
 // Serve Static Assets
-appRouter.use("/static", express.static(path.join(__dirname, "public-assets")));
+appRouter.use('/static', express.static(path.join(__dirname, 'public-assets')));
 
 // Test Route
 appRouter.get('/test', (req, res) => res.status(200).send('Test Successful'));
@@ -30,63 +30,63 @@ appRouter.use('/api', AuthController.validateSession);
 
 // User Operations
 appRouter.put(
-    '/register',
-    ValidationController.validateUserData('createUser'),
-    ValidationController.validateInputs,
-    UserController.createUser
+  '/register',
+  ValidationController.validateUserData('createUser'),
+  ValidationController.validateInputs,
+  UserController.createUser
 );
 appRouter.get('/api/user', UserController.getCurrentUser);
 appRouter.get('/api/user/search/:name', UserController.searchUserByName);
 appRouter.get('/api/user/:id', UserController.getUser);
 appRouter.post(
-    '/api/user',
-    ValidationController.validateUserData('updateUser'),
-    ValidationController.validateInputs,
-    UserController.updateUser
+  '/api/user',
+  ValidationController.validateUserData('updateUser'),
+  ValidationController.validateInputs,
+  UserController.updateUser
 );
 appRouter.post(
-    '/api/user/password',
-    ValidationController.validateUserData('changePassword'),
-    ValidationController.validateInputs,
-    UserController.changePassword
+  '/api/user/password',
+  ValidationController.validateUserData('changePassword'),
+  ValidationController.validateInputs,
+  UserController.changePassword
 );
 appRouter.delete(
-    '/api/user',
-    ValidationController.validateUserData('deleteAccount'),
-    ValidationController.validateInputs,
-    UserController.deleteUser
+  '/api/user',
+  ValidationController.validateUserData('deleteAccount'),
+  ValidationController.validateInputs,
+  UserController.deleteUser
 );
 
 // Event Operations
 appRouter.put(
-    '/api/event',
-    ValidationController.validateEventData('createEvent'),
-    ValidationController.validateInputs,
-    EventController.createEvent
+  '/api/event',
+  ValidationController.validateEventData('createEvent'),
+  ValidationController.validateInputs,
+  EventController.createEvent
 );
 appRouter.get('/api/event', EventController.getEvent);
 appRouter.post(
-    '/api/event',
-    ValidationController.validateEventData('updateEvent'),
-    ValidationController.validateInputs,
-    EventController.updateEvent
+  '/api/event',
+  ValidationController.validateEventData('updateEvent'),
+  ValidationController.validateInputs,
+  EventController.updateEvent
 );
 appRouter.put(
-    '/api/event/comment',
-    // ValidationController.validateEventData('addComment'),
-    // ValidationController.validateInputs,
-    EventController.addComment
+  '/api/event/comment',
+  // ValidationController.validateEventData('addComment'),
+  // ValidationController.validateInputs,
+  EventController.addComment
 );
 appRouter.delete('/api/event/:id', EventController.deleteEvent);
 
 // Appointment Operations
 appRouter.put(
-    '/api/appointment',
-    ValidationController.validateAppointmentData('createAppointment'),
-    ValidationController.validateInputs,
-    AppointmentController.createAppointment
+  '/api/appointment',
+  ValidationController.validateAppointmentData('createAppointment'),
+  ValidationController.validateInputs,
+  AppointmentController.createAppointment
 );
-appRouter.get('/api/appointment/:id', AppointmentController.getAppointment);
+appRouter.get('/api/appointment', AppointmentController.getAppointment);
 appRouter.post('/api/appointment/:aid', AppointmentController.updateAppointment);
 appRouter.delete('/api/appointment/:id', AppointmentController.deleteAppointment);
 
@@ -96,24 +96,39 @@ appRouter.get('/api/mail/inbox', MailController.getInbox);
 appRouter.get('/api/mail/sentbox', MailController.getSentBox);
 appRouter.get('/api/mail/:mailID', MailController.getMailByID);
 appRouter.post(
-    '/api/mail/toggleRead/:messageID',
-    ValidationController.validateMailData('read'),
-    ValidationController.validateInputs,
-    MailController.toggleRead
+  '/api/mail/toggleRead/:messageID',
+  ValidationController.validateMailData('read'),
+  ValidationController.validateInputs,
+  MailController.toggleRead
 );
 appRouter.put(
-    '/api/mail/send/:recepientEmail',
-    ValidationController.validateMailData('send'),
-    ValidationController.validateInputs,
-    MailController.sendMail
+  '/api/mail/send/:recepientEmail',
+  ValidationController.validateMailData('send'),
+  ValidationController.validateInputs,
+  MailController.sendMail
 );
 appRouter.delete('/api/mail/:mailID', MailController.deleteMail);
 
 // Todo-list Operations
 appRouter.get('/api/todo', TodoController.getAllTodo);
-appRouter.put('/api/todo', ValidationController.validateTodo('create'), ValidationController.validateInputs, TodoController.addTodo);
-appRouter.post('/api/todo', ValidationController.validateTodo('toggleComplete'), ValidationController.validateInputs, TodoController.toggleCompleted);
-appRouter.delete('/api/todo', ValidationController.validateTodo('delete'), ValidationController.validateInputs, TodoController.deleteTodo);
+appRouter.put(
+  '/api/todo',
+  ValidationController.validateTodo('create'),
+  ValidationController.validateInputs,
+  TodoController.addTodo
+);
+appRouter.post(
+  '/api/todo',
+  ValidationController.validateTodo('toggleComplete'),
+  ValidationController.validateInputs,
+  TodoController.toggleCompleted
+);
+appRouter.delete(
+  '/api/todo',
+  ValidationController.validateTodo('delete'),
+  ValidationController.validateInputs,
+  TodoController.deleteTodo
+);
 
 // File Operations
 appRouter.put('/api/file', FileController.uploadFiles.array('file'), FileController.handleUpload);
