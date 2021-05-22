@@ -106,6 +106,10 @@ appRouter.post(
     InvitesController.updateInvitation
 );
 appRouter.get(
+    'api/invite/count', 
+    InvitesController.countInvites
+);
+appRouter.get(
     '/api/invite',
     InvitesController.getAllInvitations  
 );

@@ -36,3 +36,15 @@ export const getOutgoingInvitations = async (start = 0, end = 7) => {
         }
     };
 };
+
+export const getInvitationCount = async () => {
+    try {
+        const response = await request.get('api/invite/count');
+        return response.data;
+    } catch(ex) {
+        return { 
+            success: false,
+            errors: [{msg: ex}]
+        }
+    };
+};

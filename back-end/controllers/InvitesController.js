@@ -166,3 +166,27 @@ module.exports.createInvitation = async (req, res) => {
         })
     }
 };
+
+module.exports.countInvites = async (req, res) => {
+    const uid = req.session.uid;
+
+    try {
+        const incomingInvites = await InvitesModel.countDocuments({ inviteeID: uid });
+        const outgoingInvites = await InvitesModel.countDocuments({ inviterID: uid });
+
+        res.json({ 
+            success: true,
+            invitationCount: {
+                incoming: incomingInvites,
+                outgoing: outgoingInvites
+            }
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.json({
+            success: false,
+            errors: [{ msg: err }]
+        })
+    }
+};

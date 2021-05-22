@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { getIncomingInvitations, getOutgoingInvitations } from '../controllers/InvitesController';
+import { getIncomingInvitations, getOutgoingInvitations, getInvitationCount } from '../controllers/InvitesController';
 
 import {
+    Button,
     Grid,
     Typography,
     Table,
@@ -17,6 +18,9 @@ import {
     FormControlLabel,
     Radio
 } from '@material-ui/core';
+
+import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
 import ViewInvite from './components/ViewInvite';
 import Loading from './components/Loading';
@@ -60,6 +64,7 @@ const styles = {
 };
 
 export default function Invites(props) {
+    const [totalInvites, setTotalInvites] = useState({ incoming: 0, outgoing: 0 });
     const [invitationType, setInvitationType] = useState(0);
     const [incomingPage, setIncomingPage] = useState(0);
     const [outgoingPage, setOutgoingPage] = useState(0);
@@ -72,12 +77,31 @@ export default function Invites(props) {
     document.title = 'Invitations - Sched-It';
 
     useEffect(() => {
+        // Count Invitations
+        const countInvitations = async () => {
+            const countStatus = await getInvitationCount();
+            if(!countStatus.success) {
+                console.log(countStatus.errors);
+                // Snackbar error logging
+                return;
+            }
+            setTotalInvites(countStatus.invitationCount);
+        };
+
+        countInvitations().catch(err => {
+            console.error(err);
+            // Snackbar error display
+        });
+    }, []);
+
+    useEffect(() => {
         // Incoming Invites
         const prepareIncomingInvites = async () => {
             const invitesStatus = await getIncomingInvitations(incomingPage * 7, 7);
             if(!invitesStatus.success) {
                 console.log(invitesStatus.errors);
                 // Snackbar error logging
+                return;
             }
             setIncomingInvites(invitesStatus.invitations);
         };
@@ -95,6 +119,7 @@ export default function Invites(props) {
             if(!invitesStatus.success) {
                 console.log(invitesStatus.errors);
                 // Snackbar error logging
+                return;
             }
             setOutgoingInvites(invitesStatus.invitations);
         };
@@ -124,46 +149,55 @@ export default function Invites(props) {
                 </Grid>
 
                 {/** Mail Title */}
-                <Grid item container direction="column" justify="center" alignItems="flex-start" xs={3}>
+                <Grid item container direction="column" justify="center" alignItems="flex-start" xs={5}>
                     <Typography variant="h2" color="primary" style={{ fontWeight: 'bold', marginLeft: '1em' }}>
                         My Invites
                     </Typography>
                 </Grid>
 
-                <FormControl component="fieldset">
-                        <FormLabel component="legend" style={{ textAlign: "right" }}>
-                            Invite Type
-                        </FormLabel>
-                        <RadioGroup aria-label="invites View" name="invitesView" row>
-                            <FormControlLabel
-                                value="Month"
-                                control={
-                                    <Radio
-                                        checked={invitationType === 0}
-                                        onChange={() => setInvitationType(0)}
-                                        value="Incoming"
-                                        name="Incoming-Invites-Radio-Button"
-                                        color="primary"
-                                    />
-                                }
-                                label="Incoming"
-                            />
-                            <FormControlLabel
-                                value="Week"
-                                control={
-                                    <Radio
-                                        checked={invitationType === 1}
-                                        onChange={() => setInvitationType(1)}
-                                        value="Outgoing"
-                                        name="Outgoing-Invites-Radio-Button"
-                                        color="primary"
-                                    />
-                                }
-                                label="Outgoing"
-                                style={{ marginRight: "0" }}
-                            />
-                        </RadioGroup>
-                    </FormControl>
+                <Grid 
+                    item
+                    container
+                    direction="row"
+                    alignItems="flex-end"
+                    justify="flex-end"
+                    xs={2}
+                >
+                    <FormControl component="fieldset">
+                            <FormLabel component="legend" style={{ textAlign: "right" }}>
+                                Invite Type
+                            </FormLabel>
+                            <RadioGroup aria-label="invites View" name="invitesView" row>
+                                <FormControlLabel
+                                    value="Month"
+                                    control={
+                                        <Radio
+                                            checked={invitationType === 0}
+                                            onChange={() => setInvitationType(0)}
+                                            value="Incoming"
+                                            name="Incoming-Invites-Radio-Button"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Incoming"
+                                />
+                                <FormControlLabel
+                                    value="Week"
+                                    control={
+                                        <Radio
+                                            checked={invitationType === 1}
+                                            onChange={() => setInvitationType(1)}
+                                            value="Outgoing"
+                                            name="Outgoing-Invites-Radio-Button"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Outgoing"
+                                    style={{ marginRight: "0" }}
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                </Grid>
 
                 <Grid item container direction="column" alignItems="center">
                     <Grid item container justify="center">
@@ -240,6 +274,40 @@ export default function Invites(props) {
                                 </TableBody>
                             </Table>
                         </TableContainer>
+                    </Grid>
+                    <Grid
+                        container
+                        direction="row"
+                        alignItems="center"
+                        justify="flex-end"
+                        style={{ margin: '2em 0 0 0', width: '80%' }}
+                    >
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            onClick={() => setIncomingPage(incomingPage - 1)}
+                            disabled={invitationType === 0 ? incomingPage === 0 : outgoingPage === 0}
+                        >
+                            <ArrowLeftIcon />
+                        </Button>
+                        <Typography style={{ margin: '0 1em 0 1em' }} variant="h6">
+                            Page {(invitationType === 0 ? incomingPage : outgoingPage) + 1} of{' '}
+                            {invitationType === 0
+                                    ? Math.floor(1 + totalInvites.incoming / 7)
+                                    : Math.floor(1 + totalInvites.outgoing / 7)}
+                        </Typography>
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            onClick={() => setIncomingPage(incomingPage + 1)}
+                            disabled={
+                                invitationType === 0
+                                    ? incomingPage === Math.floor(totalInvites.incoming / 15)
+                                    : outgoingPage === Math.floor(totalInvites.outgoing / 15)
+                            }
+                        >
+                            <ArrowRightIcon />
+                        </Button>
                     </Grid>
                 </Grid>
             </Grid>
