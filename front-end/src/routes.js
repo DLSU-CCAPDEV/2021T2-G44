@@ -21,6 +21,8 @@ import Mail from './sources/Mail';
 import Invites from './sources/Invites';
 import EventPage from './sources/EventPage';
 
+import PublicEventsPage from './sources/PublicEvents';
+
 // Context
 import { GlobalContext } from './controllers/ContextController';
 
@@ -80,6 +82,7 @@ export default function Routes(props) {
                         <ProtectedRoute path="/mail" component={Mail} protected={true} />
                         <ProtectedRoute path="/invites" component={Invites} protected={true} />
                         <ProtectedRoute path="/view-event/:eventID" component={EventPage} protected={true} />
+                        <ProtectedRoute path="/public-events" component={PublicEventsPage} protected={true} />
 
                         {/* Error */}
                         <Route render={(props) => <ErrorPage {...props} errorType={404} />} />

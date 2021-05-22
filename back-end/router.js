@@ -58,6 +58,7 @@ appRouter.delete(
 );
 
 // Event Operations
+appRouter.get('/api/event/public', EventController.getPublicEvents);
 appRouter.put(
   '/api/event',
   ValidationController.validateEventData('createEvent'),
