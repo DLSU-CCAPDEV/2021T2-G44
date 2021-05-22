@@ -8,7 +8,7 @@ import { GetUserData } from '../controllers/UserController';
 // Material-UI Imports
 import { Typography, Grid, Snackbar, Paper, makeStyles, withStyles, TextField } from '@material-ui/core';
 import { Avatar } from '@material-ui/core';
-import profilePic from './assets/heheAna.png';
+import profilePic from './assets/stockAvatar.png';
 
 // Component Imports
 import Loading from './components/Loading';
@@ -132,7 +132,10 @@ export default function UserProfile(props) {
                                         >
                                             <Avatar
                                                 alt="profilePicture"
-                                                src={`${process.env.REACT_APP_BACK_END_API}/api/file/stream/${userProfile.avatar}` || profilePic}
+                                                src={
+                                                    `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${userProfile.avatar}` ||
+                                                    profilePic
+                                                }
                                                 className={classes.profileShowcase}
                                             />
                                         </Grid>
