@@ -3,7 +3,7 @@ import { getEvent } from '../controllers/EventController';
 
 export const getIncomingInvitations = async (start = 0, end = 7) => {
     try {
-        const response = request.get('api/invite', {
+        const response = await request.get('api/invite', {
             params: {
                 start: start,
                 limit: end,
@@ -21,7 +21,7 @@ export const getIncomingInvitations = async (start = 0, end = 7) => {
 
 export const getOutgoingInvitations = async (start = 0, end = 7) => {
     try {
-        const response = request.get('api/invite', {
+        const response = await request.get('api/invite', {
             params: {
                 start: start,
                 limit: end,

@@ -11,9 +11,15 @@ import {
     TableHead,
     TableRow,
     Paper,
+    FormControl,
+    FormLabel,
+    RadioGroup,
+    FormControlLabel,
+    Radio
 } from '@material-ui/core';
 
 import ViewInvite from './components/ViewInvite';
+import Loading from './components/Loading';
 
 // ART
 import mailBoxArt from './assets/mailBox.svg';
@@ -54,7 +60,7 @@ const styles = {
 };
 
 export default function Invites(props) {
-    const [loading, setLoading] = useState(false);
+    const [invitationType, setInvitationType] = useState(0);
     const [incomingPage, setIncomingPage] = useState(0);
     const [outgoingPage, setOutgoingPage] = useState(0);
     const [outgoingInvites, setOutgoingInvites] = useState(null);
@@ -76,30 +82,26 @@ export default function Invites(props) {
             setIncomingInvites(invitesStatus.invitations);
         };
 
-        setLoading(true);
-        prepareIncomingInvites().then(() => setLoading(false)).catch(err => {
+        prepareIncomingInvites().catch(err => {
             console.error(err);
             // Snackbar error display
-            setLoading(false);
         });
     }, [incomingPage]);
 
     useEffect(() => {
         // Outgoing Invites
-        const prepareIncomingInvites = async () => {
+        const prepareOutgoingInvites = async () => {
             const invitesStatus = await getOutgoingInvitations(outgoingPage * 7, 7);
             if(!invitesStatus.success) {
                 console.log(invitesStatus.errors);
                 // Snackbar error logging
             }
-            setIncomingInvites(invitesStatus.invitations);
+            setOutgoingInvites(invitesStatus.invitations);
         };
 
-        setLoading(true);
-        prepareIncomingInvites().then(() => setLoading(false)).catch(err => {
+        prepareOutgoingInvites().catch(err => {
             console.error(err);
             // Snackbar error display
-            setLoading(false);
         });
     }, [outgoingPage]);
 
@@ -128,14 +130,51 @@ export default function Invites(props) {
                     </Typography>
                 </Grid>
 
+                <FormControl component="fieldset">
+                        <FormLabel component="legend" style={{ textAlign: "right" }}>
+                            Invite Type
+                        </FormLabel>
+                        <RadioGroup aria-label="invites View" name="invitesView" row>
+                            <FormControlLabel
+                                value="Month"
+                                control={
+                                    <Radio
+                                        checked={invitationType === 0}
+                                        onChange={() => setInvitationType(0)}
+                                        value="Incoming"
+                                        name="Incoming-Invites-Radio-Button"
+                                        color="primary"
+                                    />
+                                }
+                                label="Incoming"
+                            />
+                            <FormControlLabel
+                                value="Week"
+                                control={
+                                    <Radio
+                                        checked={invitationType === 1}
+                                        onChange={() => setInvitationType(1)}
+                                        value="Outgoing"
+                                        name="Outgoing-Invites-Radio-Button"
+                                        color="primary"
+                                    />
+                                }
+                                label="Outgoing"
+                                style={{ marginRight: "0" }}
+                            />
+                        </RadioGroup>
+                    </FormControl>
+
                 <Grid item container direction="column" alignItems="center">
                     <Grid item container justify="center">
+                            {!incomingInvites && invitationType === 0 && <Loading loadingText="Loading Incoming Invitations" />}
+                            {!outgoingInvites && invitationType === 1 && <Loading loadingText="Loading Outgoing Invitations" />}
                         <TableContainer component={Paper} style={{ width: '80%', marginTop: '1em' }}>
                             <Table aria-label="Inbox Messages">
                                 <TableHead>
                                     <TableRow>
                                         <TableCell style={styles.tableHeaders.from} align="center">
-                                            From
+                                            { invitationType === 0 ? "From" : "To" }
                                         </TableCell>
                                         <TableCell style={styles.tableHeaders.subject} align="center">
                                             Event
@@ -147,16 +186,17 @@ export default function Invites(props) {
                                 </TableHead>
                                 <TableBody>
                                     {incomingInvites &&
+                                        invitationType === 0 &&
                                         incomingInvites.map((m, i) => (
                                             <TableRow
                                                 className="pointerHover"
-                                                key={m.id}
+                                                key={m._id}
                                                 onClick={() => handleClick(m)}
                                                 style={i % 2 === 0 ? styles.tableData.odd : styles.tableData.even}
                                             >
                                                 <TableCell style={styles.tableData.td}>
                                                     <Typography align="center" variant="subtitle1">
-                                                        {`${m.host.firstName} ${m.host.lastName}`}
+                                                        {`${m.inviter.firstName} ${m.inviter.lastName}`}
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell style={styles.tableData.td}>
@@ -166,7 +206,33 @@ export default function Invites(props) {
                                                 </TableCell>
                                                 <TableCell style={styles.tableData.td}>
                                                     <Typography align="center" variant="subtitle1">
-                                                        {m.inviteSentTime}
+                                                        {new Date(m.inviteTimestamp).toLocaleString()}
+                                                    </Typography>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    {outgoingInvites &&
+                                        invitationType === 1 &&
+                                        outgoingInvites.map((m, i) => (
+                                            <TableRow
+                                                className="pointerHover"
+                                                key={m._id}
+                                                onClick={() => handleClick(m)}
+                                                style={i % 2 === 0 ? styles.tableData.odd : styles.tableData.even}
+                                            >
+                                                <TableCell style={styles.tableData.td}>
+                                                    <Typography align="center" variant="subtitle1">
+                                                        {`${m.invitee.firstName} ${m.invitee.lastName}`}
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell style={styles.tableData.td}>
+                                                    <Typography align="center" variant="subtitle1">
+                                                        {m.event.title}
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell style={styles.tableData.td}>
+                                                    <Typography align="center" variant="subtitle1">
+                                                        {new Date(m.inviteTimestamp).toLocaleString()}
                                                     </Typography>
                                                 </TableCell>
                                             </TableRow>

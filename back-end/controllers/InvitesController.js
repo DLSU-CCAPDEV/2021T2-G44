@@ -10,6 +10,7 @@ const UserModel = require("../models/User");
  */
 module.exports.createInvitation = async (req, res) => {
     const invitationData = req.body;
+    invitationData.inviteTimestamp = new Date();
 
     try {
         const invitationInstance = new InvitesModel(invitationData);
