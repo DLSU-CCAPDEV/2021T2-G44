@@ -532,7 +532,7 @@ export default function EventPage() {
                                             />
                                         ) : (
                                             <Typography variant="body1" style={{ 'fontWeight': 'bold' }}>
-                                                {`${numParticipants} participants`}
+                                                {`Maximum ${numParticipants} participants`}
                                             </Typography>
                                         )}
                                     </Grid>

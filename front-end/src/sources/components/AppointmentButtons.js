@@ -286,26 +286,27 @@ export default function AppointmentButtons(props) {
                     var content = `${moment(appointment.startTime).format('MMMM Do YYYY, h:mm:ss a')} - ${moment(
                       appointment.endTime
                     ).format('MMMM Do YYYY, h:mm:ss a')}`;
-                    return (
-                      <TableRow key={appointment._id}>
-                        <TableCell>
-                          <Typography variant='subtitle1' style={{ fontWeight: 'bold' }}>
-                            {content}
-                          </Typography>
+                    if(appointment.participantID == '' && appointment.invitation == '')
+                      return (
+                        <TableRow key={appointment._id}>
                           <TableCell>
-                            <Button
-                              variant='contained'
-                              color='primary'
-                              startIcon={<TelegramIcon />}
-                              size='large'
-                              onClick={handleInviteUserOpen}
-                            >
-                              Invite User
-                            </Button>
+                            <Typography variant='subtitle1' style={{ fontWeight: 'bold' }}>
+                              {content}
+                            </Typography>
+                            <TableCell>
+                              <Button
+                                variant='contained'
+                                color='primary'
+                                startIcon={<TelegramIcon />}
+                                size='large'
+                                onClick={handleInviteUserOpen}
+                              >
+                                Invite User
+                              </Button>
+                            </TableCell>
                           </TableCell>
-                        </TableCell>
-                      </TableRow>
-                    );
+                        </TableRow>
+                      );
                   })}
               </TableBody>
             </Table>
