@@ -10,7 +10,7 @@ export const addEvent = async (eventData) => {
   }
 };
 
-export const getEvent = async (eventID, eventTitle) => {
+export const GetEvent = async (eventID, eventTitle) => {
   try {
     const response = await request.get('/api/event', {
       params: {

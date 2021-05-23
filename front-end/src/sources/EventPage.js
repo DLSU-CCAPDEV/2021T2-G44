@@ -28,7 +28,7 @@ import AppointmentButtons from './components/AppointmentButtons';
 import coverPhoto from './assets/coverPhoto.png';
 
 // Controllers
-import { getEvent, updateEvent } from '../controllers/EventController';
+import { GetEvent, updateEvent } from '../controllers/EventController';
 import { GetUserData, GetUserID } from '../controllers/UserController';
 
 // Markdown Parser
@@ -225,7 +225,7 @@ export default function EventPage() {
         const fetchData = async () => {
             if (!loading) setLoading(true);
 
-            const eventData = await getEvent(eventID, '');
+            const eventData = await GetEvent(eventID, '');
             const userData = await GetUserData();
 
             if (!eventData.success) {
