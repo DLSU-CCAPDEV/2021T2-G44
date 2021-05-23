@@ -1,6 +1,7 @@
 const { Aggregate } = require('mongoose');
 const EventModel = require('../models/Event');
 const UserModel = require('../models/User');
+const AppointmentModel = require('../models/Appointment');
 /**
  *
  * @param {*} req
@@ -255,8 +256,7 @@ module.exports.getPublicEvents = async (req, res) => {
                     'endTime': 1,
                     'allDay': 1,
                     'isPrivate': 1,
-                    'numParticipants': 1,
-                    'participantIDs': 1,
+                    'numParticipants': 1
                 },
             },
             {
@@ -275,9 +275,46 @@ module.exports.getPublicEvents = async (req, res) => {
             { $limit: limit },
         ]);
 
+         const processedEvents = await Promise.all(events.map(async event => {
+            const participatingCount = await AppointmentModel.aggregate([
+                {
+                    $project: {
+                        eventID: 1,
+                        invitation: 1,
+                        participantID: 1
+                    }
+                },
+                { 
+                    $match: {
+                        $and: [
+                            {
+                                eventID: { $eq: String(event._id) },
+                            },
+                            {
+                                invitation: { $eq: '' },
+                            },
+                            {
+                                participantID: { $ne: '' },
+                            }
+                        ],
+                    }
+                },
+                {
+                    $count: "participating"
+                }
+            ]);
+
+            if(participatingCount.length > 0)
+                event.participating = participatingCount[0].participating;
+            else
+                event.participating = 0;
+            return event;
+
+         }));
+
         res.status(200).json({
             success: true,
-            events: events,
+            events: processedEvents,
         });
     } catch (err) {
         console.error(err);

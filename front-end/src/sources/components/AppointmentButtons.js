@@ -151,6 +151,7 @@ export default function AppointmentButtons(props) {
     finalEndTime.setMinutes(appointmentTime.getMinutes() + timeLimit);
 
     const tempAppointment = {
+      invitation: "",
       hostID: uid,
       participantID: '',
       eventID: eventID,

@@ -198,7 +198,7 @@ export default function PublicEvents(props) {
                                                             variant="subtitle1"
                                                             style={{ fontWeight: m.isRead ? '400' : '600' }}
                                                         >
-                                                            {String(m.numParticipants - m.participantIDs.length) +
+                                                            {String(m.numParticipants - m.participating) +
                                                                 ' slots left'}
                                                         </Typography>
                                                     </TableCell>

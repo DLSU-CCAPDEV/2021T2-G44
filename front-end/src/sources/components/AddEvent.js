@@ -79,13 +79,14 @@ export default function AddEvent() {
             startTime: startTime,
             endTime: endTime,
             isPrivate: Boolean(privateEvent.isPrivate),
-            numParticipants: Number(numParticipants),
-            participantIDs: [],
-            appointmentIDs: [],
+            numParticipants: numParticipants,
+            appointments: [],
             timeLimit: Number(timeLimit),
             description: '',
             comments: [],
         };
+
+        console.log(tempEventModel);
 
         const response = await addEvent(tempEventModel);
 

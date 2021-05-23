@@ -1,4 +1,4 @@
-const { body, param, validationResult } = require('express-validator');
+const { body, param, validationResult, query } = require('express-validator');
 
 module.exports.validateInputs = (req, res, next) => {
   const validationErrors = validationResult(req);
@@ -116,7 +116,7 @@ module.exports.validateEventData = (method) => {
             return value >= 5 && value <= 480;
           }),
         body('endDate').custom((value, { req }) => {
-          if (new Date(value) <= new Date(req.body.startDate)) {
+          if (new Date(value) < new Date(req.body.startDate)) {
             throw new Error('End Date must be after Start Date!');
           }
           return true;
@@ -254,6 +254,11 @@ module.exports.validateInvite = method => {
         case 'delete': {
             return [
                 param('inviteID', 'Please provide an invite ID.').exists().isString()
+            ]
+        }
+        case 'respond': {
+            return [
+                body('action', 'Please provide an action response.').exists().isString()
             ]
         }
     }

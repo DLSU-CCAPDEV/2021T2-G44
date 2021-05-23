@@ -129,6 +129,12 @@ appRouter.delete(
     ValidationController.validateInputs,
     InvitesController.deleteInvitation 
 );
+appRouter.post(
+    '/api/inviteRespond',
+    ValidationController.validateInvite('respond'),
+    ValidationController.validateInputs,
+    InvitesController.respondInvitation
+)
 
 // Mail Operations
 appRouter.get('/api/mail/count', MailController.totalMail);

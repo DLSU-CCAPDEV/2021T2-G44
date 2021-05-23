@@ -15,8 +15,6 @@ const EventSchema = new mongoose.Schema({
     endTime: Date,
     isPrivate: Boolean,
     numParticipants: Number,
-    participantIDs: Array,
-    appointmentIDs: Array,
     timeLimit: Number,
     description: String,
     comments: [commentSchema],

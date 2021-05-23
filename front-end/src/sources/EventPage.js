@@ -82,7 +82,7 @@ export default function EventPage() {
     const [privateEvent, setPrivateEvent] = useState({ isPrivate: null });
     const [numParticipants, setNumParticipants] = useState(null);
     const [participantIDs, setParticipantIDs] = useState(null);
-    const [appointmentIDs, setAppointmentIDs] = useState(null);
+    const [appointments, setAppointments] = useState(null);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [startTime, setStartTime] = useState(null);
@@ -201,7 +201,6 @@ export default function EventPage() {
             isPrivate: privateEvent,
             numParticipants: numParticipants,
             participantIDs: participantIDs,
-            appointmentIDs: appointmentIDs,
             timeLimit: timeLimit,
             description: description,
             comments: comments,
@@ -253,7 +252,6 @@ export default function EventPage() {
             setDescription(eData.description);
             setComments(eData.comments);
             setParticipantIDs(eData.participantIDs);
-            setAppointmentIDs(eData.appointmentIDs);
 
             setEventDetails(eData);
 
@@ -312,7 +310,7 @@ export default function EventPage() {
                                                 {title}
                                             </Typography>
                                         )}
-                                        <AppointmentButtons data={eventDetails} eventID={eventID} appointments={appointmentIDs} setAppointments={setAppointmentIDs}/>
+                                        <AppointmentButtons data={eventDetails} eventID={eventID} appointments={appointments} setAppointments={setAppointments}/>
                                     </Grid>
 
                                     {/* Event Type */}

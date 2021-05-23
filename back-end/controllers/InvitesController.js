@@ -190,3 +190,74 @@ module.exports.countInvites = async (req, res) => {
         })
     }
 };
+
+module.exports.respondInvitation = async (req, res) => {
+    const action = req.body.action;
+    const uid = req.session.uid;
+    const inviteID = req.params.inviteID;
+
+    try {
+        // Get the invitation first
+        const invitation = await InvitesModel.findOne({ inviteeID: uid, _id: inviteID });
+
+        if(action === 'accept') {
+            // Update Appointment
+            const appointmentUpdateStatus = await AppointmentModel.findOneAndUpdate({ invitation: invitation._id }, {
+                invitation: null,
+                participantID: uid
+            });
+
+            // Check for failure
+            if(!appointmentUpdateStatus) {
+                res.json({ 
+                    success: false,
+                    errors: [{ 
+                        msg: "Error updating appointment."
+                    }]
+                });
+                return;
+            }
+
+            // Delete this invitation
+            const deleteStatus = await InvitesModel.deleteOne({ _id: invitation._id });
+
+            // Check for failure
+            if(!deleteStatus) {
+                res.json({ 
+                    success: false,
+                    errors: [{ 
+                        msg: "Error deleting invitation."
+                    }]
+                });
+                return;
+            }
+            
+        } else {
+            // Delete this invitation
+            const deleteStatus = await InvitesModel.deleteOne({ _id: invitation._id });
+
+            // Check for failure
+            if(!deleteStatus) {
+                res.json({ 
+                    success: false,
+                    errors: [{ 
+                        msg: "Error deleting invitation."
+                    }]
+                });
+                return;
+            }
+        }
+
+
+        res.json({ 
+            success: true,
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.json({
+            success: false,
+            errors: [{ msg: err }]
+        })
+    }
+};
