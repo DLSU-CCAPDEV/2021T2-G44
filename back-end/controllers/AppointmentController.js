@@ -40,6 +40,7 @@ module.exports.getAppointment = async (req, res) => {
   const appointmentID = req.query.aid || '';
   const eventID = req.query.eid || '';
 
+  // Find event appointments
   if (eventID) {
     try {
       const aData = await AppointmentModel.find({ eventID: eventID });
@@ -58,8 +59,8 @@ module.exports.getAppointment = async (req, res) => {
     }
   }
 
-  // Find current user's specific appointment
-  if (userID && appointmentID) {
+  // Find current user's appointments
+  if (userID) {
     try {
       const aData = await AppointmentModel.find({ participantID: userID });
       res.status(200).json({
