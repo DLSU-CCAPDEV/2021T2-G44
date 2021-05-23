@@ -80,6 +80,10 @@ appRouter.put(
   EventController.addComment
 );
 appRouter.delete('/api/event/:id', EventController.deleteEvent);
+appRouter.get(
+  '/api/countPublicEvents',
+  EventController.countPublicEvents
+);
 
 // Appointment Operations
 appRouter.put(
@@ -106,7 +110,7 @@ appRouter.post(
     InvitesController.updateInvitation
 );
 appRouter.get(
-    'api/invite/count', 
+    'api/inviteCount', 
     InvitesController.countInvites
 );
 appRouter.get(

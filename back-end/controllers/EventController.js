@@ -219,6 +219,23 @@ module.exports.deleteEvent = async (req, res) => {
     }
 };
 
+module.exports.countPublicEvents = async (req, res) => {
+    try {
+        const publicEventTotal = await EventModel.countDocuments({ isPrivate: false });
+        res.status(200).json({
+            success: true,
+            totalPublicEvents: publicEventTotal,
+        });
+    } catch (err) {
+        console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
+        res.status(500).json({
+            success: false,
+            errors: [{ msg: err }],
+        });
+        return;
+    }
+};
+
 module.exports.getPublicEvents = async (req, res) => {
     const start = Number(req.query.start) || 0;
     const limit = Number(req.query.limit) || 7;

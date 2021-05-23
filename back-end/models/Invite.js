@@ -5,7 +5,8 @@ const InviteSchema = new mongoose.Schema({
     eventID: String,
     inviterID: String,
     inviteeID: String,
-    inviteTimestamp: Date
+    inviteTimestamp: Date,
+    status: String
 });
 
 module.exports = mongoose.model("Invite", InviteSchema);

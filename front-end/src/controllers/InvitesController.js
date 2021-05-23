@@ -39,7 +39,7 @@ export const getOutgoingInvitations = async (start = 0, end = 7) => {
 
 export const getInvitationCount = async () => {
     try {
-        const response = await request.get('api/invite/count');
+        const response = await request.get('api/inviteCount');
         return response.data;
     } catch(ex) {
         return { 

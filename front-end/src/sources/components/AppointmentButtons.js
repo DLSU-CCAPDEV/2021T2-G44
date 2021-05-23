@@ -101,7 +101,7 @@ export default function AppointmentButtons(props) {
     const response = await GetEventAppointments(eventID);
     const events = response.appointments;
     setEventAppointments(events);
-  }, []);
+  }, [props.appointments]);
 
   // Button event handlers
   const handleAddAppointmentOpen = () => {
@@ -168,6 +168,7 @@ export default function AppointmentButtons(props) {
     if (response.success === true) {
       setAppointmentAddSuccess({ openAppointmentAddSuccess: true, ...newState });
       handleAddAppointmentOpen();
+      props.setAppointments([...props.appointments, response.appointment._id]);
     }
   };
 

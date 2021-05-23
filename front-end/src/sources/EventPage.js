@@ -252,6 +252,8 @@ export default function EventPage() {
             setTimeLimit(eData.timeLimit);
             setDescription(eData.description);
             setComments(eData.comments);
+            setParticipantIDs(eData.participantIDs);
+            setAppointmentIDs(eData.appointmentIDs);
 
             setEventDetails(eData);
 
@@ -310,7 +312,7 @@ export default function EventPage() {
                                                 {title}
                                             </Typography>
                                         )}
-                                        <AppointmentButtons data={eventDetails} eventID={eventID} />
+                                        <AppointmentButtons data={eventDetails} eventID={eventID} appointments={appointmentIDs} setAppointments={setAppointmentIDs}/>
                                     </Grid>
 
                                     {/* Event Type */}

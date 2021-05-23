@@ -141,6 +141,7 @@ export default function Invites(props) {
                 dialogOpen={viewDialogOpen}
                 setDialogOpen={setViewDialogOpen}
                 selectedInvitation={selectedInvitation}
+                invitationType={invitationType}
             />
 
             <Grid item container direction="row" justify="center">

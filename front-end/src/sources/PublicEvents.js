@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Loading from './components/Loading';
 
-import { getPublicEvents } from '../controllers/EventController.js';
+import { getPublicEvents, getPublicEventCount } from '../controllers/EventController.js';
 import PublicEventSearch from './components/PublicEventSearch';
 
 import {
@@ -18,7 +18,7 @@ import {
     Paper,
     Button,
 } from '@material-ui/core';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
@@ -78,6 +78,7 @@ export default function PublicEvents(props) {
     const [search, setSearch] = useState('');
 
     const [events, setEvents] = useState(null);
+    const [eventCount, setEventCount] = useState(0);
     const [snackbar, setSnackbar] = useState(null);
 
     const classes = useStyles();
@@ -86,6 +87,15 @@ export default function PublicEvents(props) {
 
     useEffect(() => {
         const getData = async () => {
+            const eventCountStatus = await getPublicEventCount();
+
+            if (!eventCountStatus.success) {
+                setSnackbar(eventCountStatus.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
+                return;
+            }
+            setEventCount(eventCountStatus.totalPublicEvents);
+
             const publicEvents = await getPublicEvents(search, 7 * page, 7);
 
             if (!publicEvents.success) {
@@ -171,15 +181,15 @@ export default function PublicEvents(props) {
                                                             style={{ fontWeight: m.isRead ? '400' : '600' }}
                                                         >
                                                             {m.allDay
-                                                                ? new Date(m.startDate).toLocaleDateString() +
+                                                                ? new Date(m.startDate).toDateString() +
                                                                   ' All Day'
-                                                                : new Date(m.startDate).toLocaleDateString() +
+                                                                : new Date(m.startDate).toDateString() +
                                                                   ' ' +
-                                                                  m.StartTime +
-                                                                  '-' +
-                                                                  new Date(m.endDate).toLocaleDateString() +
+                                                                  new Date(m.startTime).toLocaleTimeString()+
+                                                                  ' - ' +
+                                                                  new Date(m.endDate).toDateString() +
                                                                   ' ' +
-                                                                  m.endDate}
+                                                                  new Date(m.endTime).toLocaleTimeString()}
                                                         </Typography>
                                                     </TableCell>
                                                     <TableCell style={styles.tableData.td}>
@@ -189,7 +199,7 @@ export default function PublicEvents(props) {
                                                             style={{ fontWeight: m.isRead ? '400' : '600' }}
                                                         >
                                                             {String(m.numParticipants - m.participantIDs.length) +
-                                                                ' slots'}
+                                                                ' slots left'}
                                                         </Typography>
                                                     </TableCell>
                                                     <TableCell style={styles.tableData.td}>
@@ -227,17 +237,16 @@ export default function PublicEvents(props) {
                                 <ArrowLeftIcon />
                             </Button>
                             <Typography style={{ margin: '0 1em 0 1em' }} variant="h6">
-                                Page {page + 1}
+                                Page {page + 1} of {' '}
+                                { Math.floor(1 + eventCount / 7) }
                             </Typography>
                             <Button
                                 color="primary"
                                 variant="contained"
                                 onClick={() => setPage(page + 1)}
-                                // disabled={
-                                //     mailbox === 0
-                                //         ? inboxPage === Math.floor(totalMail.inbox / 15)
-                                //         : sentPage === Math.floor(totalMail.sentbox / 15)
-                                // }
+                                disabled={
+                                    page === Math.floor(eventCount / 7)
+                                }
                             >
                                 <ArrowRightIcon />
                             </Button>

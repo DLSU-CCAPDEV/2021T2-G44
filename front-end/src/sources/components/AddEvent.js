@@ -73,7 +73,7 @@ export default function AddEvent() {
         const tempEventModel = {
             hostID: uid,
             title: title,
-            allDay: Boolean(allDay),
+            allDay: Boolean(allDay.isAllDay),
             startDate: selectedStartDate,
             endDate: selectedEndDate,
             startTime: startTime,
