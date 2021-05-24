@@ -5,9 +5,10 @@ import marked from 'marked';
 
 // Controller Imports
 import { GetUserData } from '../controllers/UserController';
+import { getUserEvents } from '../controllers/EventController';
 
 // Material-UI Imports
-import { Typography, Grid, Snackbar, Paper, makeStyles, withStyles, TextField } from '@material-ui/core';
+import { Typography, Grid, Snackbar, Paper, makeStyles, withStyles, Divider } from '@material-ui/core';
 import { Avatar } from '@material-ui/core';
 import profilePic from './assets/stockAvatar.png';
 
@@ -73,6 +74,7 @@ export default function UserProfile(props) {
     const classes = useStyle();
     const history = useHistory();
     const [userProfile, setUserProfile] = useState(null);
+    const [userEvents, setUserEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [snackbar, setSnackbar] = useState(null);
 
@@ -89,6 +91,14 @@ export default function UserProfile(props) {
                 return;
             }
             setUserProfile(userData.userData);
+
+            const userEvents = await getUserEvents();
+            if (userData.success === false) {
+                setSnackbar("There was a problem loading this user's events: " + userData);
+                setTimeout(() => history.push('/my-calendar'), 5000);
+                return;
+            }
+            setUserEvents(userEvents.events);
         };
 
         setLoading(true);
@@ -146,6 +156,7 @@ export default function UserProfile(props) {
                                             <Typography variant="h5" align="left" className={classes.standardSpacer}>
                                                 {`${userProfile.firstName} ${userProfile.lastName}`}
                                             </Typography>
+                                            <Divider flexItem variant="middle"></Divider>
                                             <Grid 
                                                 item 
                                                 style={{
@@ -166,8 +177,19 @@ export default function UserProfile(props) {
                                             >
                                                 <TableHead>
                                                     <TableRow>
-                                                        <TableHeaderCell>Events Partaking In</TableHeaderCell>
+                                                        <TableHeaderCell>Upcoming Events</TableHeaderCell>
+                                                        <TableHeaderCell>Event Start & End Dates</TableHeaderCell>
                                                     </TableRow>
+                                                    {userEvents && userEvents.map(e => (
+                                                        <TableRow onClick={() => history.push('/view-event/' + e._id)}>
+                                                            <TableCell>
+                                                                { e.title }
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                { `${new Date(e.startDate).toDateString()} - ${new Date(e.endDate).toDateString()}` }
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
                                                 </TableHead>
                                             </TableContainer>
                                         </Grid>

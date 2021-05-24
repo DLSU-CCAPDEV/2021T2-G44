@@ -360,3 +360,37 @@ module.exports.getPublicEvents = async (req, res) => {
         });
     }
 };
+
+module.exports.getUserEvents= async (req, res) => {
+    const uid = req.session.uid;
+
+    try {
+        const appointments = await AppointmentModel.find({ participantID: uid }).lean();
+
+        const eventIDs = [];
+        const events = [];
+        await Promise.all(appointments.map(async ap => {
+            const event = await EventModel.findOne({ _id: ap.eventID }).lean();
+            if(eventIDs.indexOf(String(event._id)) === -1) {
+                eventIDs.push(String(event._id));
+                events.push(event);
+            }
+        }));
+
+        res.status(200).json({
+            success: true,
+            events: events,
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: err,
+                },
+            ],
+        });
+    }
+}

@@ -84,6 +84,10 @@ appRouter.get(
   '/api/countPublicEvents',
   EventController.countPublicEvents
 );
+appRouter.get(
+  '/api/userEvents',
+  EventController.getUserEvents
+);
 
 // Appointment Operations
 appRouter.put(
