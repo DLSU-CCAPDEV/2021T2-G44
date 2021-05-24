@@ -271,7 +271,11 @@ export default function EventPage() {
             setTimeLimit(eData.timeLimit);
             setDescription(eData.description);
             setComments(eData.comments);
-            setCoverImage(eData.coverImage ? `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${eData.coverImage}` : undefined);
+            setCoverImage(
+                eData.coverImage
+                    ? `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${eData.coverImage}`
+                    : undefined
+            );
             setParticipating(eData.participating);
 
             setEventDetails(eData);
@@ -778,8 +782,8 @@ export default function EventPage() {
 
                                     {/* Description Content */}
                                     <Grid item container direction="row" style={{ 'marginBottom': '1em' }}>
-                                        <Typography variant="h4" className={classes.mainTitle}>
-                                            {description}
+                                        <Typography variant="h4">
+                                            <div dangerouslySetInnerHTML={returnMarkup()} />
                                         </Typography>
                                     </Grid>
 
@@ -791,7 +795,7 @@ export default function EventPage() {
                                         justify="center"
                                         style={{ 'marginBottom': '0.5em' }}
                                     >
-                                        <CreateAppointment />
+                                        <CreateAppointment eventID={eventID} />
                                     </Grid>
                                 </div>
                             </Paper>
