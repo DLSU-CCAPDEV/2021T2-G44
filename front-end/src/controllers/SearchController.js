@@ -1,39 +1,25 @@
-import userDB from '../placeholderData/users.json';
 import request from '../utils/AxiosConfig';
 
-// Email RegExp taken from: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
-const emailRegEx =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
 export const SearchUser = async (searchQuery) => {
-    const query = searchQuery.toLowerCase();
+    try {
+        const query = searchQuery.toLowerCase();
 
-    // Check if the query is an email address
-    if (emailRegEx.test(query)) {
-        // Search by email
-        const results = userDB.filter((user) => {
-            const index = user.email.toLowerCase(query);
-            return index === -1 ? false : true;
-        });
-
-        return results;
-    } else {
         // Search by name
-        const results = userDB.filter((user) => {
-            const name = `${user.firstName} ${user.lastName}`.toLowerCase();
-            const index = name.search(query);
-            return index === -1 ? false : true;
-        });
+        const results = await request.get('api/searchUser/' + query);
 
-        return results;
+        return results.data;
+    } catch (ex) {
+        console.error(ex);
+        return { success: false, errors: [{ msg: ex }]};
     }
+    
 };
 
 export const SearchEvent = async (searchQuery) => {
     const query = searchQuery.toLowerCase();
 
     // Find by event name
-    const results = await request.get('/api/event', {
+    const results = await request.get('api/event', {
         params: {
             title: query,
         },

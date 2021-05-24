@@ -8,6 +8,7 @@ const commentSchema = new mongoose.Schema({
 const EventSchema = new mongoose.Schema({
     hostID: String,
     title: String,
+    coverImage: String,
     allDay: Boolean,
     startDate: Date,
     endDate: Date,
@@ -15,8 +16,6 @@ const EventSchema = new mongoose.Schema({
     endTime: Date,
     isPrivate: Boolean,
     numParticipants: Number,
-    participantIDs: Array,
-    appointmentIDs: Array,
     timeLimit: Number,
     description: String,
     comments: [commentSchema],

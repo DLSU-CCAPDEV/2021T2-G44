@@ -10,6 +10,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import { DropzoneDialog } from 'material-ui-dropzone';
 
 // Material UI icons
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
@@ -28,8 +29,8 @@ import AppointmentButtons from './components/AppointmentButtons';
 import coverPhoto from './assets/coverPhoto.png';
 
 // Controllers
-import { GetEvent, updateEvent } from '../controllers/EventController';
-import { GetUserData, GetUserID } from '../controllers/UserController';
+import { GetEvent, updateEvent, updateCoverImage } from '../controllers/EventController';
+import { GetUserData } from '../controllers/UserController';
 
 // Markdown Parser
 const marked = require('marked');
@@ -81,8 +82,7 @@ export default function EventPage() {
     const [allDay, setAllDay] = useState({ isAllDay: null });
     const [privateEvent, setPrivateEvent] = useState({ isPrivate: null });
     const [numParticipants, setNumParticipants] = useState(null);
-    const [participantIDs, setParticipantIDs] = useState(null);
-    const [appointmentIDs, setAppointmentIDs] = useState(null);
+    const [appointments, setAppointments] = useState([]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [startTime, setStartTime] = useState(null);
@@ -117,6 +117,13 @@ export default function EventPage() {
         horizontal: 'center',
     });
     const { errVert, errHorizon, openEditError } = editError;
+
+    // Dropzone states
+    const [uploadCoverImage, setUploadCoverImage] = useState(false);
+    const [coverImageFile, setCoverImageFile] = useState(null);
+
+    // Cover image
+    const [coverImage, setCoverImage] = useState(null);
 
     const handleEditSuccessClose = () => {
         setEditSuccess({ ...editSuccess, openEditSuccess: false });
@@ -200,8 +207,6 @@ export default function EventPage() {
             endTime: endTime,
             isPrivate: privateEvent,
             numParticipants: numParticipants,
-            participantIDs: participantIDs,
-            appointmentIDs: appointmentIDs,
             timeLimit: timeLimit,
             description: description,
             comments: comments,
@@ -220,6 +225,18 @@ export default function EventPage() {
             setEditable(!editable);
         }
     };
+
+    const handleSaveCoverImage = async ([file]) => {
+        setUploadCoverImage(false);
+        const status = await updateCoverImage(eventID, file);
+        if (!status.success) {
+            // Do the snackbar thingy
+            return;
+        }
+
+        // Load new image
+        setCoverImage(`${process.env.REACT_APP_BACK_END_API}/api/file/stream/${status.eventData.coverImage}`);
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -252,6 +269,7 @@ export default function EventPage() {
             setTimeLimit(eData.timeLimit);
             setDescription(eData.description);
             setComments(eData.comments);
+            setCoverImage(eData.coverImage ? `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${eData.coverImage}` : undefined);
 
             setEventDetails(eData);
 
@@ -273,6 +291,19 @@ export default function EventPage() {
         if (hostID === userID) {
             return (
                 <div className={classes.root}>
+                    <DropzoneDialog
+                        filesLimit={1}
+                        dialogTitle="Upload Image"
+                        acceptedFiles={['image/*']}
+                        cancelButtonText={'Cancel'}
+                        submitButtonText={'Change Cover Photo'}
+                        maxFileSize={5000000}
+                        open={uploadCoverImage}
+                        onClose={() => setUploadCoverImage(false)}
+                        onSave={handleSaveCoverImage}
+                        showPreviews={true}
+                        showFileNamesInPreview={true}
+                    />
                     <Grid item container spacing={3} direction="column" justify="center" alignItems="stretch" xs={12}>
                         {/* Event details and description */}
                         <Grid item>
@@ -281,11 +312,20 @@ export default function EventPage() {
                                     <Grid
                                         item
                                         container
-                                        direction="row"
-                                        justify="center"
+                                        direction="column"
+                                        justify="space-between"
+                                        alignItems="center"
+                                        spacing={2}
                                         style={{ 'marginBottom': '1em' }}
                                     >
-                                        <img src={coverPhoto} style={{ 'maxWidth': '100%' }} />
+                                        <img src={coverImage || coverPhoto} style={{ 'maxWidth': '100%' }} />
+                                        <Button
+                                            style={ { marginTop: '1em' } }
+                                            variant='contained'
+                                            color='primary'
+                                            size='large'
+                                            onClick={() => setUploadCoverImage(true)}
+                                        >Update Cover Image</Button>
                                     </Grid>
 
                                     {/* Event Title */}
@@ -310,7 +350,7 @@ export default function EventPage() {
                                                 {title}
                                             </Typography>
                                         )}
-                                        <AppointmentButtons data={eventDetails} eventID={eventID} />
+                                        <AppointmentButtons data={eventDetails} eventID={eventID} appointments={appointments} setAppointments={setAppointments}/>
                                     </Grid>
 
                                     {/* Event Type */}
@@ -532,7 +572,7 @@ export default function EventPage() {
                                             />
                                         ) : (
                                             <Typography variant="body1" style={{ 'fontWeight': 'bold' }}>
-                                                {`${numParticipants} participants`}
+                                                {`Maximum ${numParticipants} participants`}
                                             </Typography>
                                         )}
                                     </Grid>
@@ -650,11 +690,12 @@ export default function EventPage() {
                                     <Grid
                                         item
                                         container
-                                        direction="row"
-                                        justify="center"
+                                        direction="column"
+                                        justify="flex-start"
+                                        alignItems="center"
                                         style={{ 'marginBottom': '1em' }}
                                     >
-                                        <img src={coverPhoto} style={{ 'maxWidth': '100%' }} />
+                                        <img src={coverImage || coverPhoto} style={{ 'maxWidth': '100%' }} />
                                     </Grid>
 
                                     {/* Event Title */}
@@ -743,7 +784,7 @@ export default function EventPage() {
                         </Grid>
                         {/* Comments section: Subject to move to component */}
                         <Grid item>
-                            <Comments />
+                            <Comments comments={comments} setComments={setComments} eventID={eventID}/>
                         </Grid>
                     </Grid>
                 </div>

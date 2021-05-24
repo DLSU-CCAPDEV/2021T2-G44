@@ -11,6 +11,7 @@ const AppointmentController = require('./controllers/AppointmentController');
 const MailController = require('./controllers/MailController');
 const FileController = require('./controllers/FileController');
 const TodoController = require('./controllers/TodoController');
+const InvitesController = require('./controllers/InvitesController');
 
 // Set up Routes
 
@@ -36,7 +37,7 @@ appRouter.put(
   UserController.createUser
 );
 appRouter.get('/api/user', UserController.getCurrentUser);
-appRouter.get('/api/user/search/:name', UserController.searchUserByName);
+appRouter.get('/api/searchUser/:name', UserController.searchUserByName);
 appRouter.get('/api/user/:id', UserController.getUser);
 appRouter.post(
   '/api/user',
@@ -79,6 +80,10 @@ appRouter.put(
   EventController.addComment
 );
 appRouter.delete('/api/event/:id', EventController.deleteEvent);
+appRouter.get(
+  '/api/countPublicEvents',
+  EventController.countPublicEvents
+);
 
 // Appointment Operations
 appRouter.put(
@@ -90,6 +95,46 @@ appRouter.put(
 appRouter.get('/api/appointment', AppointmentController.getAppointment);
 appRouter.post('/api/appointment/:aid', AppointmentController.updateAppointment);
 appRouter.delete('/api/appointment/:id', AppointmentController.deleteAppointment);
+
+// Invitation Operations
+appRouter.put(
+    '/api/invite', 
+    ValidationController.validateInvite('create'),
+    ValidationController.validateInputs,
+    InvitesController.createInvitation
+);
+appRouter.post(
+    '/api/invite/:inviteID',
+    ValidationController.validateInvite('update'),
+    ValidationController.validateInputs,
+    InvitesController.updateInvitation
+);
+appRouter.get(
+    'api/inviteCount', 
+    InvitesController.countInvites
+);
+appRouter.get(
+    '/api/invite',
+    InvitesController.getAllInvitations  
+);
+appRouter.get(
+    '/api/invite/:inviteID',
+    ValidationController.validateInvite('read'),
+    ValidationController.validateInputs,
+    InvitesController.getInvitation
+);
+appRouter.delete(
+    '/api/invite/:inviteID',
+    ValidationController.validateInvite('delete'),
+    ValidationController.validateInputs,
+    InvitesController.deleteInvitation 
+);
+appRouter.post(
+    '/api/inviteRespond',
+    ValidationController.validateInvite('respond'),
+    ValidationController.validateInputs,
+    InvitesController.respondInvitation
+)
 
 // Mail Operations
 appRouter.get('/api/mail/count', MailController.totalMail);

@@ -73,19 +73,20 @@ export default function AddEvent() {
         const tempEventModel = {
             hostID: uid,
             title: title,
-            allDay: Boolean(allDay),
+            allDay: Boolean(allDay.isAllDay),
             startDate: selectedStartDate,
             endDate: selectedEndDate,
             startTime: startTime,
             endTime: endTime,
             isPrivate: Boolean(privateEvent.isPrivate),
-            numParticipants: Number(numParticipants),
-            participantIDs: [],
-            appointmentIDs: [],
+            numParticipants: numParticipants,
+            appointments: [],
             timeLimit: Number(timeLimit),
             description: '',
             comments: [],
         };
+
+        console.log(tempEventModel);
 
         const response = await addEvent(tempEventModel);
 

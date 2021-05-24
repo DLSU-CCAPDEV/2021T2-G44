@@ -27,7 +27,6 @@ export default function Footer(props) {
                 <Link to="/" style={{ margin: "1em" }}>
                     <img src={logoBlack} className="footerLogo" alt="Website Logo" />
                     <div className="logoLine" />
-                    <h1 id="headerName">Sched-It</h1>
                 </Link>
                 <p style={copyrightStyle}>© AGLET 2021</p>
             </Grid>

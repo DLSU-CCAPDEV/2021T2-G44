@@ -62,12 +62,14 @@ const useStyle = makeStyles((theme) => ({
         marginRight: '1em',
 
         display: 'flex',
+        height: '100%'
     },
     settingsGrid: {
         backgroundColor: theme.palette.accent.main,
         marginLeft: '1em',
         marginTop: '1em',
         marginRight: '2em',
+        height: '100%'
     },
     profileShowcase: {
         height: '15em',
@@ -106,6 +108,7 @@ const useStyle = makeStyles((theme) => ({
     },
     stretcher: {
         flexGrow: 1,
+        height: "100%"
     },
     passField: {
         // marginTop: theme.spacing(2),
@@ -410,7 +413,7 @@ export default function Profile() {
     if (!loading) {
         return (
             // entire main content page
-            <Grid container direction="column" justify="center" alignItems="center" style={{ padding: '4em 0 1em 0' }}>
+            <Grid container direction="column" justify="center" alignItems="stretch" style={{ padding: '4em 0 1em 0' }}>
                 <Snackbar
                     open={snackbar ? true : false}
                     onClose={() => setSnackbar(null)}
@@ -421,16 +424,16 @@ export default function Profile() {
                 <Grid container direction="row" justify="center" alignItems="stretch">
                     {/* The LeftHand side */}
                     {/* 
-                    Todo: 
-                    Profile Pic
-                    Name
-                    Bio
-                    Change Bio Button 
-                */}
-                    <Grid item direction="column" lg={4} className={classes.stretcher}>
+                        Todo: 
+                        Profile Pic
+                        Name
+                        Bio
+                        Change Bio Button 
+                    */}
+                    <Grid item container direction="column" lg={5} alignItems="stretch" className={classes.stretcher}>
                         <Paper variant="elevation" elevation={8} className={classes.profileGrid}>
                             {/* Grid Inside Paper */}
-                            <Grid container direction="column">
+                            <Grid item container direction="column">
                                 {/* Picture Grid */}
                                 <Grid
                                     item
@@ -522,9 +525,9 @@ export default function Profile() {
                     Delete Account
                         Delete Account Button
                 */}
-                    <Grid item container direction="column" lg={8} alignItems="stretch">
+                    <Grid item container direction="column" lg={7} style={{height: "100vh"}}>
                         <Paper className={classes.settingsGrid} variant="elevation" elevation={8}>
-                            <Grid item container direction="row" className={classes.textSpacer}>
+                            <Grid item container direction="row" className={classes.textSpacer} alignItems="stretch">
                                 <Typography variant="h4">Profile Settings</Typography>
                             </Grid>
                             <Grid item container direction="row" alignItems="center">
@@ -712,6 +715,8 @@ export default function Profile() {
                                     </Button>
                                 </DialogActions>
                             </Dialog>
+
+                            <Divider variant="middle"></Divider>
 
                             <Grid item container direction="row" className={classes.textSpacer}>
                                 <Typography variant="h4">Delete Account</Typography>

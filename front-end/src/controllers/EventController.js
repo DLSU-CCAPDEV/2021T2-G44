@@ -45,6 +45,16 @@ export const addComment = async (commentData) => {
   }
 };
 
+export const getPublicEventCount = async () => {
+  try {
+    const response = await request.get('api/countPublicEvents');
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    return { success: false, msg: err };
+  }
+};
+
 export const getPublicEvents = async (title = '', start = 0, limit = 7) => {
   try {
     const response = await request.get('api/event/public', {
@@ -60,3 +70,22 @@ export const getPublicEvents = async (title = '', start = 0, limit = 7) => {
     return { success: false, msg: err };
   }
 };
+
+export const updateCoverImage = async (eventID, image) => {
+  try {
+    // Upload files first
+    const filesData = new FormData();
+    filesData.append('file', image);
+    const fileUploadResponse = await request.put('api/file', filesData);
+    
+    // Update the Event's coverImage property.
+    const updateStatus = await updateEvent({
+        _id: eventID,
+        coverImage: fileUploadResponse.data.file[0].id,
+    });
+    return updateStatus;
+} catch (ex) {
+    console.error(ex);
+    return { success: false, msg: ex };
+}
+}

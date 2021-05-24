@@ -38,7 +38,7 @@ export default function ViewInvite(props) {
                     <DialogContent>
                         <DialogContentText>
                             <Typography variant="body1">
-                                {`You have been invited to ${props.selectedInvitation.event.title} by ${props.selectedInvitation.host.firstName} ${props.selectedInvitation.host.lastName}.`}
+                                {`You have been invited to ${props.selectedInvitation.event.title} by ${props.selectedInvitation.inviter.firstName} ${props.selectedInvitation.inviter.lastName}.`}
                             </Typography>
                         </DialogContentText>
                     </DialogContent>

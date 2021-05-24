@@ -12,10 +12,10 @@ module.exports.createAppointment = async (req, res) => {
   // Insert appointment data
   const appointment = new AppointmentModel(appointmentData);
   try {
-    await appointment.save();
+    const saveStatus = await appointment.save();
     res.status(201).json({
       success: true,
-      appointment: appointment,
+      appointment: saveStatus,
     });
     return;
   } catch (err) {

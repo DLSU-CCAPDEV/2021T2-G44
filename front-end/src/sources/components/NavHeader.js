@@ -25,6 +25,7 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import DateRangeIcon from '@material-ui/icons/DateRange';
 
 import { logout } from '../../controllers/AuthController';
 import { GlobalContext } from '../../controllers/ContextController';
@@ -45,10 +46,11 @@ const linkStyles = {
 };
 
 const options = [
-    { text: 'My Calendar', icon: EventIcon, link: '/my-calendar', index: 0 },
+    { text: 'My Calendar', icon: DateRangeIcon, link: '/my-calendar', index: 0 },
     { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments', index: 1 },
     { text: 'Mail', icon: MailIcon, link: '/mail', index: 2 },
     { text: 'Invites', icon: SendIcon, link: '/invites', index: 3 },
+    { text: 'Public Events', icon: EventIcon, link: '/public-events', index: 4 },
 ];
 
 const drawerWidth = 300;

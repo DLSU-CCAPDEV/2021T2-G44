@@ -1,6 +1,7 @@
 const { Aggregate } = require('mongoose');
 const EventModel = require('../models/Event');
 const UserModel = require('../models/User');
+const AppointmentModel = require('../models/Appointment');
 /**
  *
  * @param {*} req
@@ -151,7 +152,7 @@ module.exports.updateEvent = async (req, res) => {
         const eData = await EventModel.updateOne({ _id: eventID }, eventData);
         res.status(200).json({
             success: true,
-            eventData: eData,
+            eventData: eventData,
         });
         return;
     } catch (err) {
@@ -172,8 +173,6 @@ module.exports.updateEvent = async (req, res) => {
 module.exports.addComment = async (req, res) => {
     const eventID = req.body.eventID;
     const eventData = req.body;
-
-    console.log(eventData);
 
     // Find the event and update document
     try {
@@ -219,6 +218,23 @@ module.exports.deleteEvent = async (req, res) => {
     }
 };
 
+module.exports.countPublicEvents = async (req, res) => {
+    try {
+        const publicEventTotal = await EventModel.countDocuments({ isPrivate: false });
+        res.status(200).json({
+            success: true,
+            totalPublicEvents: publicEventTotal,
+        });
+    } catch (err) {
+        console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
+        res.status(500).json({
+            success: false,
+            errors: [{ msg: err }],
+        });
+        return;
+    }
+};
+
 module.exports.getPublicEvents = async (req, res) => {
     const start = Number(req.query.start) || 0;
     const limit = Number(req.query.limit) || 7;
@@ -238,8 +254,7 @@ module.exports.getPublicEvents = async (req, res) => {
                     'endTime': 1,
                     'allDay': 1,
                     'isPrivate': 1,
-                    'numParticipants': 1,
-                    'participantIDs': 1,
+                    'numParticipants': 1
                 },
             },
             {
@@ -258,9 +273,46 @@ module.exports.getPublicEvents = async (req, res) => {
             { $limit: limit },
         ]);
 
+         const processedEvents = await Promise.all(events.map(async event => {
+            const participatingCount = await AppointmentModel.aggregate([
+                {
+                    $project: {
+                        eventID: 1,
+                        invitation: 1,
+                        participantID: 1
+                    }
+                },
+                { 
+                    $match: {
+                        $and: [
+                            {
+                                eventID: { $eq: String(event._id) },
+                            },
+                            {
+                                invitation: { $eq: '' },
+                            },
+                            {
+                                participantID: { $ne: '' },
+                            }
+                        ],
+                    }
+                },
+                {
+                    $count: "participating"
+                }
+            ]);
+
+            if(participatingCount.length > 0)
+                event.participating = participatingCount[0].participating;
+            else
+                event.participating = 0;
+            return event;
+
+         }));
+
         res.status(200).json({
             success: true,
-            events: events,
+            events: processedEvents,
         });
     } catch (err) {
         console.error(err);

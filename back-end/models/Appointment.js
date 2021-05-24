@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const AppointmentSchema = new mongoose.Schema({
+  invitation: String,
   hostID: String,
   participantID: String,
   eventID: String,
