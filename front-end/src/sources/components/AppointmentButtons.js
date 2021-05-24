@@ -218,7 +218,14 @@ export default function AppointmentButtons(props) {
 
     return (
         <div>
-            <Grid container direction="row" justify="flex-end" spacing={2} style={{ marginLeft: '4.85em' }}>
+            <Grid
+                item
+                container
+                direction="row"
+                justify="flex-start"
+                spacing={2}
+                style={{ marginLeft: '1 em', marginBottom: '1em' }}
+            >
                 {/* ADD APPOINTMENT BUTTON */}
                 <Grid item>
                     <Button

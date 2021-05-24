@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Loading from './components/Loading';
 
-import { getPublicEvents, getPublicEventCount } from '../controllers/EventController.js';
+import { getUserEvents, countUserEvents } from '../controllers/EventController.js';
 import PublicEventSearch from './components/PublicEventSearch';
 
 import {
@@ -24,7 +24,7 @@ import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { Link } from 'react-router-dom';
-import publicEventsArt from './assets/publicEventsArt.svg';
+import myEventsArt from './assets/myEventsArt.svg';
 
 // ART
 
@@ -83,20 +83,20 @@ export default function PublicEvents(props) {
 
     const classes = useStyles();
 
-    document.title = 'Public Events - Sched-It';
+    document.title = 'My Events - Sched-It';
 
     useEffect(() => {
         const getData = async () => {
-            const eventCountStatus = await getPublicEventCount();
+            const eventCountStatus = await countUserEvents();
 
             if (!eventCountStatus.success) {
                 setSnackbar(eventCountStatus.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
                 return;
             }
-            setEventCount(eventCountStatus.totalPublicEvents);
+            setEventCount(eventCountStatus.totalUserEvents);
 
-            const publicEvents = await getPublicEvents(search, 7 * page, 7);
+            const publicEvents = await getUserEvents();
 
             if (!publicEvents.success) {
                 setSnackbar(publicEvents.errors[0].msg);
@@ -124,18 +124,18 @@ export default function PublicEvents(props) {
 
             <Grid item container direction="row" justify="center">
                 <Grid item container direction="row" xs={3}>
-                    <img src={publicEventsArt} alt="Public Events Art" style={{ height: '200px' }} />
+                    <img src={myEventsArt} alt="My Events Art" style={{ height: '200px' }} />
                 </Grid>
 
-                {/** Event Title */}
+                {/** Mail Title */}
                 <Grid item container direction="column" justify="center" alignItems="flex-start" xs={2}>
                     <Typography variant="h2" color="primary" style={{ fontWeight: 'bold' }}>
-                        Public Events
+                        My Events
                     </Typography>
                     <PublicEventSearch setSearch={setSearch} />
                 </Grid>
 
-                {!events && <Loading loadingText="Loading Public Events" />}
+                {!events && <Loading loadingText="Loading My Created Events" />}
                 {events && (
                     <Grid item container direction="column" alignItems="center">
                         <Grid item container justify="center">
@@ -150,10 +150,7 @@ export default function PublicEvents(props) {
                                                 Date and Time
                                             </TableCell>
                                             <TableCell style={styles.tableHeaders.date} align="center">
-                                                Availability
-                                            </TableCell>
-                                            <TableCell style={styles.tableHeaders.date} align="center">
-                                                Sign Up
+                                                Edit
                                             </TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -191,7 +188,7 @@ export default function PublicEvents(props) {
                                                                   new Date(m.endTime).toLocaleTimeString()}
                                                         </Typography>
                                                     </TableCell>
-                                                    <TableCell style={styles.tableData.td}>
+                                                    {/* <TableCell style={styles.tableData.td}>
                                                         <Typography
                                                             align="center"
                                                             variant="subtitle1"
@@ -200,20 +197,24 @@ export default function PublicEvents(props) {
                                                             {String(m.numParticipants - m.participating) +
                                                                 ' slots left'}
                                                         </Typography>
-                                                    </TableCell>
+                                                    </TableCell> */}
                                                     <TableCell style={styles.tableData.td}>
                                                         {/* PUT BUTTON THAT REDIRECTS TO EVENT HERE */}
-                                                        <Fab
-                                                            size="medium"
-                                                            color="primary"
-                                                            aria-label="add"
-                                                            className={classes.margin}
-                                                            component={Link}
-                                                            disabled={m.numParticipants - m.participating === 0}
-                                                            to={'/view-event/' + m._id}
-                                                        >
-                                                            <KeyboardArrowRightIcon />
-                                                        </Fab>
+                                                        <center>
+                                                            <Fab
+                                                                size="medium"
+                                                                color="primary"
+                                                                aria-label="add"
+                                                                align="center"
+                                                                className={classes.margin}
+                                                                component={Link}
+                                                                disabled={m.numParticipants - m.participating === 0}
+                                                                to={'/view-event/' + m._id}
+                                                            >
+                                                                <KeyboardArrowRightIcon />
+                                                            </Fab>
+                                                        </center>
+                                                        {/* <Typography align="center">hotdog</Typography> */}
                                                     </TableCell>
                                                 </TableRow>
                                             ))}

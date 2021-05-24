@@ -95,12 +95,46 @@ module.exports.getEvent = async (req, res) => {
             const eData = await EventModel.findOne({ _id: eventID }).lean();
             const processedComments = await Promise.all(
                 eData.comments.map(async (comment) => {
-                    comment.name = await UserModel.findOne({ _id: comment.author }, ['firstName', 'lastName']);
+                    comment.user = await UserModel.findOne({ _id: comment.author }, ['firstName', 'lastName', 'avatar']);
                     return comment;
                 })
             );
 
             eData.comments = processedComments;
+
+            // Get participant count
+            const participatingCount = await AppointmentModel.aggregate([
+                {
+                    $project: {
+                        eventID: 1,
+                        invitation: 1,
+                        participantID: 1
+                    }
+                },
+                { 
+                    $match: {
+                        $and: [
+                            {
+                                eventID: { $eq: String(eData._id) },
+                            },
+                            {
+                                invitation: { $eq: '' },
+                            },
+                            {
+                                participantID: { $ne: '' },
+                            }
+                        ],
+                    }
+                },
+                {
+                    $count: "participating"
+                }
+            ]);
+    
+            if(participatingCount.length > 0)
+                eData.participating = participatingCount[0].participating;
+            else
+                eData.participating = 0;
 
             res.status(200).json({
                 success: true,
@@ -326,3 +360,80 @@ module.exports.getPublicEvents = async (req, res) => {
         });
     }
 };
+
+module.exports.getUserEvents= async (req, res) => {
+    const uid = req.session.uid;
+
+    try {
+        const appointments = await AppointmentModel.find({ participantID: uid }).lean();
+
+        const eventIDs = [];
+        const events = [];
+        await Promise.all(appointments.map(async ap => {
+            const event = await EventModel.findOne({ _id: ap.eventID }).lean();
+            if(eventIDs.indexOf(String(event._id)) === -1) {
+                eventIDs.push(String(event._id));
+                events.push(event);
+            }
+        }));
+
+        res.status(200).json({
+            success: true,
+            events: events,
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: err,
+                },
+            ],
+        });
+    }
+}
+
+module.exports.countUserEvents = async (req, res) => {
+    try {
+        const totalUserEvents = await EventModel.countDocuments({ hostID: req.session.uid });
+        res.status(200).json({
+            success: true,
+            totalUserEvents: totalUserEvents,
+        });
+    } catch (err) {
+        console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
+        res.status(500).json({
+            success: false,
+            errors: [{ msg: err }],
+        });
+        return;
+    }
+}
+
+module.exports.getUserOwnedEvents = async (req, res) => {
+    const uid = req.session.uid;
+
+    try {
+        const events = await EventModel.find({ hostID: uid })
+            .sort({startDate: 1})
+            .lean();
+
+        res.status(200).json({
+            success: true,
+            events: events,
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: err,
+                },
+            ],
+        });
+    }
+}

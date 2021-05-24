@@ -9,6 +9,7 @@ import AppBar from '@material-ui/core/AppBar';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
+import Avatar from '@material-ui/core/Avatar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -23,11 +24,12 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SendIcon from '@material-ui/icons/Send';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import EventIcon from '@material-ui/icons/Event';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 
 import { logout } from '../../controllers/AuthController';
+import { GetUserData } from '../../controllers/UserController';
 import { GlobalContext } from '../../controllers/ContextController';
 
 import logoSVG from '../assets/whiteLogo.svg';
@@ -47,10 +49,11 @@ const linkStyles = {
 
 const options = [
     { text: 'My Calendar', icon: DateRangeIcon, link: '/my-calendar', index: 0 },
-    { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments', index: 1 },
-    { text: 'Mail', icon: MailIcon, link: '/mail', index: 2 },
-    { text: 'Invites', icon: SendIcon, link: '/invites', index: 3 },
-    { text: 'Public Events', icon: EventIcon, link: '/public-events', index: 4 },
+    { text: 'My Events', icon: CalendarTodayIcon, link: '/my-events', index: 1 },
+    { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments', index: 2 },
+    { text: 'Public Events', icon: EventIcon, link: '/public-events', index: 3 },
+    { text: 'Mail', icon: MailIcon, link: '/mail', index: 4 },
+    { text: 'Invites', icon: SendIcon, link: '/invites', index: 5 },
 ];
 
 const drawerWidth = 300;
@@ -132,8 +135,15 @@ export default function NavigationHeader(props) {
     // Check logged in
     const { uid, updateUid } = useContext(GlobalContext);
 
+    const [userData, setUserData] = useState(null);
+
     // Extract the Context
     const history = useHistory();
+
+    useEffect(async () => {
+        const userDataReq = await GetUserData();
+        setUserData(userDataReq.userData);
+    }, [uid]);
 
     const notLoggedIn = () => {
         return (
@@ -282,7 +292,11 @@ export default function NavigationHeader(props) {
                                 className={classes.selected}
                             >
                                 <ListItemIcon>
-                                    <AccountCircleIcon fontSize="large" />
+                                    { userData &&
+                                        <Avatar alt="UserBlob" src={`${process.env.REACT_APP_BACK_END_API}/api/file/stream/${userData.avatar}`}>
+                                            {`${userData.firstName[0]} ${userData.lastName[0]}`}
+                                        </Avatar>
+                                    }
                                 </ListItemIcon>
                                 <ListItemText primary="My Profile" />
                             </ListItem>

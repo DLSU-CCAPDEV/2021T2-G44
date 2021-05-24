@@ -27,24 +27,25 @@ import AppointmentButtons from './components/AppointmentButtons';
 
 // Assets
 import coverPhoto from './assets/coverPhoto.png';
+import PhotoIcon from '@material-ui/icons/Photo';
 
 // Controllers
 import { GetEvent, updateEvent, updateCoverImage } from '../controllers/EventController';
 import { GetUserData } from '../controllers/UserController';
 
 // Markdown Parser
-const marked = require('marked');
+import marked from 'marked';
 
 // Custom styles
 const customStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
         position: 'relative',
-        marginTop: '5em',
+        marginTop: '6em',
     },
     sections: {
-        marginLeft: '25em',
-        marginRight: '25em',
+        marginLeft: '16em',
+        marginRight: '16em',
         backgroundColor: theme.palette.accent.main,
     },
     mainTitle: {
@@ -90,6 +91,7 @@ export default function EventPage() {
     const [timeLimit, setTimeLimit] = useState(null);
     const [description, setDescription] = useState(null);
     const [comments, setComments] = useState(null);
+    const [participating, setParticipating] = useState(null);
 
     // Event Data
     const [eventDetails, setEventDetails] = useState(null);
@@ -274,6 +276,7 @@ export default function EventPage() {
                     ? `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${eData.coverImage}`
                     : undefined
             );
+            setParticipating(eData.participating);
 
             setEventDetails(eData);
 
@@ -328,6 +331,7 @@ export default function EventPage() {
                                             variant="contained"
                                             color="primary"
                                             size="large"
+                                            startIcon={<PhotoIcon />}
                                             onClick={() => setUploadCoverImage(true)}
                                         >
                                             Update Cover Image
@@ -356,6 +360,9 @@ export default function EventPage() {
                                                 {title}
                                             </Typography>
                                         )}
+                                    </Grid>
+
+                                    <Grid item>
                                         <AppointmentButtons
                                             data={eventDetails}
                                             eventID={eventID}
@@ -583,7 +590,7 @@ export default function EventPage() {
                                             />
                                         ) : (
                                             <Typography variant="body1" style={{ 'fontWeight': 'bold' }}>
-                                                {`Maximum ${numParticipants} participants`}
+                                                {`${participating} out of ${numParticipants} maximum participants`}
                                             </Typography>
                                         )}
                                     </Grid>

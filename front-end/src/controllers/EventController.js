@@ -84,8 +84,28 @@ export const updateCoverImage = async (eventID, image) => {
         coverImage: fileUploadResponse.data.file[0].id,
     });
     return updateStatus;
-} catch (ex) {
-    console.error(ex);
-    return { success: false, msg: ex };
+  } catch (ex) {
+      console.error(ex);
+      return { success: false, msg: ex };
+  }
 }
+
+export const getUserEvents = async () => {
+  try {
+    const response = await request.get('api/getUserOwnedEvents');
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    return { success: false, msg: err };
+  }
+}
+
+export const countUserEvents = async () => {
+  try {
+    const response = await request.get('api/countUserOwnedEvents');
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    return { success: false, msg: err };
+  }
 }

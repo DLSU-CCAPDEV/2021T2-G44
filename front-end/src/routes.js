@@ -20,6 +20,7 @@ import MyAppointments from './sources/MyAppointments';
 import Mail from './sources/Mail';
 import Invites from './sources/Invites';
 import EventPage from './sources/EventPage';
+import myEvents from './sources/myEvents';
 
 import PublicEventsPage from './sources/PublicEvents';
 
@@ -83,6 +84,7 @@ export default function Routes(props) {
                         <ProtectedRoute path="/invites" component={Invites} protected={true} />
                         <ProtectedRoute path="/view-event/:eventID" component={EventPage} protected={true} />
                         <ProtectedRoute path="/public-events" component={PublicEventsPage} protected={true} />
+                        <ProtectedRoute path="/my-events" component={myEvents} protected={true} />
 
                         {/* Error */}
                         <Route render={(props) => <ErrorPage {...props} errorType={404} />} />

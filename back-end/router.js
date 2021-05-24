@@ -81,6 +81,9 @@ appRouter.put(
 );
 appRouter.delete('/api/event/:id', EventController.deleteEvent);
 appRouter.get('/api/countPublicEvents', EventController.countPublicEvents);
+appRouter.get('/api/userEvents', EventController.getUserEvents);
+appRouter.get('/api/countUserOwnedEvents', EventController.countUserEvents);
+appRouter.get('/api/getUserOwnedEvents', EventController.getUserOwnedEvents);
 
 // Appointment Operations
 appRouter.put(
@@ -106,7 +109,7 @@ appRouter.post(
     ValidationController.validateInputs,
     InvitesController.updateInvitation
 );
-appRouter.get('api/inviteCount', InvitesController.countInvites);
+appRouter.get('/api/inviteCount', InvitesController.countInvites);
 appRouter.get('/api/invite', InvitesController.getAllInvitations);
 appRouter.get(
     '/api/invite/:inviteID',
@@ -121,7 +124,7 @@ appRouter.delete(
     InvitesController.deleteInvitation
 );
 appRouter.post(
-    '/api/inviteRespond',
+    '/api/inviteRespond/:inviteID',
     ValidationController.validateInvite('respond'),
     ValidationController.validateInputs,
     InvitesController.respondInvitation
