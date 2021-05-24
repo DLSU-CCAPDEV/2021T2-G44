@@ -90,6 +90,7 @@ export default function EventPage() {
     const [timeLimit, setTimeLimit] = useState(null);
     const [description, setDescription] = useState(null);
     const [comments, setComments] = useState(null);
+    const [participating, setParticipating] = useState(null);
 
     // Event Data
     const [eventDetails, setEventDetails] = useState(null);
@@ -270,6 +271,7 @@ export default function EventPage() {
             setDescription(eData.description);
             setComments(eData.comments);
             setCoverImage(eData.coverImage ? `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${eData.coverImage}` : undefined);
+            setParticipating(eData.participating);
 
             setEventDetails(eData);
 
@@ -572,7 +574,7 @@ export default function EventPage() {
                                             />
                                         ) : (
                                             <Typography variant="body1" style={{ 'fontWeight': 'bold' }}>
-                                                {`Maximum ${numParticipants} participants`}
+                                                {`${participating} out of ${numParticipants} maximum participants`}
                                             </Typography>
                                         )}
                                     </Grid>

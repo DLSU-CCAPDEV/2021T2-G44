@@ -72,7 +72,7 @@ export default function Comments(props) {
 
         const eventResponse = addComment ({eventID: eventID, comments: commentData });
         const uData = await GetUserData();
-        commentData.name = {
+        commentData.user = {
             firstName: uData.userData.firstName,
             lastName: uData.userData.lastName,
         }
@@ -82,7 +82,7 @@ export default function Comments(props) {
     };
 
     if (props.comments) {
-
+        console.log(props.comments);
         return (
             <Paper elevation={5} className={classes.comments}>
                 <div className={classes.content}>
@@ -122,8 +122,13 @@ export default function Comments(props) {
                             <Paper className={classes.commentBox} key={index}>
                                 <Grid item container direction="column">
                                     <Grid item container direction="row" alignItems="center">
-                                        <Avatar></Avatar>
-                                        <Typography className={classes.commentAuthor}>{`${comment.name.firstName} ${comment.name.lastName}`}</Typography>
+                                        <Avatar
+                                            alt={`${comment.user.firstName} ${comment.user.lastName}`}
+                                            src={`${process.env.REACT_APP_BACK_END_API}/api/file/stream/${comment.user.avatar}`}
+                                        >
+                                            {`${comment.user.firstName[0]}${comment.user.lastName[0]}`}
+                                        </Avatar>
+                                        <Typography className={classes.commentAuthor}>{`${comment.user.firstName} ${comment.user.lastName}`}</Typography>
                                     </Grid>
                                     <Grid item container direction="row" alignItems="center">
                                         <Typography className={classes.commentContent}>{comment.content}</Typography>
