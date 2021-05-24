@@ -29,7 +29,7 @@ import AppointmentButtons from './components/AppointmentButtons';
 import coverPhoto from './assets/coverPhoto.png';
 
 // Controllers
-import { getEvent, updateEvent, updateCoverImage } from '../controllers/EventController';
+import { GetEvent, updateEvent, updateCoverImage } from '../controllers/EventController';
 import { GetUserData } from '../controllers/UserController';
 
 // Markdown Parser
