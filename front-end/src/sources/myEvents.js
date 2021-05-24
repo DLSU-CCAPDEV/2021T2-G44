@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Loading from './components/Loading';
 
-import { getUserEvents, getPublicEventCount } from '../controllers/EventController.js';
+import { getUserEvents, countUserEvents } from '../controllers/EventController.js';
 import PublicEventSearch from './components/PublicEventSearch';
 
 import {
@@ -83,18 +83,18 @@ export default function PublicEvents(props) {
 
     const classes = useStyles();
 
-    document.title = 'Public Events - Sched-It';
+    document.title = 'My Events - Sched-It';
 
     useEffect(() => {
         const getData = async () => {
-            const eventCountStatus = await getPublicEventCount();
+            const eventCountStatus = await countUserEvents();
 
             if (!eventCountStatus.success) {
                 setSnackbar(eventCountStatus.errors[0].msg);
                 setTimeout(() => setSnackbar(null), 5000);
                 return;
             }
-            setEventCount(eventCountStatus.totalPublicEvents);
+            setEventCount(eventCountStatus.totalUserEvents);
 
             const publicEvents = await getUserEvents();
 

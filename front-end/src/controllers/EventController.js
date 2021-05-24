@@ -92,7 +92,17 @@ export const updateCoverImage = async (eventID, image) => {
 
 export const getUserEvents = async () => {
   try {
-    const response = await request.get('api/userEvents');
+    const response = await request.get('api/getUserOwnedEvents');
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    return { success: false, msg: err };
+  }
+}
+
+export const countUserEvents = async () => {
+  try {
+    const response = await request.get('api/countUserOwnedEvents');
     return response.data;
   } catch (err) {
     console.error(err);

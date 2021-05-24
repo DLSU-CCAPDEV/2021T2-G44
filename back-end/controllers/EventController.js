@@ -394,3 +394,46 @@ module.exports.getUserEvents= async (req, res) => {
         });
     }
 }
+
+module.exports.countUserEvents = async (req, res) => {
+    try {
+        const totalUserEvents = await EventModel.countDocuments({ hostID: req.session.uid });
+        res.status(200).json({
+            success: true,
+            totalUserEvents: totalUserEvents,
+        });
+    } catch (err) {
+        console.error(`[${new Date().toISOString()}] MongoDB Exception: ${err}`);
+        res.status(500).json({
+            success: false,
+            errors: [{ msg: err }],
+        });
+        return;
+    }
+}
+
+module.exports.getUserOwnedEvents = async (req, res) => {
+    const uid = req.session.uid;
+
+    try {
+        const events = await EventModel.find({ hostID: uid })
+            .sort({startDate: 1})
+            .lean();
+
+        res.status(200).json({
+            success: true,
+            events: events,
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            errors: [
+                {
+                    msg: err,
+                },
+            ],
+        });
+    }
+}

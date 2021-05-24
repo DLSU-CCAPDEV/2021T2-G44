@@ -271,11 +271,7 @@ export default function EventPage() {
             setTimeLimit(eData.timeLimit);
             setDescription(eData.description);
             setComments(eData.comments);
-            setCoverImage(
-                eData.coverImage
-                    ? `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${eData.coverImage}`
-                    : undefined
-            );
+            setCoverImage(eData.coverImage ? `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${eData.coverImage}` : undefined);
             setParticipating(eData.participating);
 
             setEventDetails(eData);
