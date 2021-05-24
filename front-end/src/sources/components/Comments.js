@@ -65,6 +65,11 @@ export default function Comments(props) {
         const response = await GetUserID();
         const uid = response.uid;
 
+        if(newComment === '') {
+            alert("Comment content cannot be empty.");
+            return;
+        }
+
         const commentData = {
             author: uid,
             content: newComment,
@@ -75,6 +80,7 @@ export default function Comments(props) {
         commentData.user = {
             firstName: uData.userData.firstName,
             lastName: uData.userData.lastName,
+            avatar: uData.userData.avatar
         }
         
         setComments([...comments, commentData]);
