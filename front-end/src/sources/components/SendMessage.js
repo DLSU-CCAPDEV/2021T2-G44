@@ -114,7 +114,7 @@ export default function SendMessage(props) {
                 {!loading && (
                     <form onSubmit={handleSend}>
                         <DialogTitle id="alert-dialog=slide=title">Send a Message</DialogTitle>
-                        <DialogContent>
+                        <DialogContent dividers>
                             <DialogContentText>
                                 <Grid container direction="column" alignItems="stretch" spacing={2}>
                                     <TextField

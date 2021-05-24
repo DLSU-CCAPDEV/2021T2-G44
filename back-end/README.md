@@ -7,7 +7,7 @@ The back-end for this web-appication is written in JavaScript using the **Node.j
 - [controllers](./controllers) - This directory houses all the methods that are responsible of responding to HTTP requests and makes queries to the MongoDB database using the defined Mongoose models.
 - [models](./models) - This directory houses all Mongoose Schema Models. Instances of these models contain the Mongoose methods to invoke a query to the MongoDB database.
 - [package.json](./package.json) - This file contains the application's project details, scripts, and dependencies. This was auto-genrated by the npx script, create-react-app.
-- [API-README.md](./API-README.md) - This file is the documentation of the available back-end API endpoints.
+- [API-README.md](./API-README.md) - (Deprecated, do not use) This file is the documentation of the available back-end API endpoints.
 
 ## Installation & Setup
 1. Picking up from the install guide in the main README (npm dependencies should already be installed at this point), we now need to set-up our environment variables. Create a file named ```.env``` and fill in the following information:
@@ -40,7 +40,7 @@ npm start
 npm run start-dev
 ```
 
-## Handling Mock-Data
+## Handling Mock-Data (deprecated)
 Mock data can be inserted or purged automatically using the following pre-made scripts:
 1. Add mock data to the MongoDB instance:
     ```

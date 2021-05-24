@@ -89,7 +89,7 @@ export default function ViewMessage(props) {
                 />
                 <Dialog open={props.dialogOpen} TransitionComponent={Transition} onClose={handleClose}>
                     <DialogTitle id="alert-dialog=slide=title">{props.message.subject}</DialogTitle>
-                    <DialogContent>
+                    <DialogContent dividers>
                         <DialogContentText>
                             {props.mailbox === 0 && (
                                 <div>
