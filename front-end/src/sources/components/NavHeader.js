@@ -9,6 +9,7 @@ import AppBar from '@material-ui/core/AppBar';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
+import Avatar from '@material-ui/core/Avatar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -28,6 +29,7 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 
 import { logout } from '../../controllers/AuthController';
+import { GetUserData } from '../../controllers/UserController';
 import { GlobalContext } from '../../controllers/ContextController';
 
 import logoSVG from '../assets/whiteLogo.svg';
@@ -132,8 +134,15 @@ export default function NavigationHeader(props) {
     // Check logged in
     const { uid, updateUid } = useContext(GlobalContext);
 
+    const [userData, setUserData] = useState(null);
+
     // Extract the Context
     const history = useHistory();
+
+    useEffect(async () => {
+        const userDataReq = await GetUserData();
+        setUserData(userDataReq.userData);
+    }, [uid]);
 
     const notLoggedIn = () => {
         return (
@@ -282,7 +291,11 @@ export default function NavigationHeader(props) {
                                 className={classes.selected}
                             >
                                 <ListItemIcon>
-                                    <AccountCircleIcon fontSize="large" />
+                                    { userData &&
+                                        <Avatar alt="UserBlob" src={`${process.env.REACT_APP_BACK_END_API}/api/file/stream/${userData.avatar}`}>
+                                            {`${userData.firstName[0]} ${userData.lastName[0]}`}
+                                        </Avatar>
+                                    }
                                 </ListItemIcon>
                                 <ListItemText primary="My Profile" />
                             </ListItem>
