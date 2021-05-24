@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-// import '../assets/styles.css';
+import React, { useState, useEffect } from 'react';
+import '../assets/styles.css';
 import logo from '../assets/logo.svg';
 import { Link, useHistory } from 'react-router-dom';
 
@@ -9,7 +9,6 @@ import AppBar from '@material-ui/core/AppBar';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import Avatar from '@material-ui/core/Avatar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -26,16 +25,12 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import DateRangeIcon from '@material-ui/icons/DateRange';
 
-import { logout } from '../../controllers/AuthController';
-import { GetUserData } from '../../controllers/UserController';
-import { GlobalContext } from '../../controllers/ContextController';
-
-import logoSVG from '../assets/whiteLogo.svg';
+// Cookies
+import { useCookies } from 'react-cookie';
 
 const barStyles = {
-    filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))'
+    filter: 'drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.25))',
 };
 
 const brandingStyles = {
@@ -48,11 +43,10 @@ const linkStyles = {
 };
 
 const options = [
-    { text: 'My Calendar', icon: DateRangeIcon, link: '/my-calendar', index: 0 },
-    { text: 'My Appointments', icon: CheckBoxIcon, link: '/my-appointments', index: 1 },
-    { text: 'Mail', icon: MailIcon, link: '/mail', index: 2 },
-    { text: 'Invites', icon: SendIcon, link: '/invites', index: 3 },
-    { text: 'Public Events', icon: EventIcon, link: '/public-events', index: 4 },
+    { text: "My Calendar", icon: EventIcon, link: "/my-calendar", index: 0 },
+    { text: "My Appointments", icon: CheckBoxIcon, link: "/my-appointments", index: 1 },
+    { text: "Inbox", icon: MailIcon, link: "/mail", index: 2 },
+    { text: "Invites", icon: SendIcon, link: "/invites", index: 3 },
 ];
 
 const drawerWidth = 300;
@@ -132,17 +126,19 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NavigationHeader(props) {
     // Check logged in
-    const { uid, updateUid } = useContext(GlobalContext);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const cookieCommands = useCookies(['uid']);
+    const cookies = cookieCommands[0];
+    const removeCookie = cookieCommands[2];
 
-    const [userData, setUserData] = useState(null);
+    useEffect(() => {
+        // Check if the uid cookie exists
+        if (typeof cookies.uid !== 'undefined' && cookies.uid != null) setIsAuthenticated(true);
+        else setIsAuthenticated(false);
+    }, [cookies.uid]);
 
     // Extract the Context
     const history = useHistory();
-
-    useEffect(async () => {
-        const userDataReq = await GetUserData();
-        setUserData(userDataReq.userData);
-    }, [uid]);
 
     const notLoggedIn = () => {
         return (
@@ -151,7 +147,9 @@ export default function NavigationHeader(props) {
                     <Grid container direction="row" spacing={3} alignItems="center">
                         <Grid item lg={8}>
                             <Link to="/" className="container" style={brandingStyles}>
-                                <img src={logoSVG} className="logo" alt="Website Logo" />
+                                <img src={logo} className="logo" alt="Website Logo" />
+                                <div className="logoLine" />
+                                <h1 id="headerName">Sched-It</h1>
                             </Link>
                         </Grid>
 
@@ -204,12 +202,8 @@ export default function NavigationHeader(props) {
     const handleLogout = () => {
         // Clear cookie
         setOpen(false);
-        console.log('reasfd');
-        history.push('/loading');
-        logout()
-            .then(() => updateUid())
-            .then(() => history.push('/login'))
-            .catch((err) => console.error(err));
+        removeCookie('uid');
+        history.push('/login');
     };
 
     const handleProfile = () => {
@@ -219,7 +213,7 @@ export default function NavigationHeader(props) {
 
     const loggedIn = () => {
         return (
-            <div className={classes.root} style={ { marginBottom: "1em" } }>
+            <div className={classes.root}>
                 <AppBar
                     position="fixed"
                     style={barStyles}
@@ -231,7 +225,9 @@ export default function NavigationHeader(props) {
                         <Grid container direction="row" spacing={3} alignItems="center">
                             <Grid item lg={8}>
                                 <Link to="/" className="container" style={brandingStyles} href="index.html">
-                                    <img src={logoSVG} className="logo" alt="Website Logo" />
+                                    <img src={logo} className="logo" alt="Website Logo" />
+                                    <div className="logoLine" />
+                                    <h1 id="headerName">Sched-It</h1>
                                 </Link>
                             </Grid>
                         </Grid>
@@ -282,7 +278,7 @@ export default function NavigationHeader(props) {
                     </List>
 
                     <List className={classes.footerButtons}>
-                        <Link to="/profile" style={linkStyles} onClick={handleProfile}>
+                        <Link style={linkStyles} onClick={handleProfile}>
                             <ListItem
                                 button
                                 key="My Profile"
@@ -291,11 +287,7 @@ export default function NavigationHeader(props) {
                                 className={classes.selected}
                             >
                                 <ListItemIcon>
-                                    { userData &&
-                                        <Avatar alt="UserBlob" src={`${process.env.REACT_APP_BACK_END_API}/api/file/stream/${userData.avatar}`}>
-                                            {`${userData.firstName[0]} ${userData.lastName[0]}`}
-                                        </Avatar>
-                                    }
+                                    <AccountCircleIcon fontSize="large" />
                                 </ListItemIcon>
                                 <ListItemText primary="My Profile" />
                             </ListItem>
@@ -321,6 +313,6 @@ export default function NavigationHeader(props) {
         );
     };
 
-    if (uid) return loggedIn();
+    if (isAuthenticated) return loggedIn();
     else return notLoggedIn();
 }

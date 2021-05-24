@@ -1,11 +1,10 @@
 import React, { useState, useCallback } from 'react';
-
 import { useEffect } from 'react';
 import { Typography, Grid, Paper } from '@material-ui/core';
 import ToDoComponent from './components/ToDoList';
 import AddEventButton from './components/AddEvent';
 import DeleteEventButton from './components/DeleteEvent';
-import SearchEvent from './components/SearchEvent';
+import SearchEvent from "./components/SearchEvent";
 
 // React Scheduler Material UI
 import {
@@ -29,21 +28,18 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+import FormLabel from "@material-ui/core/FormLabel";
 
-// Images
+// Art
 import calendarArt from './assets/calendarArt.svg';
 
-// Controllers
-import { GetUserAppointments } from '../controllers/AppointmentController';
-import { GetEvent } from '../controllers/EventController';
+/* Styles */
 
-// Styles
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
-        marginTop: '6em',
-        marginBottom: '1em',
+        position: 'relative',
+        marginTop: '4em',
     },
     calendarTitle: {
         fontWeight: 'bold',
@@ -107,36 +103,42 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+function commitChanges({ added, changed, deleted }) {
+    // const setState = (state) => {
+    //     let { data } = state;
+    //     if (added) {
+    //         const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+    //         data = [...data, { id: startingAddedId, ...added }];
+    //     }
+    //     if (changed) {
+    //         data = data.map((appointment) =>
+    //             changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment
+    //         );
+    //     }
+    //     if (deleted !== undefined) {
+    //         data = data.filter((appointment) => appointment.id !== deleted);
+    //     }
+    //     return { data };
+    // };
+}
+
 export default function MyCalendar() {
     const classes = useStyles();
+    const events = require('../placeholderData/events.json');
+
+    useEffect(() => {
+        document.title = 'My Calendar - Sched-it';
+    });
 
     const [calendarView, setCalendarView] = useState('Month');
-    const [appointments, setAppointments] = useState(null);
-    const [eventDetails, setEventDetails] = useState([]);
-
-    useEffect(async () => {
-        const response = await GetUserAppointments();
-        const aData = response.appointments;
-
-        setAppointments(aData);
-
-        if (eventDetails.length === 0) {
-            aData.forEach(async (appointment) => {
-                var eid = appointment.eventID;
-                var event = await GetEvent(eid, '');
-
-                setEventDetails([...eventDetails, event.eventData]);
-            });
-        }
-
-        document.title = 'My Calendar - Sched-it';
-    }, []);
 
     const handleChange = (event) => {
         setCalendarView(event.target.value);
     };
 
-    const handleGoToEventDialog = () => {};
+    const openDeleteDialog = () => {
+        <DeleteEventButton />;
+    };
 
     /* Customized components */
 
@@ -146,6 +148,17 @@ export default function MyCalendar() {
 
     const disableAddMonthView = useCallback((props) => {
         return <MonthView.TimeTableCell {...props} onDoubleClick={(e) => undefined} />;
+    }, []);
+
+    const deleteEvent = useCallback((props) => {
+        return (
+            <AppointmentTooltip.Layout
+                {...props}
+                showOpenButton
+                showDeleteButton
+                onDeleteButtonClick={(e) => openDeleteDialog()}
+            />
+        );
     }, []);
 
     /*  Rendered View */
@@ -158,19 +171,33 @@ export default function MyCalendar() {
                 {/** Title and controls */}
                 <Grid item container direction="row" justify="space-between">
                     {/** Calendar Art */}
-                    <Grid item container direction="row" xs={3} style={{ marginLeft: '2%' }}>
+                    <Grid item container direction="row" xs={2} style={{ marginLeft: "2%" }}>
                         <img src={calendarArt} alt="Calendar Art" />
                     </Grid>
 
                     {/** Calendar Title */}
-                    <Grid item container direction="column" justify="center" alignItems="center" xs={3}>
+                    <Grid
+                        item
+                        container
+                        direction="column"
+                        justify="center"
+                        alignItems="center"
+                        xs={3}
+                    >
                         <Typography variant="h2" color="primary" className={classes.calendarTitle}>
                             My Calendar
                         </Typography>
                     </Grid>
 
                     {/* Add Event Button */}
-                    <Grid item container direction="column" xs={2} justify="flex-end" alignItems="stretch">
+                    <Grid
+                        item
+                        container
+                        direction="column"
+                        xs={2}
+                        justify="flex-end"
+                        alignItems="stretch"
+                    >
                         <AddEventButton />
                     </Grid>
 
@@ -182,11 +209,15 @@ export default function MyCalendar() {
                         alignItems="flex-end"
                         justify="flex-end"
                         xs={2}
-                        style={{ marginLeft: '0.5em' }}
+                        style={{ marginLeft: "0.5em" }}
                     >
                         {/* Calendar View Radio Buttons */}
                         <FormControl component="fieldset">
-                            <FormLabel component="legend" className={classes.radioLabel} style={{ textAlign: 'right' }}>
+                            <FormLabel
+                                component="legend"
+                                className={classes.radioLabel}
+                                style={{ textAlign: "right" }}
+                            >
                                 Calendar View
                             </FormLabel>
                             <RadioGroup
@@ -196,12 +227,16 @@ export default function MyCalendar() {
                                 onChange={handleChange}
                                 row
                             >
-                                <FormControlLabel value="Month" control={<Radio color="primary" />} label="Month" />
+                                <FormControlLabel
+                                    value="Month"
+                                    control={<Radio color="primary" />}
+                                    label="Month"
+                                />
                                 <FormControlLabel
                                     value="Week"
                                     control={<Radio color="primary" />}
                                     label="Week"
-                                    style={{ marginRight: '0' }}
+                                    style={{ marginRight: "0" }}
                                 />
                             </RadioGroup>
                         </FormControl>
@@ -213,27 +248,21 @@ export default function MyCalendar() {
 
                 {/** Calendar */}
                 <Grid item container>
-                    {eventDetails && (
-                        <Scheduler height={700} data={eventDetails}>
-                            <ViewState currentViewName={calendarView} />
-                            <EditingState />
-                            <IntegratedEditing />
-                            <MonthView timeTableCellComponent={disableAddMonthView} />
-                            <WeekView timeTableCellComponent={disableAddWeekView} />
-                            <AllDayPanel />
-                            <ConfirmationDialog />
-                            <Appointments />
-                            <AppointmentTooltip
-                                showOpenButton={false}
-                                showDeleteButton={false}
-                                onVisibilityChange={(visible: true) => handleGoToEventDialog()}
-                            />
-                            {/* <AppointmentForm /> */}
-                            <Toolbar />
-                            <DateNavigator />
-                            <TodayButton />
-                        </Scheduler>
-                    )}
+                    <Scheduler height={700} data={events}>
+                        <ViewState currentViewName={calendarView} />
+                        <EditingState onCommitChanges={commitChanges} />
+                        <IntegratedEditing />
+                        <MonthView timeTableCellComponent={disableAddMonthView} />
+                        <WeekView timeTableCellComponent={disableAddWeekView} />
+                        <AllDayPanel />
+                        <ConfirmationDialog />
+                        <Appointments />
+                        <AppointmentTooltip layoutComponent={deleteEvent} />
+                        <AppointmentForm />
+                        <Toolbar />
+                        <DateNavigator />
+                        <TodayButton />
+                    </Scheduler>
                 </Grid>
             </Grid>
 

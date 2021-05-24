@@ -1,157 +1,77 @@
-import request from "../utils/AxiosConfig";
+// Import the Placeholder File
+import mailDB from '../placeholderData/mail';
 
-export const getMailCount = async () => {
-    // Make API Call
-    try {
-        const response = await request.get("api/mail/count");
-        return response.data;
-    } catch (ex) {
-        console.error(ex);
-        return {
-            success: false,
-            errors: [{
-                msg: ex
-            }]
-        };
-    }
-};
+import { GetUserData } from './UserController';
 
-export const getInbox = async (start = 0, limit = 15) => {
-    // Make API Call
-    try {
-        const response = await request.get("api/mail/inbox", {
-            params: {
-                start: start,
-                limit: limit
-            }
-        });
+export const getInbox = async (uid, start = 0, end = 50) => {
+    // Normally, we make an API call here.
 
-        // Make Date Object
-        if(response.data.success) {
-            const dataWithDate = response.data.mail.map(m => {
-                m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
-                return m;
-            });
-            console.log(dataWithDate);
-            return { 
-                success: true,
-                mail: dataWithDate
-            }
+    // For Phase 1:
+    const allMail = mailDB.filter((mail) => mail.recepientID === Number(uid));
+
+    // Get sender details
+    const selected = allMail.slice(start, end);
+
+    selected.map(async (mail) => {
+        // Get the sender details
+        mail.sender = await GetUserData(mail.senderID);
+
+        // Parse the time
+        const date = new Date(mail.sendTime);
+        const now = new Date();
+
+        if (
+            date.getDate() === now.getDate() &&
+            date.getMonth() === now.getMonth() &&
+            date.getFullYear() === now.getFullYear()
+        ) {
+            // Parse as time
+            mail.sendTime = `Today ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
         }
+        // Parse as datetime
+        else mail.sendTime = date.toDateString();
+    });
 
-        return response.data;
-    } catch (ex) {
-        console.error(ex);
-        return { success: false, errors: [{msg: ex}] };
-    }
+    // Sort by date
+
+    return selected;
 };
 
-export const getSent = async (start = 0, limit = 15) => {
-    // Make API Call
-    try {
-        const response = await request.get("api/mail/sentbox", {
-            params: {
-                start: start,
-                limit: limit
-            }
-        });
+export const getSent = async (uid, start = 0, end = 50) => {
+    // Normally, we make an API call here.
 
-        // Make Date Object
-        if(response.data.success) {
-            const dataWithDate = response.data.mail.map(m => {
-                m.sendTime = new Date(m.sendTime).toLocaleString().toUpperCase();
-                return m;
-            });
-            console.log(dataWithDate);
-            return { 
-                success: true,
-                mail: dataWithDate
-            }
+    // For Phase 1:
+    const allMail = mailDB.filter((mail) => mail.senderID === Number(uid));
+
+    // Get sender details
+    const selected = allMail.slice(start, end);
+
+    selected.map(async (mail) => {
+        // Get the sender details
+        mail.recepient = await GetUserData(mail.recepientID);
+
+        // Parse the time
+        const date = new Date(mail.sendTime);
+        const now = new Date();
+
+        if (
+            date.getDate() === now.getDate() &&
+            date.getMonth() === now.getMonth() &&
+            date.getFullYear() === now.getFullYear()
+        ) {
+            // Parse as time
+            mail.sendTime = `Today ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
         }
+        // Parse as datetime
+        else mail.sendTime = date.toDateString();
+    });
 
-        return response.data;
-    } catch (ex) {
-        console.error(ex);
-        return { success: false, errors: [{msg: ex}] };
-    }
+    // Sort by date
+
+    return selected;
 };
 
-export const sendMessage = async (userEmail, messageContent) => {
-    // Make API Call to Send Message
-    try {
-        // Upload files first
-        const filesData = new FormData();
-        messageContent.attachments.forEach(file => {
-            filesData.append('file', file);
-        });
-
-        const fileUploadResponse = await request.put('api/file', filesData);
-
-        messageContent.attachments = [];
-        if(fileUploadResponse.data.success) {
-            fileUploadResponse.data.file.forEach(fileData => {
-                messageContent.attachments.push(fileData.id);
-            });
-        } else {
-            return fileUploadResponse.data;
-        }
-
-        const response = await request.put("api/mail/send/" + userEmail, {
-            subject: messageContent.subject,
-            content: messageContent.content,
-            attachments: messageContent.attachments
-        });
-        
-        return response.data;
-    } catch(ex) {
-        console.error(ex);
-        return { success: false, errors: [{ msg: ex }] };
-    }
-};
-
-export const toggleRead = async (messageID) => {
-    // Make API Call to Toggle Read
-    try {
-        const response = await request.post("api/mail/toggleRead/" + messageID);
-        if(response.status === 200) return true;
-        return false;
-    } catch(ex) {
-        console.error(ex);
-        return false;
-    }
-};
-
-export const deleteMessage = async (messageID) => {
-    try {
-        const response = await request.delete("api/mail/" + messageID);
-        return response.data;
-    } catch(ex) {
-        console.error(ex);
-        return { 
-            success: false,
-            errors: [
-                {
-                    msg: ex
-                }
-            ]
-        }
-    }
-};
-
-export const streamFile = async (file) => {
-    try {
-        console.log(file);
-        const response = await request.get("api/file/stream/" + file.fileID, {
-            responseType: 'blob'
-        });
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', file.fileInfo.fileName);
-        document.body.appendChild(link);
-        link.click();
-    } catch(ex) {
-        console.error(ex);
-        return false;
-    }
+export const sendMessage = (userEmail, messageContent) => {
+    // Normally, this would be an API call to the backend.
+    // For phase 1, this function does nothing.
 };
