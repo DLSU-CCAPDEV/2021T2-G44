@@ -27,6 +27,7 @@ import AppointmentButtons from './components/AppointmentButtons';
 
 // Assets
 import coverPhoto from './assets/coverPhoto.png';
+import PhotoIcon from '@material-ui/icons/Photo';
 
 // Controllers
 import { GetEvent, updateEvent, updateCoverImage } from '../controllers/EventController';
@@ -40,11 +41,11 @@ const customStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
         position: 'relative',
-        marginTop: '5em',
+        marginTop: '6em',
     },
     sections: {
-        marginLeft: '25em',
-        marginRight: '25em',
+        marginLeft: '16em',
+        marginRight: '16em',
         backgroundColor: theme.palette.accent.main,
     },
     mainTitle: {
@@ -236,7 +237,7 @@ export default function EventPage() {
 
         // Load new image
         setCoverImage(`${process.env.REACT_APP_BACK_END_API}/api/file/stream/${status.eventData.coverImage}`);
-    }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -269,7 +270,11 @@ export default function EventPage() {
             setTimeLimit(eData.timeLimit);
             setDescription(eData.description);
             setComments(eData.comments);
-            setCoverImage(eData.coverImage ? `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${eData.coverImage}` : undefined);
+            setCoverImage(
+                eData.coverImage
+                    ? `${process.env.REACT_APP_BACK_END_API}/api/file/stream/${eData.coverImage}`
+                    : undefined
+            );
 
             setEventDetails(eData);
 
@@ -320,12 +325,15 @@ export default function EventPage() {
                                     >
                                         <img src={coverImage || coverPhoto} style={{ 'maxWidth': '100%' }} />
                                         <Button
-                                            style={ { marginTop: '1em' } }
-                                            variant='contained'
-                                            color='primary'
-                                            size='large'
+                                            style={{ marginTop: '1em' }}
+                                            variant="contained"
+                                            color="primary"
+                                            size="large"
+                                            startIcon={<PhotoIcon />}
                                             onClick={() => setUploadCoverImage(true)}
-                                        >Update Cover Image</Button>
+                                        >
+                                            Update Cover Image
+                                        </Button>
                                     </Grid>
 
                                     {/* Event Title */}
@@ -350,7 +358,15 @@ export default function EventPage() {
                                                 {title}
                                             </Typography>
                                         )}
-                                        <AppointmentButtons data={eventDetails} eventID={eventID} appointments={appointments} setAppointments={setAppointments}/>
+                                    </Grid>
+
+                                    <Grid item>
+                                        <AppointmentButtons
+                                            data={eventDetails}
+                                            eventID={eventID}
+                                            appointments={appointments}
+                                            setAppointments={setAppointments}
+                                        />
                                     </Grid>
 
                                     {/* Event Type */}
@@ -784,7 +800,7 @@ export default function EventPage() {
                         </Grid>
                         {/* Comments section: Subject to move to component */}
                         <Grid item>
-                            <Comments comments={comments} setComments={setComments} eventID={eventID}/>
+                            <Comments comments={comments} setComments={setComments} eventID={eventID} />
                         </Grid>
                     </Grid>
                 </div>
