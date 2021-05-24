@@ -134,6 +134,7 @@ export default function MyAppointments() {
         var uData = userResponse.userData;
         var fullName = `${uData.firstName} ${uData.lastName}`;
         eData.creator = fullName;
+        eData.linkedAppointment = appointment; 
 
         // ADD EVENT DATA TO ARRAY
         setEventDetails([...eventDetails, eData]);
@@ -191,8 +192,8 @@ export default function MyAppointments() {
                             <CalendarTodayIcon />
                           </ListItemIcon>
                           <ListItemText
-                            primary={`${moment(clickedEvent.startTime).format('MMMM Do YYYY')} - ${moment(
-                              clickedEvent.endTime
+                            primary={`${moment(clickedEvent.linkedAppointment.startTime).format('MMMM Do YYYY')} - ${moment(
+                              clickedEvent.linkedAppointment.endTime
                             ).format('MMMM Do YYYY')}`}
                           />
                         </ListItem>
@@ -201,8 +202,8 @@ export default function MyAppointments() {
                             <ScheduleIcon />
                           </ListItemIcon>
                           <ListItemText
-                            primary={`${moment(clickedEvent.startTime).format('h:mm:ss a')} - ${moment(
-                              clickedEvent.endTime
+                            primary={`${moment(clickedEvent.linkedAppointment.startTime).format('h:mm:ss a')} - ${moment(
+                              clickedEvent.linkedAppointment.endTime
                             ).format('h:mm:ss a')}`}
                           />
                         </ListItem>
@@ -250,8 +251,8 @@ export default function MyAppointments() {
                       <TableHeaderCell align='center' component='th' scope='row'>
                         {row.title}
                       </TableHeaderCell>
-                      <TableHeaderCell align='center'>{`${moment(row.startTime).format('MMMM Do YYYY')} - ${moment(
-                        row.endTime
+                      <TableHeaderCell align='center'>{`${moment(row.linkedAppointment.startTime).format('MMMM Do YYYY')} - ${moment(
+                        row.linkedAppointment.endTime
                       ).format('MMMM Do YYYY')}`}</TableHeaderCell>
                       <TableHeaderCell align='center'>
                         {row.isPrivate ? `Private Event` : `Public Event`}

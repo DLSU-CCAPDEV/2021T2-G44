@@ -31,78 +31,74 @@ appRouter.use('/api', AuthController.validateSession);
 
 // User Operations
 appRouter.put(
-  '/register',
-  ValidationController.validateUserData('createUser'),
-  ValidationController.validateInputs,
-  UserController.createUser
+    '/register',
+    ValidationController.validateUserData('createUser'),
+    ValidationController.validateInputs,
+    UserController.createUser
 );
 appRouter.get('/api/user', UserController.getCurrentUser);
 appRouter.get('/api/searchUser/:name', UserController.searchUserByName);
 appRouter.get('/api/user/:id', UserController.getUser);
 appRouter.post(
-  '/api/user',
-  ValidationController.validateUserData('updateUser'),
-  ValidationController.validateInputs,
-  UserController.updateUser
+    '/api/user',
+    ValidationController.validateUserData('updateUser'),
+    ValidationController.validateInputs,
+    UserController.updateUser
 );
 appRouter.post(
-  '/api/user/password',
-  ValidationController.validateUserData('changePassword'),
-  ValidationController.validateInputs,
-  UserController.changePassword
+    '/api/user/password',
+    ValidationController.validateUserData('changePassword'),
+    ValidationController.validateInputs,
+    UserController.changePassword
 );
 appRouter.delete(
-  '/api/user',
-  ValidationController.validateUserData('deleteAccount'),
-  ValidationController.validateInputs,
-  UserController.deleteUser
+    '/api/user',
+    ValidationController.validateUserData('deleteAccount'),
+    ValidationController.validateInputs,
+    UserController.deleteUser
 );
 
 // Event Operations
 appRouter.get('/api/event/public', EventController.getPublicEvents);
 appRouter.put(
-  '/api/event',
-  ValidationController.validateEventData('createEvent'),
-  ValidationController.validateInputs,
-  EventController.createEvent
+    '/api/event',
+    ValidationController.validateEventData('createEvent'),
+    ValidationController.validateInputs,
+    EventController.createEvent
 );
 appRouter.get('/api/event', EventController.getEvent);
 appRouter.post(
-  '/api/event',
-  ValidationController.validateEventData('updateEvent'),
-  ValidationController.validateInputs,
-  EventController.updateEvent
+    '/api/event',
+    ValidationController.validateEventData('updateEvent'),
+    ValidationController.validateInputs,
+    EventController.updateEvent
 );
 appRouter.put(
-  '/api/event/comment',
-  // ValidationController.validateEventData('addComment'),
-  // ValidationController.validateInputs,
-  EventController.addComment
+    '/api/event/comment',
+    // ValidationController.validateEventData('addComment'),
+    // ValidationController.validateInputs,
+    EventController.addComment
 );
 appRouter.delete('/api/event/:id', EventController.deleteEvent);
-appRouter.get(
-  '/api/countPublicEvents',
-  EventController.countPublicEvents
-);
-appRouter.get(
-  '/api/userEvents',
-  EventController.getUserEvents
-);
+appRouter.get('/api/countPublicEvents', EventController.countPublicEvents);
+appRouter.get('/api/userEvents', EventController.getUserEvents);
+appRouter.get('/api/countUserOwnedEvents', EventController.countUserEvents);
+appRouter.get('/api/getUserOwnedEvents', EventController.getUserOwnedEvents);
 
 // Appointment Operations
 appRouter.put(
-  '/api/appointment',
-  ValidationController.validateAppointmentData('createAppointment'),
-  ValidationController.validateInputs,
-  AppointmentController.createAppointment
+    '/api/appointment',
+    ValidationController.validateAppointmentData('createAppointment'),
+    ValidationController.validateInputs,
+    AppointmentController.createAppointment
 );
 appRouter.get('/api/appointment', AppointmentController.getAppointment);
-appRouter.post('/api/appointment/:aid', AppointmentController.updateAppointment);
+appRouter.post('/api/appointment', AppointmentController.updateAppointment);
 appRouter.delete('/api/appointment/:id', AppointmentController.deleteAppointment);
 
 // Invitation Operations
 appRouter.put(
-    '/api/invite', 
+    '/api/invite',
     ValidationController.validateInvite('create'),
     ValidationController.validateInputs,
     InvitesController.createInvitation
@@ -113,14 +109,8 @@ appRouter.post(
     ValidationController.validateInputs,
     InvitesController.updateInvitation
 );
-appRouter.get(
-    '/api/inviteCount', 
-    InvitesController.countInvites
-);
-appRouter.get(
-    '/api/invite',
-    InvitesController.getAllInvitations  
-);
+appRouter.get('/api/inviteCount', InvitesController.countInvites);
+appRouter.get('/api/invite', InvitesController.getAllInvitations);
 appRouter.get(
     '/api/invite/:inviteID',
     ValidationController.validateInvite('read'),
@@ -131,14 +121,14 @@ appRouter.delete(
     '/api/invite/:inviteID',
     ValidationController.validateInvite('delete'),
     ValidationController.validateInputs,
-    InvitesController.deleteInvitation 
+    InvitesController.deleteInvitation
 );
 appRouter.post(
     '/api/inviteRespond/:inviteID',
     ValidationController.validateInvite('respond'),
     ValidationController.validateInputs,
     InvitesController.respondInvitation
-)
+);
 
 // Mail Operations
 appRouter.get('/api/mail/count', MailController.totalMail);
@@ -146,38 +136,38 @@ appRouter.get('/api/mail/inbox', MailController.getInbox);
 appRouter.get('/api/mail/sentbox', MailController.getSentBox);
 appRouter.get('/api/mail/:mailID', MailController.getMailByID);
 appRouter.post(
-  '/api/mail/toggleRead/:messageID',
-  ValidationController.validateMailData('read'),
-  ValidationController.validateInputs,
-  MailController.toggleRead
+    '/api/mail/toggleRead/:messageID',
+    ValidationController.validateMailData('read'),
+    ValidationController.validateInputs,
+    MailController.toggleRead
 );
 appRouter.put(
-  '/api/mail/send/:recepientEmail',
-  ValidationController.validateMailData('send'),
-  ValidationController.validateInputs,
-  MailController.sendMail
+    '/api/mail/send/:recepientEmail',
+    ValidationController.validateMailData('send'),
+    ValidationController.validateInputs,
+    MailController.sendMail
 );
 appRouter.delete('/api/mail/:mailID', MailController.deleteMail);
 
 // Todo-list Operations
 appRouter.get('/api/todo', TodoController.getAllTodo);
 appRouter.put(
-  '/api/todo',
-  ValidationController.validateTodo('create'),
-  ValidationController.validateInputs,
-  TodoController.addTodo
+    '/api/todo',
+    ValidationController.validateTodo('create'),
+    ValidationController.validateInputs,
+    TodoController.addTodo
 );
 appRouter.post(
-  '/api/todo',
-  ValidationController.validateTodo('toggleComplete'),
-  ValidationController.validateInputs,
-  TodoController.toggleCompleted
+    '/api/todo',
+    ValidationController.validateTodo('toggleComplete'),
+    ValidationController.validateInputs,
+    TodoController.toggleCompleted
 );
 appRouter.delete(
-  '/api/todo',
-  ValidationController.validateTodo('delete'),
-  ValidationController.validateInputs,
-  TodoController.deleteTodo
+    '/api/todo',
+    ValidationController.validateTodo('delete'),
+    ValidationController.validateInputs,
+    TodoController.deleteTodo
 );
 
 // File Operations

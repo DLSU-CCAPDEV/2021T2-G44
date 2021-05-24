@@ -81,7 +81,7 @@ export default function Homepage() {
                 >
                     <h1 style={mainHeaderStyles}>Easily Organize</h1>
                     <p style={{ fontSize: '24px', maxWidth: '25em' }}>
-                        Clean, Clear, and simple to navigate interface when organizing your events
+                        Clean, clear, and simple to navigate interface when organizing your events
                     </p>
                 </Grid>
             </Grid>
