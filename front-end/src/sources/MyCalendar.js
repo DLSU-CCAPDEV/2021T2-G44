@@ -113,21 +113,18 @@ export default function MyCalendar() {
     const classes = useStyles();
 
     const [calendarView, setCalendarView] = useState('Month');
-    const [appointments, setAppointments] = useState(null);
     const [eventDetails, setEventDetails] = useState([]);
 
     useEffect(async () => {
         const response = await GetUserAppointments();
         const aData = response.appointments;
 
-        setAppointments(aData);
-
         if (eventDetails.length === 0) {
             aData.forEach(async (appointment) => {
                 var eid = appointment.eventID;
                 var event = await GetEvent(eid, '');
-
-                const calendarData = { ...event.eventData };
+                
+                const calendarData = {...event.eventData};
                 calendarData.startTime = new Date(appointment.startTime);
                 calendarData.endTime = new Date(appointment.endTime);
 

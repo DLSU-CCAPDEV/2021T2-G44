@@ -41,7 +41,7 @@ export default function Homepage() {
                     </Typography>
                     <Typography variant="h4" style={{ position: 'relative', top: '1em' }}>
                         Our mission is to provide a scheduling and appointment platform for every-day users and
-                        enterprise users alike. Sched-It aims toprovide a streamlined process for time management,
+                        enterprise users alike. Sched-It aims to provide a streamlined process for time management,
                         setting appointments, and making event agreements, no matter how big or small -- public or
                         private.
                     </Typography>

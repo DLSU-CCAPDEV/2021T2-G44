@@ -3,6 +3,7 @@ import Loading from './components/Loading';
 
 import { getUserEvents, countUserEvents } from '../controllers/EventController.js';
 import PublicEventSearch from './components/PublicEventSearch';
+import ViewParticipants from './components/ViewParticipants';
 
 import {
     Snackbar,
@@ -81,6 +82,9 @@ export default function PublicEvents(props) {
     const [eventCount, setEventCount] = useState(0);
     const [snackbar, setSnackbar] = useState(null);
 
+    const [viewParticipantsDialogOpen, setViewParticipantsDialogOpen] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+
     const classes = useStyles();
 
     document.title = 'My Events - Sched-It';
@@ -112,6 +116,11 @@ export default function PublicEvents(props) {
         });
     }, [page, search]);
 
+    const handleOpenParticipants = (event) => {
+        setSelectedEvent(event);
+        setViewParticipantsDialogOpen(true);
+    };
+
     return (
         <Grid container direction="column" style={{ padding: '8em 0 8em 0' }}>
             <Snackbar
@@ -120,6 +129,11 @@ export default function PublicEvents(props) {
                 message={snackbar}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 key={'topcenter'}
+            />
+            <ViewParticipants 
+                setDialogOpen={setViewParticipantsDialogOpen}
+                dialogOpen={viewParticipantsDialogOpen}
+                selectedEvent={selectedEvent}
             />
 
             <Grid item container direction="row" justify="center">
@@ -161,6 +175,7 @@ export default function PublicEvents(props) {
                                                     className="pointerHover"
                                                     key={m._id}
                                                     style={i % 2 === 0 ? styles.tableData.odd : styles.tableData.even}
+                                                    onClick={() => handleOpenParticipants(m)}
                                                 >
                                                     <TableCell style={styles.tableData.td}>
                                                         <Typography

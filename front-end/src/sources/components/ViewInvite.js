@@ -61,8 +61,12 @@ export default function ViewInvite(props) {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleAccept}>Accept</Button>
-                        <Button onClick={handleDeny}>Deny</Button>
+                        { props.invitationType === 0 &&
+                            <div>
+                                <Button onClick={handleAccept}>Accept</Button>
+                                <Button onClick={handleDeny}>Deny</Button>
+                            </div>
+                        }
                         <Button onClick={handleClose}>Close</Button>
                     </DialogActions>
                 </Dialog>
