@@ -123,7 +123,7 @@ export default function PublicEvents(props) {
             />
 
             <Grid item container direction="row" justify="center">
-                <Grid item container direction="row" xs={2}>
+                <Grid item container direction="row" xs={3}>
                     <img src={publicEventsArt} alt="Public Events Art" style={{ height: '200px' }} />
                 </Grid>
 
@@ -181,11 +181,10 @@ export default function PublicEvents(props) {
                                                             style={{ fontWeight: m.isRead ? '400' : '600' }}
                                                         >
                                                             {m.allDay
-                                                                ? new Date(m.startDate).toDateString() +
-                                                                  ' All Day'
+                                                                ? new Date(m.startDate).toDateString() + ' All Day'
                                                                 : new Date(m.startDate).toDateString() +
                                                                   ' ' +
-                                                                  new Date(m.startTime).toLocaleTimeString()+
+                                                                  new Date(m.startTime).toLocaleTimeString() +
                                                                   ' - ' +
                                                                   new Date(m.endDate).toDateString() +
                                                                   ' ' +
@@ -210,6 +209,7 @@ export default function PublicEvents(props) {
                                                             aria-label="add"
                                                             className={classes.margin}
                                                             component={Link}
+                                                            disabled={m.numParticipants - m.participating === 0}
                                                             to={'/view-event/' + m._id}
                                                         >
                                                             <KeyboardArrowRightIcon />
@@ -237,16 +237,13 @@ export default function PublicEvents(props) {
                                 <ArrowLeftIcon />
                             </Button>
                             <Typography style={{ margin: '0 1em 0 1em' }} variant="h6">
-                                Page {page + 1} of {' '}
-                                { Math.floor(1 + eventCount / 7) }
+                                Page {page + 1} of {Math.floor(1 + eventCount / 7)}
                             </Typography>
                             <Button
                                 color="primary"
                                 variant="contained"
                                 onClick={() => setPage(page + 1)}
-                                disabled={
-                                    page === Math.floor(eventCount / 7)
-                                }
+                                disabled={page === Math.floor(eventCount / 7)}
                             >
                                 <ArrowRightIcon />
                             </Button>
