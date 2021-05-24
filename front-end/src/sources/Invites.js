@@ -74,6 +74,8 @@ export default function Invites(props) {
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [selectedInvitation, setSelectedInvitation] = useState(null);
 
+    const [update, invokeUpdate] = useState(false);
+
     document.title = 'Invitations - Sched-It';
 
     useEffect(() => {
@@ -110,7 +112,7 @@ export default function Invites(props) {
             console.error(err);
             // Snackbar error display
         });
-    }, [incomingPage]);
+    }, [incomingPage, update]);
 
     useEffect(() => {
         // Outgoing Invites
@@ -128,7 +130,7 @@ export default function Invites(props) {
             console.error(err);
             // Snackbar error display
         });
-    }, [outgoingPage]);
+    }, [outgoingPage, update]);
 
     const handleClick = (invitation) => {
         setSelectedInvitation(invitation);
@@ -142,6 +144,8 @@ export default function Invites(props) {
                 setDialogOpen={setViewDialogOpen}
                 selectedInvitation={selectedInvitation}
                 invitationType={invitationType}
+                update={update}
+                invokeUpdate={invokeUpdate}
             />
 
             <Grid item container direction="row" justify="center">
@@ -286,7 +290,10 @@ export default function Invites(props) {
                         <Button
                             color="primary"
                             variant="contained"
-                            onClick={() => setIncomingPage(incomingPage - 1)}
+                            onClick={() => {
+                                if(invitationType === 0) setIncomingPage(incomingPage - 1);
+                                else setOutgoingPage(outgoingPage - 1);
+                            }}
                             disabled={invitationType === 0 ? incomingPage === 0 : outgoingPage === 0}
                         >
                             <ArrowLeftIcon />
@@ -300,7 +307,10 @@ export default function Invites(props) {
                         <Button
                             color="primary"
                             variant="contained"
-                            onClick={() => setIncomingPage(incomingPage + 1)}
+                            onClick={() => {
+                                if(invitationType === 0) setIncomingPage(incomingPage + 1);
+                                else setOutgoingPage(outgoingPage + 1);
+                            }}
                             disabled={
                                 invitationType === 0
                                     ? incomingPage === Math.floor(totalInvites.incoming / 15)
