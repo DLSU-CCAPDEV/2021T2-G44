@@ -242,7 +242,7 @@ export default function EventPage() {
         const fetchData = async () => {
             if (!loading) setLoading(true);
 
-            const eventData = await getEvent(eventID, '');
+            const eventData = await GetEvent(eventID, '');
             const userData = await GetUserData();
 
             if (!eventData.success) {

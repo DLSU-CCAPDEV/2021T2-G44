@@ -1,5 +1,4 @@
 import request from '../utils/AxiosConfig';
-import { getEvent } from '../controllers/EventController';
 
 export const getIncomingInvitations = async (start = 0, end = 7) => {
     try {
