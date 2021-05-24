@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import moment from 'moment';
 
 import { useEffect } from 'react';
 import { Typography, Grid, Paper } from '@material-ui/core';
@@ -30,6 +31,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import NotesIcon from '@material-ui/icons/Notes';
 
 // Images
 import calendarArt from './assets/calendarArt.svg';
@@ -125,7 +127,11 @@ export default function MyCalendar() {
                 var eid = appointment.eventID;
                 var event = await GetEvent(eid, '');
 
-                setEventDetails([...eventDetails, event.eventData]);
+                const calendarData = { ...event.eventData };
+                calendarData.startTime = new Date(appointment.startTime);
+                calendarData.endTime = new Date(appointment.endTime);
+
+                setEventDetails([...eventDetails, calendarData]);
             });
         }
 
@@ -148,8 +154,20 @@ export default function MyCalendar() {
         return <MonthView.TimeTableCell {...props} onDoubleClick={(e) => undefined} />;
     }, []);
 
-    /*  Rendered View */
+    const Content = ({ children, appointmentData, classes, ...restProps }) => (
+        <AppointmentTooltip.Content {...restProps} appointmentData={appointmentData}>
+            <Grid container alignItems="center">
+                <Grid item container xs={10} alignItems="center" style={{ marginLeft: '1.4em' }}>
+                    <NotesIcon style={{ marginRight: '.84em' }} color="primary" />
+                    {`${moment(appointmentData.startTime).format('h:mm A')} - ${moment(appointmentData.endTime).format(
+                        'h:mm A'
+                    )}`}
+                </Grid>
+            </Grid>
+        </AppointmentTooltip.Content>
+    );
 
+    /*  Rendered View */
     return (
         <Grid container direction="row" className={classes.root} xs={12} spacing={3}>
             {/** LEFT SIDE of the Page */}
@@ -226,7 +244,7 @@ export default function MyCalendar() {
                             <AppointmentTooltip
                                 showOpenButton={false}
                                 showDeleteButton={false}
-                                onVisibilityChange={(visible: true) => handleGoToEventDialog()}
+                                contentComponent={Content}
                             />
                             {/* <AppointmentForm /> */}
                             <Toolbar />

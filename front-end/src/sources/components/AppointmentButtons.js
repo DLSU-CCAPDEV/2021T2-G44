@@ -27,7 +27,7 @@ import TelegramIcon from '@material-ui/icons/Telegram';
 
 // Controllers
 import { GetUserID } from '../../controllers/UserController';
-import { createNewAppointment, GetEventAppointments } from '../../controllers/AppointmentController';
+import { createNewAppointment, GetEventAppointments, CheckForOverlap } from '../../controllers/AppointmentController';
 import { SearchUser } from '../../controllers/SearchController';
 import { sendInvitation } from '../../controllers/InvitesController';
 
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     root: {},
 }));
 
-var getDates = function (startDate, endDate) {
+const getDates = function (startDate, endDate) {
     var firstDay = startDate;
     var dates = [],
         currentDate = startDate,
@@ -162,6 +162,15 @@ export default function AppointmentButtons(props) {
         var finalEndTime = new Date(JSON.parse(JSON.stringify(finalStartTime)));
         finalEndTime.setMinutes(appointmentTime.getMinutes() + timeLimit);
 
+        const overlapResponse = await CheckForOverlap(finalStartTime, finalEndTime, eventID);
+
+        if (overlapResponse.success !== true) {
+            handleErrorMsg(overlapResponse.msg);
+            setAppointmentAddError({ openAppointmentAddError: true, ...newState });
+            handleAddAppointmentOpen();
+            return;
+        }
+
         const tempAppointment = {
             invitation: '',
             hostID: uid,
@@ -172,6 +181,7 @@ export default function AppointmentButtons(props) {
         };
 
         const response = await createNewAppointment(tempAppointment);
+
         if (response.success !== true) {
             handleErrorMsg(response.errors[0].msg);
             setAppointmentAddError({ openAppointmentAddError: true, ...newState });
