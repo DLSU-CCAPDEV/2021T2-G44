@@ -50,7 +50,7 @@ export const getInvitationCount = async () => {
 
 export const respondInvitation = async (invitationID, action) => {
     try {
-        const response = await request.post('api/inviteRespond', { 
+        const response = await request.post('api/inviteRespond/' + invitationID, { 
             action: action
         });
         return response.data;

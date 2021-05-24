@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 // import '../assets/styles.css';
 
 import {
+    Avatar,
     Typography,
     Button,
     Dialog,
@@ -91,15 +92,25 @@ export default function ViewMessage(props) {
                     <DialogContent>
                         <DialogContentText>
                             {props.mailbox === 0 && (
-                                <Typography variant="h6">
-                                    Sender: {`${props.message.sender.firstName} ${props.message.sender.lastName}`}
-                                </Typography>
+                                <div>
+                                    <Avatar alt="Message Avatar" src={`${process.env.REACT_APP_BACK_END_API}/api/file/stream/${props.message.sender.avatar}`}>
+                                        {`${props.message.sender.firstName[0]} ${props.message.sender.lastName[0]}`}
+                                    </Avatar>
+                                    <Typography variant="h6">
+                                        Sender: {`${props.message.sender.firstName} ${props.message.sender.lastName}`}
+                                    </Typography>
+                                </div>
                             )}
                             {props.mailbox === 1 && (
-                                <Typography variant="h6">
-                                    Recepient:{' '}
-                                    {`${props.message.recepient.firstName} ${props.message.recepient.lastName}`}
-                                </Typography>
+                                <div>
+                                    <Avatar alt="Message Avatar" src={`${process.env.REACT_APP_BACK_END_API}/api/file/stream/${props.message.recepient.avatar}`}>
+                                        {`${props.message.sender.firstName[0]} ${props.message.recepient.lastName[0]}`}
+                                    </Avatar>
+                                    <Typography variant="h6">
+                                        Recepient:{' '}
+                                        {`${props.message.recepient.firstName} ${props.message.recepient.lastName}`}
+                                    </Typography>
+                                </div>
                             )}
                             <Typography variant="body1">Sent: {`${props.message.sendTime}`}</Typography>
                             <br />

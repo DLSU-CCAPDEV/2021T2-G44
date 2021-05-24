@@ -209,7 +209,7 @@ module.exports.respondInvitation = async (req, res) => {
         if(action === 'accept') {
             // Update Appointment
             const appointmentUpdateStatus = await AppointmentModel.findOneAndUpdate({ invitation: invitation._id }, {
-                invitation: null,
+                invitation: '',
                 participantID: uid
             });
 
@@ -260,9 +260,8 @@ module.exports.respondInvitation = async (req, res) => {
             }
 
             // Clear the invitation field
-            const clearInvitationStatus = await AppointmentModel.findOneAndUpdate({ invitation: invitation._id }, {
+            const clearInvitationStatus = await AppointmentModel.updateOne({ invitation: invitation._id }, {
                 invitation: '',
-                participantID: uid
             });
         }
 

@@ -29,6 +29,22 @@ module.exports.getInbox = async (req, res) => {
             m.senderID = undefined;
             m.recepientID = undefined;
 
+            // Check for null values
+            if(m.sender === null)
+                m.sender = {
+                    email: "",
+                    firstName: "Deleted",
+                    lastName: "User",
+                    avatar: null
+                }
+            if(m.recepient === null)
+                m.recepient = {
+                    email: "",
+                    firstName: "Deleted",
+                    lastName: "User",
+                    avatar: null
+            }
+
             m.attachments = await Promise.all(m.attachments.map(a => new Promise(async resolve => {
                 const fileArray  = await findFile(a); 
                 const fileInfo = (await fileArray.toArray())[0];
@@ -85,6 +101,22 @@ module.exports.getSentBox = async (req, res) => {
             m.recepient = await UserModel.findOne({ _id: m.recepientID }, ["email","firstName","lastName","avatar"]);
             m.senderID = undefined;
             m.recepientID = undefined;
+
+            // Check for null values
+            if(m.sender === null)
+                m.sender = {
+                    email: "",
+                    firstName: "Deleted",
+                    lastName: "User",
+                    avatar: null
+                }
+            if(m.recepient === null)
+                m.recepient = {
+                    email: "",
+                    firstName: "Deleted",
+                    lastName: "User",
+                    avatar: null
+            }
 
             m.attachments = await Promise.all(m.attachments.map(a => new Promise(async resolve => {
                 const fileArray  = await findFile(a); 
