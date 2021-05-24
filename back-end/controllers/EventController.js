@@ -152,7 +152,7 @@ module.exports.updateEvent = async (req, res) => {
         const eData = await EventModel.updateOne({ _id: eventID }, eventData);
         res.status(200).json({
             success: true,
-            eventData: eData,
+            eventData: eventData,
         });
         return;
     } catch (err) {
@@ -173,8 +173,6 @@ module.exports.updateEvent = async (req, res) => {
 module.exports.addComment = async (req, res) => {
     const eventID = req.body.eventID;
     const eventData = req.body;
-
-    console.log(eventData);
 
     // Find the event and update document
     try {

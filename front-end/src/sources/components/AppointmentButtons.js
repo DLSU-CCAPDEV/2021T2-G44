@@ -28,6 +28,8 @@ import TelegramIcon from '@material-ui/icons/Telegram';
 // Controllers
 import { GetUserID } from '../../controllers/UserController';
 import { createNewAppointment, GetEventAppointments } from '../../controllers/AppointmentController';
+import { SearchUser } from '../../controllers/SearchController';
+import { sendInvitation } from '../../controllers/InvitesController';
 
 // Custom MUI components
 function Alert(props) {
@@ -97,11 +99,20 @@ export default function AppointmentButtons(props) {
 
   const [eventAppointments, setEventAppointments] = useState(null);
 
+  // Search User State
+  const [userOptions, setUserOptions] = useState([]);
+  const [selectedInviteUser, setSelectedInviteUser] = useState(null);
+  const [userMessage, setUserMessage] = useState('');
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+
+  // Updater
+  const [updater, invokeUpdate] = useState(false);
+
   useEffect(async () => {
     const response = await GetEventAppointments(eventID);
     const events = response.appointments;
     setEventAppointments(events);
-  }, [props.appointments]);
+  }, [props.appointments, updater]);
 
   // Button event handlers
   const handleAddAppointmentOpen = () => {
@@ -112,7 +123,8 @@ export default function AppointmentButtons(props) {
     setViewAppoinmentOpen(!viewAppoinmentOpen);
   };
 
-  const handleInviteUserOpen = () => {
+  const handleInviteUserOpen = (aid) => {
+    setSelectedAppointment(aid);
     setInviteUserOpen(!inviteUserOpen);
   };
 
@@ -171,10 +183,38 @@ export default function AppointmentButtons(props) {
       handleAddAppointmentOpen();
       props.setAppointments([...props.appointments, response.appointment._id]);
     }
+
+    // Invoke update
+    invokeUpdate(!updater);
   };
 
   // TODO: CONFIRM INVITE USER HANDLER
-  const handleConfirmInviteUser = async (newState) => {};
+  const handleConfirmInviteUser = async (newState) => {
+    // Commit Invitation
+    const inviteStatus = await sendInvitation(selectedInviteUser._id, userMessage, selectedAppointment);
+    if(!inviteStatus.success) {
+      console.error(inviteStatus.errors[0].msg);
+      // Snackbar thingy
+      return;
+    }
+
+    setInviteUserOpen(false);
+    setViewAppoinmentOpen(false);
+    
+    // Invoke an Update
+    invokeUpdate(!updater);
+  };
+
+  const handleUserSearchChange = async (newVal) => {
+    if(newVal === '') return;
+    const searchResults = await SearchUser(newVal);
+    if(!searchResults.success) {
+      // TODO: Snackbar thing
+      console.error(searchResults.errors[0].msg);
+      return;
+    }
+    setUserOptions(searchResults.results);
+  }
 
   return (
     <div>
@@ -299,7 +339,7 @@ export default function AppointmentButtons(props) {
                                 color='primary'
                                 startIcon={<TelegramIcon />}
                                 size='large'
-                                onClick={handleInviteUserOpen}
+                                onClick={() => handleInviteUserOpen(appointment._id)}
                               >
                                 Invite User
                               </Button>
@@ -324,9 +364,6 @@ export default function AppointmentButtons(props) {
         <Divider variant='middle' />
         <DialogContent>
           <Autocomplete
-            {...defaultProps}
-            id='debug'
-            debug
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -335,7 +372,10 @@ export default function AppointmentButtons(props) {
                 style={{ marginTop: '0', marginBottom: '2em' }}
               />
             )}
-            onChange={(e, newValue) => handleAppointmentDateChange(newValue)}
+            onChange={(e, newValue) => setSelectedInviteUser(newValue)}
+            onInputChange={e => handleUserSearchChange(e.target.value)}
+            options={userOptions}
+            getOptionLabel={option => option.name}
           />
           <TextField
             id='outlined-multiline-static'
@@ -345,6 +385,7 @@ export default function AppointmentButtons(props) {
             placeholder='Type your message here'
             variant='outlined'
             fullWidth
+            onChange={e => setUserMessage(e.target.value)}
           />
         </DialogContent>
         <DialogActions>

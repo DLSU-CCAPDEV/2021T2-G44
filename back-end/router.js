@@ -37,7 +37,7 @@ appRouter.put(
   UserController.createUser
 );
 appRouter.get('/api/user', UserController.getCurrentUser);
-appRouter.get('/api/user/search/:name', UserController.searchUserByName);
+appRouter.get('/api/searchUser/:name', UserController.searchUserByName);
 appRouter.get('/api/user/:id', UserController.getUser);
 appRouter.post(
   '/api/user',

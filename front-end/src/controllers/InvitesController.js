@@ -48,3 +48,33 @@ export const getInvitationCount = async () => {
         }
     };
 };
+
+export const respondInvitation = async (invitationID, action) => {
+    try {
+        const response = await request.post('api/inviteRespond', { 
+            action: action
+        });
+        return response.data;
+    } catch(ex) {
+        return { 
+            success: false,
+            errors: [{msg: ex}]
+        }
+    };
+};
+
+export const sendInvitation = async (uid, message, appointmentID) => {
+    try {
+        const response = await request.put('api/invite', { 
+            appointmentID: appointmentID,
+            inviteeID: uid,
+            message: message
+        });
+        return response.data;
+    } catch(ex) {
+        return { 
+            success: false,
+            errors: [{msg: ex}]
+        }
+    };
+};

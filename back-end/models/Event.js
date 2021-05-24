@@ -8,6 +8,7 @@ const commentSchema = new mongoose.Schema({
 const EventSchema = new mongoose.Schema({
     hostID: String,
     title: String,
+    coverImage: String,
     allDay: Boolean,
     startDate: Date,
     endDate: Date,

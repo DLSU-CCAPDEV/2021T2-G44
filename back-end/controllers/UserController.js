@@ -250,12 +250,27 @@ module.exports.searchUserByName = async (req, res) => {
     // Get the query parameters
     const name = req.params.name;
 
+    if(name === null || name === '' || typeof name === 'undefined') {
+        res.status(200).json({
+            success: true,
+            results: [],
+        });
+        return;
+    }
+
     try {
-        // Mongoose Query
-        const result = await UserModel.aggregate([
-            { $project: { 'name': { $concat: ['$firstName', ' ', '$lastName'] } } },
-            { $match: { 'name': { $regex: '.*' + name + '.*', $options: 'i' } } },
-        ]);
+        var result = [];
+        // Check for email
+        if(name.indexOf('@') != -1) {
+            const emailresult = await UserModel.findOne({ email: name }, { 'name': { $concat: ['$firstName', ' ', '$lastName'] } });
+            if(emailresult) result.push(emailresult);
+        } else {
+            // Mongoose Query
+            result = await UserModel.aggregate([
+                { $project: { 'name': { $concat: ['$firstName', ' ', '$lastName'] } } },
+                { $match: { 'name': { $regex: '.*' + name + '.*', $options: 'i' } } },
+            ]);
+        }
 
         if (!result) {
             res.status(200).json({

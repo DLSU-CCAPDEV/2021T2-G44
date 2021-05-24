@@ -126,26 +126,26 @@ module.exports.validateEventData = (method) => {
     }
     case 'updateEvent': {
       return [
-        body('title', 'Please provide a title!').exists({ checkFalsy: true }),
+        body('title', 'Please provide a title!').optional({ checkFalsy: true }),
         body('numParticipants', 'Please provide a valid number for number of participants!')
-          .exists()
+          .optional()
           .isInt()
           .custom((value) => {
             return value > 0;
           }),
         body('timeLimit', 'Time limit must be between 5 minutes and 480 minutes!')
-          .exists()
+          .optional()
           .isInt()
           .custom((value) => {
             return value >= 5 && value <= 480;
           }),
-        body('endDate').custom((value, { req }) => {
+        body('endDate').optional().custom((value, { req }) => {
           if (new Date(value) <= new Date(req.body.startDate)) {
             throw new Error('End Date must be after Start Date!');
           }
           return true;
         }),
-        body('startDate', 'Start Date must be after the current date!').isAfter(new Date().toString()),
+        body('startDate', 'Start Date must be after the current date!').optional().isAfter(new Date().toString()),
       ];
     }
     // case 'addComment': {
@@ -232,9 +232,8 @@ module.exports.validateInvite = method => {
         case 'create': {
             return [
                 body('appointmentID','Please provide an appointmentID.').exists().isString(),
-                body('eventID', 'Please provide an eventID.').exists().isString(),
-                body('inviterID', 'Please provide an inviterID.').exists().isString(),
-                body('inviteeID', 'Please provide an inviteeID.').exists().isString()
+                body('inviteeID', 'Please provide an inviteeID.').exists().isString(),
+                body('message', 'Message must be a string.').optional().isString()
             ]
         }
         case 'update': {

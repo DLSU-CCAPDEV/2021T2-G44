@@ -9,12 +9,17 @@ const UserModel = require("../models/User");
  * @param {*} res 
  */
 module.exports.createInvitation = async (req, res) => {
-    const invitationData = req.body;
+    const invitationData = {...req.body};
+    invitationData.inviterID = req.session.uid;
     invitationData.inviteTimestamp = new Date();
+    invitationData.status = 'pending';
 
     try {
         const invitationInstance = new InvitesModel(invitationData);
         const saveResult = await invitationInstance.save();
+
+        // Update the appointment
+        await AppointmentModel.updateOne({ _id: invitationData.appointmentID }, { invitation: saveResult._id });
 
         res.json({ 
             success: true,
@@ -96,13 +101,13 @@ module.exports.createInvitation = async (req, res) => {
         var findResult = null;
         if(mode === 'incoming')
             findResult = await InvitesModel.find({ inviteeID: uid })
-                .sort({datefield: 1})
+                .sort({inviteTimestamp: -1})
                 .skip(start)
                 .limit(limit)
                 .lean();
         else
             findResult = await InvitesModel.find({ inviterID: uid })
-                .sort({datefield: 1})
+                .sort({inviteTimestamp: -1})
                 .skip(start)
                 .limit(limit)
                 .lean();
@@ -114,7 +119,7 @@ module.exports.createInvitation = async (req, res) => {
             invite.appointmentID = undefined;
 
             // Get Event
-            invite.event = await EventModel.findOne({ _id: invite.eventID }, ["title"]);
+            invite.event = await EventModel.findOne({ _id: invite.appointment.eventID }, ["title"]);
             invite.eventID = undefined;
 
             // Get Invitee
@@ -152,6 +157,7 @@ module.exports.createInvitation = async (req, res) => {
 
     try {
         const deleteStatus = await InvitesModel.deleteOne({ _id: invitationID });
+        await AppointmentModel.updateOne({ invitation: invitationID }, { invitation: '' });
 
         res.json({ 
             success: true,
@@ -232,6 +238,12 @@ module.exports.respondInvitation = async (req, res) => {
                 return;
             }
             
+            // Clear the invitation field
+            const clearInvitationStatus = await AppointmentModel.findOneAndUpdate({ invitation: invitation._id }, {
+                invitation: '',
+                participantID: uid
+            });
+
         } else {
             // Delete this invitation
             const deleteStatus = await InvitesModel.deleteOne({ _id: invitation._id });
@@ -246,6 +258,12 @@ module.exports.respondInvitation = async (req, res) => {
                 });
                 return;
             }
+
+            // Clear the invitation field
+            const clearInvitationStatus = await AppointmentModel.findOneAndUpdate({ invitation: invitation._id }, {
+                invitation: '',
+                participantID: uid
+            });
         }
 
 
