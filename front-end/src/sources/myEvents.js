@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Loading from './components/Loading';
 
-import { getPublicEvents, getPublicEventCount } from '../controllers/EventController.js';
+import { getUserEvents, getPublicEventCount } from '../controllers/EventController.js';
 import PublicEventSearch from './components/PublicEventSearch';
 
 import {
@@ -96,7 +96,7 @@ export default function PublicEvents(props) {
             }
             setEventCount(eventCountStatus.totalPublicEvents);
 
-            const publicEvents = await getPublicEvents(search, 7 * page, 7);
+            const publicEvents = await getUserEvents();
 
             if (!publicEvents.success) {
                 setSnackbar(publicEvents.errors[0].msg);
@@ -150,9 +150,6 @@ export default function PublicEvents(props) {
                                                 Date and Time
                                             </TableCell>
                                             <TableCell style={styles.tableHeaders.date} align="center">
-                                                Availability
-                                            </TableCell>
-                                            <TableCell style={styles.tableHeaders.date} align="center">
                                                 Edit
                                             </TableCell>
                                         </TableRow>
@@ -191,7 +188,7 @@ export default function PublicEvents(props) {
                                                                   new Date(m.endTime).toLocaleTimeString()}
                                                         </Typography>
                                                     </TableCell>
-                                                    <TableCell style={styles.tableData.td}>
+                                                    {/* <TableCell style={styles.tableData.td}>
                                                         <Typography
                                                             align="center"
                                                             variant="subtitle1"
@@ -200,20 +197,24 @@ export default function PublicEvents(props) {
                                                             {String(m.numParticipants - m.participating) +
                                                                 ' slots left'}
                                                         </Typography>
-                                                    </TableCell>
+                                                    </TableCell> */}
                                                     <TableCell style={styles.tableData.td}>
                                                         {/* PUT BUTTON THAT REDIRECTS TO EVENT HERE */}
-                                                        <Fab
-                                                            size="medium"
-                                                            color="primary"
-                                                            aria-label="add"
-                                                            className={classes.margin}
-                                                            component={Link}
-                                                            disabled={m.numParticipants - m.participating === 0}
-                                                            to={'/view-event/' + m._id}
-                                                        >
-                                                            <KeyboardArrowRightIcon />
-                                                        </Fab>
+                                                        <center>
+                                                            <Fab
+                                                                size="medium"
+                                                                color="primary"
+                                                                aria-label="add"
+                                                                align="center"
+                                                                className={classes.margin}
+                                                                component={Link}
+                                                                disabled={m.numParticipants - m.participating === 0}
+                                                                to={'/view-event/' + m._id}
+                                                            >
+                                                                <KeyboardArrowRightIcon />
+                                                            </Fab>
+                                                        </center>
+                                                        {/* <Typography align="center">hotdog</Typography> */}
                                                     </TableCell>
                                                 </TableRow>
                                             ))}

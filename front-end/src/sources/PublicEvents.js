@@ -127,7 +127,7 @@ export default function PublicEvents(props) {
                     <img src={publicEventsArt} alt="Public Events Art" style={{ height: '200px' }} />
                 </Grid>
 
-                {/** Mail Title */}
+                {/** Event Title */}
                 <Grid item container direction="column" justify="center" alignItems="flex-start" xs={2}>
                     <Typography variant="h2" color="primary" style={{ fontWeight: 'bold' }}>
                         Public Events
