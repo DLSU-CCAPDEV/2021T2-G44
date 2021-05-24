@@ -62,14 +62,14 @@ const useStyle = makeStyles((theme) => ({
         marginRight: '1em',
 
         display: 'flex',
-        height: '100%'
+        height: '100%',
     },
     settingsGrid: {
         backgroundColor: theme.palette.accent.main,
         marginLeft: '1em',
         marginTop: '1em',
         marginRight: '2em',
-        height: '100%'
+        height: '100%',
     },
     profileShowcase: {
         height: '15em',
@@ -108,7 +108,7 @@ const useStyle = makeStyles((theme) => ({
     },
     stretcher: {
         flexGrow: 1,
-        height: "100%"
+        height: '100%',
     },
     passField: {
         // marginTop: theme.spacing(2),
@@ -525,7 +525,7 @@ export default function Profile() {
                     Delete Account
                         Delete Account Button
                 */}
-                    <Grid item container direction="column" lg={7} style={{height: "100vh"}}>
+                    <Grid item container direction="column" lg={7} style={{ minheight: '100%' }}>
                         <Paper className={classes.settingsGrid} variant="elevation" elevation={8}>
                             <Grid item container direction="row" className={classes.textSpacer} alignItems="stretch">
                                 <Typography variant="h4">Profile Settings</Typography>

@@ -27,6 +27,7 @@ import AppointmentButtons from './components/AppointmentButtons';
 
 // Assets
 import coverPhoto from './assets/coverPhoto.png';
+import PhotoIcon from '@material-ui/icons/Photo';
 
 // Controllers
 import { GetEvent, updateEvent, updateCoverImage } from '../controllers/EventController';
@@ -328,6 +329,7 @@ export default function EventPage() {
                                             variant="contained"
                                             color="primary"
                                             size="large"
+                                            startIcon={<PhotoIcon />}
                                             onClick={() => setUploadCoverImage(true)}
                                         >
                                             Update Cover Image
