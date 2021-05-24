@@ -88,6 +88,14 @@ appRouter.get(
   '/api/userEvents',
   EventController.getUserEvents
 );
+appRouter.get(
+  '/api/countUserOwnedEvents',
+  EventController.countUserEvents
+);
+appRouter.get(
+  '/api/getUserOwnedEvents',
+  EventController.getUserOwnedEvents
+);
 
 // Appointment Operations
 appRouter.put(
