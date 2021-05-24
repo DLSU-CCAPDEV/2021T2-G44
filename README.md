@@ -4,7 +4,7 @@ This web application is designed to optimize the process of planning activities 
 Users can create invite links to appointments for events that they create and these invited participants are able to select their appointment slots with ease. This idea was initially born due to the need for the Lasallian Youth Orchestra's web application to incorporate an appointment system.
 
 
-Click [here](#) for the live demo from Heroku once it's up.
+Click [here](https://sched-it-front.herokuapp.com/) for the live demo on Heroku. *Currently on staging version: as of commit [6f8d2a4](https://github.com/DLSU-CCAPDEV/2021T2-G44/commit/6f8d2a47deedd8d2dce27414a5adaf2a137b763e).*
 
 ## Contents
 Each directory of this repository has its own ```README.md``` that further explains the content of the subfolder.

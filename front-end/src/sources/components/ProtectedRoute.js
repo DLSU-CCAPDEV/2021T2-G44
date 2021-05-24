@@ -1,17 +1,16 @@
 import { Route } from "react-router-dom";
+import { useContext } from "react";
 
 import ErrorPage from "./ErrorPage";
 
-// Cookie
-import { useCookies } from "react-cookie";
+import { GlobalContext } from "../../controllers/ContextController";
 
 export default function ProtectedRoute({ component: Component, ...rest }) {
     // Check if logged in
-    const [cookies] = useCookies(["uid"]);
-    const uid = cookies.uid;
+    const { uid } = useContext(GlobalContext);
 
     // Protected
-    if (!(uid == null || typeof uid === "undefined") && rest.protected) {
+    if (uid && rest.protected) {
         return (
             <Route {...rest}>
                 <Component {...rest} />

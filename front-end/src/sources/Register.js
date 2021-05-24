@@ -1,58 +1,61 @@
-import "./assets/styles.css";
-import { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+// import './assets/styles.css';
+import { useEffect, useState, useContext } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
 // Material-UI
-import { Grid, Box, Typography, TextField, withStyles, Fab } from "@material-ui/core";
+import { Snackbar, Grid, Box, Typography, TextField, withStyles, Fab } from '@material-ui/core';
 
 // Component Imports
-import registerCoverImage from "./assets/registerCover.svg";
+import registerCoverImage from './assets/registerCover.svg';
+import Loading from './components/Loading';
 
-// Cookie
-import { useCookies } from 'react-cookie';
-import { cookieOptions } from '../models/Cookie';
+// Controller
+import { RegisterUser } from '../controllers/UserController';
+import { userLogin } from '../controllers/AuthController';
+import { GlobalContext } from '../controllers/ContextController';
 
 // Custom Inline CSS
 const imageStyles = {
-    marginTop: "-8em"
-}
+    marginTop: '-8em',
+};
 
 const textFieldTheme = {
     root: {
-        background: "#FFFFFF",
-        width: "70%",
-        margin: "1em",
-        borderRadius: "8px"
+        background: '#FFFFFF',
+        width: '70%',
+        margin: '1em',
+        borderRadius: '8px',
     },
     input: {
-        color: "black",
-        fontSize: "24px",
-        borderRadius: "8px"
+        color: 'black',
+        fontSize: '24px',
+        borderRadius: '8px',
     },
 };
 
 const buttonStyles = {
-    margin: "1em",
-    color: "white",
-    marginBottom: "3em"
-}
+    margin: '1em',
+    marginBottom: '3em',
+    color: 'white',
+};
 
 function Register(props) {
     useEffect(() => {
-        document.title = "Register - Sched-It";
+        document.title = 'Register - Sched-It';
     });
 
-    const setCookie = useCookies(["uid"])[1];
-
     const history = useHistory();
+    const { updateUid } = useContext(GlobalContext);
+    const [loading, setLoading] = useState(false);
+    const [snackbar, setSnackbar] = useState(null);
 
     // States
-    const [email, setEmail] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordConfirm, setPasswordConfirm] = useState("");
-    console.log(email + firstName + lastName); // This was only done to suppress the unused vars warning. Remove this later.
+    const [email, setEmail] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirm, setPasswordConfirm] = useState('');
+
     // Event Handlers
     const onEmailChange = (e) => {
         setEmail(e.target.value);
@@ -75,125 +78,157 @@ function Register(props) {
     };
 
     // Create Account Button
-    const createAccount = async () => {
+    const createAccount = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
         // Check if passwords match
         if (password !== passwordConfirm) {
             // Show alert to user
-            alert("Passwords do not match.");
+            setLoading(false);
+            setSnackbar('Passwords do not match.');
+            setTimeout(() => setSnackbar(null), 5000);
             return;
         }
 
-        // DO ACCOUNT CREATION LOGIC HERE
-
-        // For phase 1, log in as user 1.
-        setCookie("uid", 1, cookieOptions);
+        const response = await RegisterUser({
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            password: password,
+        });
 
         // Redirect the user
-        history.push("/my-calendar");
+        if (response.success) {
+            const login = await userLogin(email, password);
+            if (login) {
+                await updateUid();
+                history.push('/my-calendar');
+                return;
+            }
+            setLoading(false);
+            setSnackbar(
+                'Uh oh! Something went wrong. Your account was created, but login has failed. Please logging in through the login page.'
+            );
+            setTimeout(() => setSnackbar(null), 5000);
+        }
+        setLoading(false);
+        setSnackbar(response.errors[0].msg);
+        setTimeout(() => setSnackbar(null), 5000);
+        return;
     };
 
     const { classes } = props;
 
-    return (
-        <Grid container direction="column" style={{ padding: "2em 0 8em 0" }}>
-            <Grid item container direction="row" justify="center" alignItems="center">
-                <Grid item>
-                    <Box className="registerBox">
-                        <form onSubmit={createAccount}>
-                            <Grid container direction="column" justify="center" alignItems="center">
-                                <TextField
-                                    required
-                                    label="Email"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="email"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    style={{ marginTop: "3em" }}
-                                    onChange={onEmailChange}
-                                />
-                                <TextField
-                                    required
-                                    label="First Name"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="text"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    onChange={onFirstNameChange}
-                                />
-                                <TextField
-                                    required
-                                    label="Last Name"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="text"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    onChange={onLastNameChange}
-                                />
-                                <TextField
-                                    required
-                                    label="Password"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="password"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    onChange={onPasswordChange}
-                                />
-                                <TextField
-                                    required
-                                    label="Confirm Password"
-                                    variant="filled"
-                                    className={classes.root}
-                                    type="password"
-                                    InputProps={{
-                                        className: classes.input,
-                                        disableUnderline: true,
-                                    }}
-                                    onChange={onPasswordConfirmChange}
-                                />
-                                <p style={{ color: "white", margin: "0.5em" }}>
-                                    Already have an account?{" "}
-                                    <Link to="/login" style={{ color: "white" }}>
-                                        Login
-                                    </Link>
-                                </p>
-                                <Fab
-                                    type="submit"
-                                    variant="extended"
-                                    size="medium"
-                                    color="secondary"
-                                    style={buttonStyles}
-                                >
-                                    Create Account
-                                </Fab>
-                            </Grid>
-                        </form>
-                    </Box>
-                </Grid>
+    if (!loading)
+        return (
+            <Grid container direction="column" style={{ padding: '0.5em 0 4.5em 0' }}>
+                <Snackbar
+                    open={snackbar ? true : false}
+                    onClose={() => setSnackbar(null)}
+                    message={snackbar}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    key={'topcenter'}
+                />
+                <Grid item container direction="row" justify="center" alignItems="center">
+                    <Grid item>
+                        <Box className="registerBox">
+                            <form onSubmit={createAccount}>
+                                <Grid container direction="column" justify="center" alignItems="center">
+                                    <TextField
+                                        required
+                                        label="Email"
+                                        variant="filled"
+                                        className={classes.root}
+                                        type="email"
+                                        InputProps={{
+                                            className: classes.input,
+                                            disableUnderline: true,
+                                        }}
+                                        style={{ marginTop: '3em' }}
+                                        onChange={onEmailChange}
+                                    />
+                                    <TextField
+                                        required
+                                        label="First Name"
+                                        variant="filled"
+                                        className={classes.root}
+                                        type="text"
+                                        InputProps={{
+                                            className: classes.input,
+                                            disableUnderline: true,
+                                        }}
+                                        onChange={onFirstNameChange}
+                                    />
+                                    <TextField
+                                        required
+                                        label="Last Name"
+                                        variant="filled"
+                                        className={classes.root}
+                                        type="text"
+                                        InputProps={{
+                                            className: classes.input,
+                                            disableUnderline: true,
+                                        }}
+                                        onChange={onLastNameChange}
+                                    />
+                                    <TextField
+                                        required
+                                        label="Password"
+                                        variant="filled"
+                                        className={classes.root}
+                                        type="password"
+                                        InputProps={{
+                                            className: classes.input,
+                                            disableUnderline: true,
+                                        }}
+                                        onChange={onPasswordChange}
+                                    />
+                                    <TextField
+                                        required
+                                        label="Confirm Password"
+                                        variant="filled"
+                                        className={classes.root}
+                                        type="password"
+                                        InputProps={{
+                                            className: classes.input,
+                                            disableUnderline: true,
+                                        }}
+                                        onChange={onPasswordConfirmChange}
+                                    />
+                                    <p style={{ color: 'white', margin: '0.5em' }}>
+                                        Already have an account?{' '}
+                                        <Link to="/login" style={{ color: 'white' }}>
+                                            Login
+                                        </Link>
+                                    </p>
+                                    <Fab
+                                        type="submit"
+                                        variant="extended"
+                                        size="medium"
+                                        color="secondary"
+                                        style={buttonStyles}
+                                    >
+                                        Create Account
+                                    </Fab>
+                                </Grid>
+                            </form>
+                        </Box>
+                    </Grid>
 
-                <Grid item>
-                    <Typography style={{ fontWeight: "700", fontSize: "64px" }} variant="subtitle2">
-                        Register now
-                    </Typography>
-                    <Typography variant="body1" style={{ width: "15em", fontSize: "24px" }}>
-                        and start bringing people together the right way
-                    </Typography>
-                    <img src={registerCoverImage} alt="Register Cover" style={imageStyles} />
+                    <Grid item>
+                        <Typography style={{ fontWeight: '700', fontSize: '64px' }} variant="subtitle2">
+                            Register now
+                        </Typography>
+                        <Typography variant="body1" style={{ width: '15em', fontSize: '24px' }}>
+                            and start bringing people together the right way
+                        </Typography>
+                        <img src={registerCoverImage} alt="Register Cover" style={imageStyles} />
+                    </Grid>
                 </Grid>
             </Grid>
-        </Grid>
-    );
+        );
+    return <Loading loadingText="Creating your account" />;
 }
 
 export default withStyles(textFieldTheme)(Register);

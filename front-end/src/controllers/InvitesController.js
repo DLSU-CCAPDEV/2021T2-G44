@@ -1,29 +1,79 @@
-import invitesDB from "../placeholderData/invites.json";
-import { GetUserData } from "../controllers/UserController";
-import { GetEventByID } from "../controllers/EventController";
+import request from '../utils/AxiosConfig';
 
-export const GetInvites = async (userID, start = 0, end = 10) => {
-    // Normally, we have our API call here
+export const getIncomingInvitations = async (start = 0, end = 7) => {
+    try {
+        const response = await request.get('api/invite', {
+            params: {
+                start: start,
+                limit: end,
+                mode: 'incoming'
+            }
+        });
+        return response.data;
+    } catch(ex) {
+        return { 
+            success: false,
+            errors: [{msg: ex}]
+        }
+    };
+};
 
-    // Get the invites
-    const invites = invitesDB.filter((invitation) => invitation.inviteeID === Number(userID));
+export const getOutgoingInvitations = async (start = 0, end = 7) => {
+    try {
+        const response = await request.get('api/invite', {
+            params: {
+                start: start,
+                limit: end,
+                mode: 'outgoing'
+            }
+        });
+        return response.data;
+    } catch(ex) {
+        return { 
+            success: false,
+            errors: [{msg: ex}]
+        }
+    };
+};
 
-    // Append the host
-    invites.forEach((invitation) => {
-        invitation.inviteSentTime = new Date(invitation.inviteSentTime);
-        invitation.inviteSentTime = invitation.inviteSentTime.toDateString();
+export const getInvitationCount = async () => {
+    try {
+        const response = await request.get('api/inviteCount');
+        return response.data;
+    } catch(ex) {
+        return { 
+            success: false,
+            errors: [{msg: ex}]
+        }
+    };
+};
 
-        // Get Host Data
-        GetUserData(invitation.hostID)
-            .then((host) => (invitation.host = host))
-            .catch((err) => console.error(err));
+export const respondInvitation = async (invitationID, action) => {
+    try {
+        const response = await request.post('api/inviteRespond/' + invitationID, { 
+            action: action
+        });
+        return response.data;
+    } catch(ex) {
+        return { 
+            success: false,
+            errors: [{msg: ex}]
+        }
+    };
+};
 
-        // Get Event Data
-        GetEventByID(invitation.eventID)
-            .then((event) => (invitation.event = event))
-            .catch((err) => console.error(err));
-    });
-
-    // Slice the return
-    return invites.slice(start, end);
+export const sendInvitation = async (uid, message, appointmentID) => {
+    try {
+        const response = await request.put('api/invite', { 
+            appointmentID: appointmentID,
+            inviteeID: uid,
+            message: message
+        });
+        return response.data;
+    } catch(ex) {
+        return { 
+            success: false,
+            errors: [{msg: ex}]
+        }
+    };
 };

@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { getInbox, getSent } from '../controllers/MailController';
+import { getInbox, getSent, getMailCount } from '../controllers/MailController';
 
-import './assets/styles.css';
+// import './assets/styles.css';
 
 import ViewMessage from './components/ViewMessage';
 import SendMessage from './components/SendMessage';
+import Loading from './components/Loading';
 
 // Material-UI
 import {
+    Snackbar,
     Grid,
     Fab,
     Typography,
@@ -18,6 +20,7 @@ import {
     TableHead,
     TableRow,
     Paper,
+    Button,
 } from '@material-ui/core';
 
 import Radio from '@material-ui/core/Radio';
@@ -27,12 +30,13 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
 import NavigationIcon from '@material-ui/icons/Navigation';
+import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import ReplayIcon from '@material-ui/icons/Replay';
 
 // ART
 import mailBoxArt from './assets/mailBox.svg';
-
-// Temporary
-import { useCookies } from 'react-cookie';
+import sentBoxArt from './assets/sentbox.svg';
 
 // Custom Styles
 const styles = {
@@ -70,8 +74,11 @@ const styles = {
 };
 
 export default function Mail(props) {
-    // Temp
-    const [cookies] = useCookies(['uid']);
+    const [inboxPage, setInboxPage] = useState(0);
+    const [sentPage, setSentPage] = useState(0);
+    const [totalMail, setTotalMail] = useState(0);
+    const [snackbar, setSnackbar] = useState(null);
+    const rerender = useState(false);
 
     const [mail, setMail] = useState(null);
     const [sent, setSent] = useState(null);
@@ -81,20 +88,43 @@ export default function Mail(props) {
     const [dialogMessage, setDialogMessage] = useState(null);
     const [mailbox, setMailbox] = useState(0);
 
-    useEffect(() => {
-        switch (mailbox) {
-            case 1:
-                document.title = 'Sent Mail - Sched-It';
-                break;
-            default:
-                document.title = 'Inbox - Sched-It';
-        }
-    });
+    switch (mailbox) {
+        case 1:
+            document.title = 'Sent Mail - Sched-It';
+            break;
+        default:
+            document.title = 'Inbox - Sched-It';
+    }
 
     useEffect(() => {
-        getInbox(cookies.uid).then((inbox) => setMail(inbox));
-        getSent(cookies.uid).then((sentMail) => setSent(sentMail));
-    }, [cookies.uid]);
+        const getData = async () => {
+            const mailCount = await getMailCount();
+            if (!mailCount.success) {
+                setSnackbar(mailCount.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
+            }
+            const inbox = await getInbox(inboxPage * 15, 15);
+            if (!inbox.success) {
+                setSnackbar(inbox.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
+            }
+            const sentbox = await getSent(sentPage * 15, 15);
+            if (!sentbox.success) {
+                setSnackbar(sentbox.errors[0].msg);
+                setTimeout(() => setSnackbar(null), 5000);
+            }
+            if (mailCount.success)
+                setTotalMail({ inbox: mailCount.mailCount.inbox, sentbox: mailCount.mailCount.sentbox });
+            if (inbox.success) setMail(inbox.mail);
+            if (sentbox.success) setSent(sentbox.mail);
+        };
+
+        getData().catch((ex) => {
+            console.error(ex);
+            setSnackbar(ex);
+            setTimeout(() => setSnackbar(null), 5000);
+        });
+    }, [inboxPage, sentPage, rerender[0]]);
 
     const handleClick = (message) => {
         // Render dialog box here
@@ -113,23 +143,56 @@ export default function Mail(props) {
         setNewMessageDialogOpen(true);
     };
 
+    const handlePreviousPage = () => {
+        if(mailbox === 0) {
+            setMail(null);
+            if (inboxPage !== 0) setInboxPage(inboxPage - 1);
+        } else {
+            setSent(null);
+            if (sentPage !== 0) setSentPage(sentPage - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if(mailbox === 0) {
+            setMail(null);
+            setInboxPage(inboxPage + 1);
+        } else {
+            setSent(null);
+            setSentPage(sentPage + 1);
+        }
+    };
+
     return (
         <Grid container direction="column" style={{ padding: "8em 0 8em 0" }}>
-            <ViewMessage
+                <Snackbar
+                open={snackbar ? true : false}
+                onClose={() => setSnackbar(null)}
+                message={snackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                key={"topcenter"}
+            />
+            {dialogMessage && <ViewMessage
                 dialogOpen={viewDialogOpen}
                 setDialogOpen={setViewDialogOpen}
                 message={dialogMessage}
                 mailbox={mailbox}
-            />
+                reRender={rerender}
+            />}
 
             <SendMessage
                 dialogOpen={newMessageDialogOpen}
                 setDialogOpen={setNewMessageDialogOpen}
+                reRender={rerender}
             />
 
             <Grid item container direction="row" justify="center">
                 <Grid item container direction="row" xs={2}>
-                    <img src={mailBoxArt} alt="My Appointments Art" style={{ height: "200px" }} />
+                    <img
+                        src={mailbox === 0 ? mailBoxArt : sentBoxArt}
+                        alt="My Appointments Art"
+                        style={{ height: "200px" }}
+                    />
                 </Grid>
 
                 {/** Mail Title */}
@@ -139,11 +202,28 @@ export default function Mail(props) {
                     direction="column"
                     justify="center"
                     alignItems="flex-start"
-                    xs={3}
+                    xs={2}
                 >
                     <Typography variant="h2" color="primary" style={{ fontWeight: "bold" }}>
                         {mailbox === 0 ? "Inbox" : "Sent Mail"}
                     </Typography>
+                </Grid>
+
+                {/* Reload Button */}
+                <Grid
+                    item
+                    container
+                    direction="column"
+                    xs={1}
+                    justify="flex-end"
+                    alignItems="stretch"
+                    style={ { marginRight: "2em" } }
+                >
+                    <Button
+                        onClick={() => rerender[1](!rerender[0])}
+                    >
+                        <ReplayIcon />
+                    </Button>
                 </Grid>
 
                 {/* Add Message Button */}
@@ -212,96 +292,131 @@ export default function Mail(props) {
                         </RadioGroup>
                     </FormControl>
                 </Grid>
-
-                <Grid item container direction="column" alignItems="center">
-                    <Grid item container justify="center">
-                        <TableContainer
-                            component={Paper}
-                            style={{ width: "80%", marginTop: "1em" }}
+                
+                { !(mail && sent) && <Loading loadingText="Loading your mail"/> }
+                { mail && sent &&
+                    <Grid item container direction="column" alignItems="center">
+                        <Grid item container justify="center">
+                            <TableContainer component={Paper} style={{ width: '80%', marginTop: '1em' }}>
+                                <Table aria-label="Inbox Messages">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell style={styles.tableHeaders.from} align="center">
+                                                {mailbox === 0 ? 'From' : 'To'}
+                                            </TableCell>
+                                            <TableCell style={styles.tableHeaders.subject} align="center">
+                                                Subject
+                                            </TableCell>
+                                            <TableCell style={styles.tableHeaders.date} align="center">
+                                                Date
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {mail &&
+                                            mailbox === 0 &&
+                                            mail.map((m, i) => (
+                                                <TableRow
+                                                    className="pointerHover"
+                                                    key={m._id}
+                                                    onClick={() => handleClick(m)}
+                                                    style={i % 2 === 0 ? styles.tableData.odd : styles.tableData.even}
+                                                >
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography
+                                                            align="center"
+                                                            variant="subtitle1"
+                                                            style={{ fontWeight: m.isRead ? '400' : '600' }}
+                                                        >
+                                                            {`${m.sender.firstName} ${m.sender.lastName}`}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography
+                                                            align="center"
+                                                            variant="subtitle1"
+                                                            style={{ fontWeight: m.isRead ? '400' : '600' }}
+                                                        >
+                                                            {m.subject}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography
+                                                            align="center"
+                                                            variant="subtitle1"
+                                                            style={{ fontWeight: m.isRead ? '400' : '600' }}
+                                                        >
+                                                            {m.sendTime}
+                                                        </Typography>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        {sent &&
+                                            mailbox === 1 &&
+                                            sent.map((m, i) => (
+                                                <TableRow
+                                                    className="pointerHover"
+                                                    key={m._id}
+                                                    onClick={() => handleClick(m)}
+                                                    style={i % 2 === 0 ? styles.tableData.odd : styles.tableData.even}
+                                                >
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography align="center" variant="subtitle1">
+                                                            {`${m.recepient.firstName} ${m.recepient.lastName}`}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography align="center" variant="subtitle1">
+                                                            {m.subject}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell style={styles.tableData.td}>
+                                                        <Typography align="center" variant="subtitle1">
+                                                            {m.sendTime}
+                                                        </Typography>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Grid>
+                        <Grid
+                            container
+                            direction="row"
+                            alignItems="center"
+                            justify="flex-end"
+                            style={{ margin: '2em 0 0 0', width: '80%' }}
                         >
-                            <Table aria-label="Inbox Messages">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell style={styles.tableHeaders.from} align="center">
-                                            {mailbox === 0 ? "From" : "To"}
-                                        </TableCell>
-                                        <TableCell
-                                            style={styles.tableHeaders.subject}
-                                            align="center"
-                                        >
-                                            Subject
-                                        </TableCell>
-                                        <TableCell style={styles.tableHeaders.date} align="center">
-                                            Date
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {mail &&
-                                        mailbox === 0 &&
-                                        mail.map((m, i) => (
-                                            <TableRow
-                                                className="pointerHover"
-                                                key={m.id}
-                                                onClick={() => handleClick(m)}
-                                                style={
-                                                    i % 2 === 0
-                                                        ? styles.tableData.odd
-                                                        : styles.tableData.even
-                                                }
-                                            >
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {`${m.sender.firstName} ${m.sender.lastName}`}
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {m.subject}
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {m.sendTime}
-                                                    </Typography>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    {sent &&
-                                        mailbox === 1 &&
-                                        sent.map((m, i) => (
-                                            <TableRow
-                                                className="pointerHover"
-                                                key={m.id}
-                                                onClick={() => handleClick(m)}
-                                                style={
-                                                    i % 2 === 0
-                                                        ? styles.tableData.odd
-                                                        : styles.tableData.even
-                                                }
-                                            >
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {`${m.recepient.firstName} ${m.recepient.lastName}`}
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {m.subject}
-                                                    </Typography>
-                                                </TableCell>
-                                                <TableCell style={styles.tableData.td}>
-                                                    <Typography align="center" variant="subtitle1">
-                                                        {m.sendTime}
-                                                    </Typography>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                            <Button
+                                color="primary"
+                                variant="contained"
+                                onClick={handlePreviousPage}
+                                disabled={mailbox === 0 ? inboxPage === 0 : sentPage === 0}
+                            >
+                                <ArrowLeftIcon />
+                            </Button>
+                            <Typography style={{ margin: '0 1em 0 1em' }} variant="h6">
+                                Page {(mailbox === 0 ? inboxPage : sentPage) + 1} of{' '}
+                                {mailbox === 0
+                                    ? Math.floor(1 + totalMail.inbox / 15)
+                                    : Math.floor(1 + totalMail.sentbox / 15)}
+                            </Typography>
+                            <Button
+                                color="primary"
+                                variant="contained"
+                                onClick={handleNextPage}
+                                disabled={
+                                    mailbox === 0
+                                        ? inboxPage === Math.floor(totalMail.inbox / 15)
+                                        : sentPage === Math.floor(totalMail.sentbox / 15)
+                                }
+                            >
+                                <ArrowRightIcon />
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
+                }
             </Grid>
         </Grid>
     );
