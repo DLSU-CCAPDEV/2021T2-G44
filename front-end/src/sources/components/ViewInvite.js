@@ -13,6 +13,8 @@ import {
     Slide,
 } from '@material-ui/core';
 
+import { respondInvitation } from '../../controllers/InvitesController';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -24,10 +26,26 @@ export default function ViewInvite(props) {
 
     const handleAccept = async () => {
         alert('Invite accepted.');
+        const result = await respondInvitation(props.selectedInvitation._id, 'accept');
+        if(!result.success) {
+            alert(result.errors[0].msg);
+            console.log(result.errors[0].msg)
+            return;
+        }
+        props.invokeUpdate(!props.update);
+        props.setDialogOpen(false);
     };
 
     const handleDeny = async () => {
         alert('Invite denied.');
+        const result = await respondInvitation(props.selectedInvitation._id, 'deny');
+        if(!result.success) {
+            alert(result.errors[0].msg);
+            console.log(result.errors[0].msg)
+            return;
+        }
+        props.invokeUpdate(!props.update);
+        props.setDialogOpen(false);
     };
 
     if (props.selectedInvitation != null)

@@ -257,6 +257,7 @@ module.exports.validateInvite = method => {
         }
         case 'respond': {
             return [
+                param('inviteID', 'Please provide an invite ID').exists().isString(),
                 body('action', 'Please provide an action response.').exists().isString()
             ]
         }

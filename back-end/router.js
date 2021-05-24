@@ -110,7 +110,7 @@ appRouter.post(
     InvitesController.updateInvitation
 );
 appRouter.get(
-    'api/inviteCount', 
+    '/api/inviteCount', 
     InvitesController.countInvites
 );
 appRouter.get(
@@ -130,7 +130,7 @@ appRouter.delete(
     InvitesController.deleteInvitation 
 );
 appRouter.post(
-    '/api/inviteRespond',
+    '/api/inviteRespond/:inviteID',
     ValidationController.validateInvite('respond'),
     ValidationController.validateInputs,
     InvitesController.respondInvitation
