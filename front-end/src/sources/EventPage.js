@@ -33,7 +33,7 @@ import { GetEvent, updateEvent, updateCoverImage } from '../controllers/EventCon
 import { GetUserData } from '../controllers/UserController';
 
 // Markdown Parser
-const marked = require('marked');
+import marked from 'marked';
 
 // Custom styles
 const customStyles = makeStyles((theme) => ({

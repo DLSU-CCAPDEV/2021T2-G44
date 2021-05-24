@@ -1,6 +1,7 @@
 // Dependency Imports
 import { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
+import marked from 'marked';
 
 // Controller Imports
 import { GetUserData } from '../controllers/UserController';
@@ -145,22 +146,16 @@ export default function UserProfile(props) {
                                             <Typography variant="h5" align="left" className={classes.standardSpacer}>
                                                 {`${userProfile.firstName} ${userProfile.lastName}`}
                                             </Typography>
-                                            <TextField
-                                                id="bioTextBox"
-                                                label="Bio"
-                                                multiline
-                                                defaultValue={userProfile.bio}
-                                                className={classes.standardSpacer}
-                                                InputProps={{
-                                                    readOnly: true,
-                                                }}
+                                            <Grid 
+                                                item 
                                                 style={{
                                                     width: '80%',
                                                     marginTop: '1em',
                                                     marginBottom: '1em',
+                                                    fontSize: '18px',
+                                                    fontFamily: 'Roboto'
                                                 }}
-                                                size="small"
-                                                variant="outlined"
+                                                dangerouslySetInnerHTML={{ __html: marked(userProfile.bio)}}
                                             />
                                         </Grid>
                                         {/* EVENTS */}
